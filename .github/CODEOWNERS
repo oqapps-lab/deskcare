@@ -1,0 +1,18 @@
+# Amanda (oqapps-lab admin) — infrastructure, config, docs-root
+/package.json           @gazetastreet
+/package-lock.json      @gazetastreet
+/app.json               @gazetastreet
+/tsconfig.json          @gazetastreet
+/.github/               @gazetastreet
+/.env*                  @gazetastreet
+/CLAUDE.md              @gazetastreet
+/README.md              @gazetastreet
+/lib/                   @gazetastreet
+/services/              @gazetastreet
+/supabase/              @gazetastreet
+/hooks/                 @gazetastreet
+/stores/                @gazetastreet
+
+# DeskCare project manager — all other changes require their approval
+# TODO: replace @gazetastreet with Lana Bey's GitHub username once submitted
+*                       @gazetastreet
