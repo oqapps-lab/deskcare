@@ -64,8 +64,8 @@ export const BodyPainMap: React.FC<Props> = ({
       >
         <Defs>
           <SvgLinearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor="#1B1C1A" stopOpacity="1" />
-            <Stop offset="1" stopColor="#3A2420" stopOpacity="1" />
+            <Stop offset="0" stopColor={colors.ink} stopOpacity="1" />
+            <Stop offset="1" stopColor={colors.inkDeep} stopOpacity="1" />
           </SvgLinearGradient>
           <SvgRadialGradient id="painDot" cx="50%" cy="50%" r="50%">
             <Stop offset="0%" stopColor={colors.primaryMid} stopOpacity="1" />
@@ -152,8 +152,21 @@ const PainDot: React.FC<{ cx: number; cy: number; baseR: number }> = ({
 
   return (
     <>
-      <AnimatedCircle cx={cx} cy={cy} animatedProps={outerProps} fill="url(#painDot)" />
-      <AnimatedCircle cx={cx} cy={cy} animatedProps={coreProps} fill={colors.primaryMid} />
+      {/* Static `r` prop prevents invisible first frame before reanimated kicks in */}
+      <AnimatedCircle
+        cx={cx}
+        cy={cy}
+        r={baseR}
+        animatedProps={outerProps}
+        fill="url(#painDot)"
+      />
+      <AnimatedCircle
+        cx={cx}
+        cy={cy}
+        r={baseR * 0.45}
+        animatedProps={coreProps}
+        fill={colors.primaryMid}
+      />
     </>
   );
 };

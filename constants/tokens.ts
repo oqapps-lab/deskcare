@@ -37,6 +37,7 @@ export const colors = {
 
   // Text
   ink: '#1B1C1A',
+  inkDeep: '#3A2420',
   inkMuted: '#56423B',
   inkSubtle: '#89726A',
   inkHairline: 'rgba(138,114,106,0.12)',

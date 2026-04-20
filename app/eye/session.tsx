@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AtmosphericBackground } from '../../components/ui/AtmosphericBackground';
 import { NavHeader } from '../../components/ui/NavHeader';
@@ -9,7 +10,7 @@ import { GlassIconChip } from '../../components/ui/GlassIconChip';
 import { PillCTA } from '../../components/ui/PillCTA';
 import { ProgressDots } from '../../components/ui/ProgressDots';
 import { Glyph } from '../../components/ui/Glyph';
-import { colors, spacing, typeScale } from '../../constants/tokens';
+import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 
 const DURATION_SEC = 20;
 
@@ -63,9 +64,17 @@ export default function EyeSessionScreen() {
         </View>
 
         <View style={styles.transportRow}>
-          <View style={styles.sideBtn}>
+          <Pressable
+            onPress={() => {
+              Haptics.selectionAsync();
+              setElapsed((e) => Math.max(0, e - 10));
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Назад на 10 секунд"
+            style={({ pressed }) => [styles.sideBtn, pressed && styles.sideBtnPressed]}
+          >
             <Glyph name="skip-back" size={22} color={colors.inkMuted} />
-          </View>
+          </Pressable>
           <PillCTA
             variant="iconOnly"
             size="xl"
@@ -73,9 +82,18 @@ export default function EyeSessionScreen() {
             onPress={() => setPaused((p) => !p)}
             accessibilityLabel={paused ? 'Продолжить' : 'Пауза'}
           />
-          <View style={styles.sideBtn}>
+          <Pressable
+            onPress={() => {
+              Haptics.selectionAsync();
+              setElapsed(0);
+              setPaused(true);
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Начать заново"
+            style={({ pressed }) => [styles.sideBtn, pressed && styles.sideBtnPressed]}
+          >
             <Glyph name="refresh" size={22} color={colors.inkMuted} />
-          </View>
+          </Pressable>
         </View>
       </View>
     </AtmosphericBackground>
@@ -117,10 +135,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceCard,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#9D431A',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.08,
-    shadowRadius: 14,
-    elevation: 3,
+    ...shadows.soft,
+  },
+  sideBtnPressed: {
+    opacity: 0.6,
+    transform: [{ scale: 0.96 }],
   },
 });

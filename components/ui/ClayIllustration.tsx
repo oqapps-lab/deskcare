@@ -10,7 +10,7 @@ import Svg, {
   Rect,
   Stop,
 } from 'react-native-svg';
-import { colors, radii, shadows } from '../../constants/tokens';
+import { colors, gradients, radii, shadows } from '../../constants/tokens';
 
 type IllustrationName = 'wifi-cloud';
 
@@ -30,20 +30,20 @@ export const ClayIllustration: React.FC<Props> = ({ name, size = 180 }) => {
         <Svg width={size} height={size} viewBox="0 0 240 240">
           <Defs>
             <SvgLinearGradient id="tile" x1="0" y1="0" x2="1" y2="1">
-              <Stop offset="0" stopColor="#FFB599" stopOpacity="1" />
-              <Stop offset="1" stopColor="#E87B4E" stopOpacity="1" />
+              <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="1" />
+              <Stop offset="1" stopColor={colors.primaryMid} stopOpacity="1" />
             </SvgLinearGradient>
             <SvgRadialGradient id="rim" cx="30%" cy="25%" r="60%">
-              <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.7" />
-              <Stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
+              <Stop offset="0" stopColor={colors.white} stopOpacity="0.7" />
+              <Stop offset="1" stopColor={colors.white} stopOpacity="0" />
             </SvgRadialGradient>
             <SvgLinearGradient id="cloud" x1="0" y1="0" x2="0" y2="1">
-              <Stop offset="0" stopColor="#F5F3EF" stopOpacity="1" />
-              <Stop offset="1" stopColor="#D6C3B1" stopOpacity="1" />
+              <Stop offset="0" stopColor={colors.surfaceLow} stopOpacity="1" />
+              <Stop offset="1" stopColor={colors.secondaryDim} stopOpacity="1" />
             </SvgLinearGradient>
             <SvgLinearGradient id="wifi" x1="0" y1="0" x2="0" y2="1">
-              <Stop offset="0" stopColor="#9D431A" stopOpacity="1" />
-              <Stop offset="1" stopColor="#7E2C03" stopOpacity="1" />
+              <Stop offset="0" stopColor={colors.primary} stopOpacity="1" />
+              <Stop offset="1" stopColor={colors.primaryDeep} stopOpacity="1" />
             </SvgLinearGradient>
           </Defs>
 
@@ -81,14 +81,14 @@ export const ClayIllustration: React.FC<Props> = ({ name, size = 180 }) => {
           {/* slash for offline */}
           <Path
             d="M95 95 L205 205"
-            stroke="#FFFFFF"
+            stroke={colors.white}
             strokeWidth="8"
             strokeLinecap="round"
             opacity="0.85"
           />
           <Path
             d="M95 95 L205 205"
-            stroke="#9D431A"
+            stroke={colors.primary}
             strokeWidth="5"
             strokeLinecap="round"
           />

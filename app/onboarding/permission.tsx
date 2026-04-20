@@ -54,7 +54,12 @@ export default function PermissionPromptScreen() {
         </View>
         <View style={styles.spacer} />
         <View style={styles.ctaCluster}>
-          <Pressable onPress={handleLater} hitSlop={12} accessibilityRole="button">
+          <Pressable
+            onPress={handleLater}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Отложить напоминания"
+          >
             <Text style={styles.later}>Позже</Text>
           </Pressable>
           <View style={{ height: spacing.md }} />

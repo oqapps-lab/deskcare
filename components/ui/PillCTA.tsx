@@ -14,7 +14,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import { colors, gradients, radii, shadows, spacing, typeScale } from '../../constants/tokens';
+import { colors, fonts, gradients, radii, shadows, spacing, typeScale } from '../../constants/tokens';
 import { Glyph, GlyphName } from './Glyph';
 
 type Variant = 'primary' | 'outlined' | 'ghost' | 'iconOnly';
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
   },
   label: {
     ...typeScale.title,
-    fontFamily: typeScale.title.fontFamily.replace('600SemiBold', '700Bold'),
+    fontFamily: fonts.bold,
   },
   topHighlight: {
     position: 'absolute',

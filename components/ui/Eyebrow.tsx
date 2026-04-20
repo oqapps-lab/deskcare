@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TextStyle } from 'react-native';
+import { Text, TextStyle } from 'react-native';
 import { colors, typeScale } from '../../constants/tokens';
 
 type Variant = 'muted' | 'accent' | 'onDark' | 'onPeach';
@@ -41,5 +41,3 @@ export const Eyebrow: React.FC<Props> = ({
     </Text>
   );
 };
-
-const styles = StyleSheet.create({});

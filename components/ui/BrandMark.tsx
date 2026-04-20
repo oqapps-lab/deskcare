@@ -18,7 +18,6 @@ export const BrandMark: React.FC<{ color?: string }> = ({ color = colors.ink }) 
 const styles = StyleSheet.create({
   root: {
     ...typeScale.title,
-    fontFamily: typeScale.title.fontFamily,
     letterSpacing: 0.3,
   },
 });

@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "scheme": "deskcare",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.gazetastreet.deskcare"
@@ -15,9 +14,7 @@
       "package": "com.gazetastreet.deskcare"
     },
     "plugins": [
-      "expo-router",
-      "expo-haptics",
-      "expo-font"
+      "expo-router"
     ],
     "experiments": {
       "typedRoutes": true

@@ -29,6 +29,11 @@ export const SeveritySlider: React.FC<Props> = ({ value, onChange }) => {
     x.value = value * (w - 28);
   };
 
+  const triggerHaptic = () => {
+    // Fire-and-forget — swallow the Promise so Hermes strict doesn't warn.
+    void Haptics.selectionAsync();
+  };
+
   const pan = Gesture.Pan()
     .onBegin((e) => {
       x.value = Math.min(Math.max(0, e.x - 14), trackW.value - 28);
@@ -40,7 +45,7 @@ export const SeveritySlider: React.FC<Props> = ({ value, onChange }) => {
       if (onChange) {
         const v = trackW.value > 28 ? x.value / (trackW.value - 28) : 0;
         runOnJS(onChange)(v);
-        runOnJS(Haptics.selectionAsync)();
+        runOnJS(triggerHaptic)();
       }
     });
 
@@ -51,7 +56,14 @@ export const SeveritySlider: React.FC<Props> = ({ value, onChange }) => {
   return (
     <View onLayout={onLayout} style={styles.track}>
       <LinearGradient
-        colors={['#F3DFCC', '#FFB599', '#E87B4E', '#9D431A'] as unknown as readonly [string, string, ...string[]]}
+        colors={
+          [
+            colors.secondaryMid,
+            colors.primaryLight,
+            colors.primaryMid,
+            colors.primary,
+          ] as unknown as readonly [string, string, ...string[]]
+        }
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
         style={styles.trackGradient}

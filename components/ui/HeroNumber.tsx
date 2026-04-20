@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
   root: {
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'visible',
   },
   haloWrap: {
     position: 'absolute',

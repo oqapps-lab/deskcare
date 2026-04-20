@@ -22,6 +22,13 @@ interface Props {
 /**
  * Standard screen wrapper: AtmosphericBackground + SafeArea + ScrollView (optional).
  * See docs/06-design/DESIGN-GUIDE.md §5 — 3-layer layout rule.
+ *
+ * NOTE (2026-04-20, Batch 1 retro): Batch 1 screens compose
+ * AtmosphericBackground + NavHeader + content manually because NavHeader
+ * flows inline (not absolute) and <Screen center> would clash with that.
+ * Batch 2 will evolve this primitive to accept `header` + `floating` slots,
+ * then migrate existing screens. Kept in tree as the agreed primitive
+ * per DESIGN-GUIDE §4.
  */
 export const Screen: React.FC<Props> = ({
   children,
