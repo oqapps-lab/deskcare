@@ -1,0 +1,21 @@
+/** Barrel export for all UI primitives. */
+export { AtmosphericBackground } from './AtmosphericBackground';
+export { BodyPainMap, type PainZone } from './BodyPainMap';
+export { BrandMark } from './BrandMark';
+export { BulletRow } from './BulletRow';
+export { ClayIllustration } from './ClayIllustration';
+export { Eyebrow } from './Eyebrow';
+export { GlassCard } from './GlassCard';
+export { GlassIconChip } from './GlassIconChip';
+export { Glyph, type GlyphName } from './Glyph';
+export { HeroNumber } from './HeroNumber';
+export { NavHeader } from './NavHeader';
+export { OrbField } from './OrbField';
+export { PillChip } from './PillChip';
+export { PillCTA } from './PillCTA';
+export { ProgressDots } from './ProgressDots';
+export { PulseRings } from './PulseRings';
+export { Screen } from './Screen';
+export { SettingsRow } from './SettingsRow';
+export { SeveritySlider } from './SeveritySlider';
+export { ToggleSwitch } from './ToggleSwitch';

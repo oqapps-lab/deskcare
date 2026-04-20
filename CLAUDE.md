@@ -15,7 +15,7 @@ Micro-stretching app for remote/office workers. Short 2-5 min video exercises fo
 - People with sciatica/specific conditions (premium programs)
 
 ## Current Stage
-Research (Stage 3)
+Design (Stage 5) — Research, Product, UX завершены. Сейчас: Stitch-промпты → генерация экранов → MCP-конверсия в RN код.
 
 ## Rules
 - useWindowDimensions() for responsive

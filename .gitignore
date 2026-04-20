@@ -11,3 +11,25 @@ web-build/
 .env
 .env.local
 .env.production
+
+# MCP config with API keys (local-only)
+.mcp.json
+
+# Native build outputs (we use Expo Go for now)
+ios/
+android/
+*.xcworkspace
+.metro-health-check*
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
