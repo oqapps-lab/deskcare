@@ -1,65 +1,155 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AtmosphericBackground } from '../../components/ui/AtmosphericBackground';
-import { Eyebrow } from '../../components/ui/Eyebrow';
+import { BgPattern } from '../../components/ui/BgPattern';
+import { DecorativeArc } from '../../components/ui/DecorativeArc';
+import { NavHeader } from '../../components/ui/NavHeader';
 import { HeroNumber } from '../../components/ui/HeroNumber';
+import { Eyebrow } from '../../components/ui/Eyebrow';
 import { PillCTA } from '../../components/ui/PillCTA';
+import { IconHalo } from '../../components/ui/IconHalo';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 
+/**
+ * 30-Second Eye Break — intro screen to the 20-20-20 rule exercise.
+ * Primary CTA launches the Eye Session screen which runs the timer.
+ */
 export default function EyeBreakScreen() {
   const insets = useSafeAreaInsets();
+  const reduceMotion = useReducedMotion();
 
-  const handleStart = () => {
+  const heroOpacity = useSharedValue(0);
+  const heroScale = useSharedValue(0.9);
+  const infoOpacity = useSharedValue(0);
+  const infoY = useSharedValue(16);
+  const ctaOpacity = useSharedValue(0);
+  const halo = useSharedValue(0.55);
+
+  useEffect(() => {
+    const dur = reduceMotion ? 200 : 480;
+    heroOpacity.value = withTiming(1, { duration: dur });
+    heroScale.value = withTiming(1, { duration: dur + 80, easing: Easing.out(Easing.cubic) });
+    infoOpacity.value = withDelay(260, withTiming(1, { duration: 420 }));
+    infoY.value = withDelay(260, withTiming(0, { duration: 480, easing: Easing.out(Easing.cubic) }));
+    ctaOpacity.value = withDelay(480, withTiming(1, { duration: 400 }));
+
+    if (!reduceMotion) {
+      halo.value = withRepeat(
+        withTiming(0.85, { duration: 2400, easing: Easing.inOut(Easing.quad) }),
+        -1,
+        true,
+      );
+    }
+  }, [reduceMotion, heroOpacity, heroScale, infoOpacity, infoY, ctaOpacity, halo]);
+
+  const heroStyle = useAnimatedStyle(() => ({
+    opacity: heroOpacity.value,
+    transform: [{ scale: heroScale.value }],
+  }));
+  const infoStyle = useAnimatedStyle(() => ({
+    opacity: infoOpacity.value,
+    transform: [{ translateY: infoY.value }],
+  }));
+  const ctaStyle = useAnimatedStyle(() => ({ opacity: ctaOpacity.value }));
+  const haloStyle = useAnimatedStyle(() => ({ opacity: halo.value }));
+
+  const start = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     router.push('/eye/session');
   };
-
-  const handleSkip = () => {
+  const skip = () => {
+    Haptics.selectionAsync();
+    router.push('/eye/session');
+  };
+  const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
-    else router.replace('/');
   };
 
   return (
     <AtmosphericBackground>
-      <View style={[styles.root, { paddingTop: insets.top, paddingBottom: insets.bottom }]}>
-        {/* top spacer — hero placed slightly above optical centre */}
-        <View style={styles.topCluster}>
-          <HeroNumber ghost halo>
-            30
-          </HeroNumber>
-          <View style={{ marginTop: -spacing.sm }}>
+      <BgPattern variant="dots" opacity={0.08} tone="coral" />
+      <DecorativeArc position="top-left" tone="peach" size={260} opacity={0.24} />
+      <DecorativeArc position="bottom-right" tone="lavender" size={200} opacity={0.16} />
+
+      <NavHeader onBack={back} />
+
+      <View
+        style={[
+          styles.root,
+          { paddingBottom: insets.bottom + spacing.huge },
+        ]}
+      >
+        <Animated.View style={[styles.heroWrap, heroStyle]}>
+          <View style={styles.eyebrowRow}>
+            <Eyebrow>EYE BREAK</Eyebrow>
+          </View>
+          <View style={{ height: spacing.md }} />
+          <Animated.View style={haloStyle}>
+            <HeroNumber ghost halo size="xl">
+              30
+            </HeroNumber>
+          </Animated.View>
+          <View style={{ marginTop: -spacing.md }}>
             <Eyebrow variant="accent" size="md">
-              СЕК
+              SECONDS
             </Eyebrow>
           </View>
-        </View>
-        <View style={styles.midCluster}>
-          <Text style={styles.title}>Отдохните{'\n'}от экрана</Text>
-        </View>
-        <View style={styles.ctaCluster}>
+        </Animated.View>
+
+        <Animated.View style={[styles.infoCluster, infoStyle]}>
+          <Text style={styles.title}>Rest{'\n'}your eyes</Text>
+          <Text style={styles.subtitle}>
+            Look at a point 20 ft away —{'\n'}let your eye muscles relax
+          </Text>
+          <View style={{ height: spacing.lg }} />
+          <View style={styles.ruleRow}>
+            <IconHalo
+              icon="infinity"
+              size="sm"
+              tone="lavender"
+              variant="tinted"
+              glow={false}
+            />
+            <Text style={styles.ruleInline}>
+              20 min · 20 sec · 20 ft
+            </Text>
+          </View>
+        </Animated.View>
+
+        <Animated.View style={[styles.ctaCluster, ctaStyle]}>
           <PillCTA
-            variant="iconOnly"
-            size="xl"
+            variant="primary"
+            size="lg"
             icon="play"
-            onPress={handleStart}
-            accessibilityLabel="Начать отдых"
-          />
-        </View>
-        <View style={styles.bottomRow}>
-          <View />
-          <Pressable
-            onPress={handleSkip}
-            accessibilityRole="button"
-            accessibilityLabel="Пропустить"
-            hitSlop={12}
+            iconBg
+            breath
+            onPress={start}
           >
-            <Text style={styles.skip}>SKIP</Text>
+            Start break
+          </PillCTA>
+          <View style={{ height: spacing.md }} />
+          <Pressable
+            onPress={skip}
+            hitSlop={12}
+            accessibilityRole="button"
+            accessibilityLabel="Skip break"
+          >
+            <Text style={styles.ghostLink}>Skip</Text>
           </Pressable>
-        </View>
+        </Animated.View>
       </View>
     </AtmosphericBackground>
   );
@@ -71,29 +161,43 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xxl,
     justifyContent: 'space-between',
   },
-  topCluster: {
-    marginTop: spacing.huge,
+  heroWrap: {
+    alignItems: 'center',
+    marginTop: spacing.xl,
+  },
+  eyebrowRow: {
     alignItems: 'center',
   },
-  midCluster: {
+  infoCluster: {
     alignItems: 'center',
-  },
-  ctaCluster: {
-    alignItems: 'center',
+    marginVertical: spacing.xl,
   },
   title: {
     ...typeScale.headline,
     color: colors.ink,
     textAlign: 'center',
   },
-  bottomRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingBottom: spacing.lg,
+  subtitle: {
+    ...typeScale.body,
+    color: colors.inkMuted,
+    textAlign: 'center',
+    marginTop: spacing.md,
   },
-  skip: {
+  ruleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  ruleInline: {
     ...typeScale.label,
+    color: colors.primaryDeep,
+    letterSpacing: 1.2,
+  },
+  ctaCluster: {
+    alignItems: 'center',
+  },
+  ghostLink: {
+    ...typeScale.title,
     color: colors.primaryMid,
   },
 });

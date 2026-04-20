@@ -35,6 +35,11 @@ export const colors = {
   tertiarySoft: '#EADDFF',
   tertiaryDim: '#CEC0E8',
 
+  // Mint accent (used by IconHalo/GlassCard tone='mint')
+  mint: '#9BC3AE',
+  mintMid: '#6BA485',
+  mintSoft: '#DFECE4',
+
   // Text
   ink: '#1B1C1A',
   inkDeep: '#3A2420',
@@ -60,8 +65,20 @@ export const gradients = {
   // 5-stop vertical atmospheric background (app-wide)
   atmosphere: ['#FDFBF7', '#FBF9F5', '#FCEFE5', '#F9E2D2', '#F5D9C8'] as const,
 
-  // CTA vertical 3-stop coral
+  // CTA vertical 3-stop coral (legacy — kept for any consumer still using it)
   ctaCoral: ['#FFC089', '#E87B4E', '#9D431A'] as const,
+
+  // Modern 4-stop diagonal mesh — NW→SE, narrow warm range so white labels
+  // stay legible across the whole surface. No pale top, no burnt bottom.
+  ctaMesh: ['#EE8459', '#E87B4E', '#D96A3D', '#B55223'] as const,
+
+  // Very soft gloss overlay — barely-there sheen. Previous alpha (0.32) was
+  // too strong, washed out the top and killed contrast with white labels.
+  ctaGloss: [
+    'rgba(255,255,255,0.14)',
+    'rgba(255,255,255,0.04)',
+    'rgba(255,255,255,0)',
+  ] as const,
 
   // Peach halo — radial behind hero numbers / icons
   haloPeach: [
@@ -80,6 +97,19 @@ export const gradients = {
 
   // Toggle track on-state
   toggleOn: ['#FFA872', '#E87B4E'] as const,
+
+  // Halo fills — IconHalo gradient surfaces (3-stop diagonal)
+  haloCoral: ['#FFC5AA', '#FF8A5C', '#E87B4E'] as const,
+  haloPeachSolid: ['#FFE8D9', '#FFC5A8', '#FFB599'] as const,
+  haloLavender: ['#E8DEEF', '#D1BFDE', '#C9B8D4'] as const,
+  haloMint: ['#DFECE4', '#BED8C9', '#9BC3AE'] as const,
+
+  // Inner card washes (used with innerGradient)
+  washPeach: ['rgba(255,197,170,0.18)', 'rgba(255,139,92,0.06)'] as const,
+  washLavender: ['rgba(201,184,212,0.22)', 'rgba(148,123,170,0.06)'] as const,
+  washCream: ['rgba(255,250,243,0.5)', 'rgba(245,225,207,0.12)'] as const,
+  washMint: ['rgba(190,216,201,0.22)', 'rgba(107,164,133,0.06)'] as const,
+  washCoral: ['rgba(255,139,92,0.22)', 'rgba(232,123,78,0.08)'] as const,
 } as const;
 
 export const radii = {

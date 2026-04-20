@@ -1,14 +1,17 @@
 /** Barrel export for all UI primitives. */
 export { AtmosphericBackground } from './AtmosphericBackground';
+export { BgPattern, type BgPatternVariant, type BgPatternTone } from './BgPattern';
 export { BodyPainMap, type PainZone } from './BodyPainMap';
 export { BrandMark } from './BrandMark';
 export { BulletRow } from './BulletRow';
 export { ClayIllustration } from './ClayIllustration';
+export { DecorativeArc, type ArcPosition, type ArcTone } from './DecorativeArc';
 export { Eyebrow } from './Eyebrow';
 export { GlassCard } from './GlassCard';
 export { GlassIconChip } from './GlassIconChip';
 export { Glyph, type GlyphName } from './Glyph';
 export { HeroNumber } from './HeroNumber';
+export { IconHalo, type HaloTone, type HaloSize, type HaloVariant } from './IconHalo';
 export { NavHeader } from './NavHeader';
 export { OrbField } from './OrbField';
 export { PillChip } from './PillChip';

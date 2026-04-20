@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -9,15 +10,19 @@ import {
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
+  useReducedMotion,
   useSharedValue,
+  withRepeat,
   withTiming,
+  Easing,
 } from 'react-native-reanimated';
+import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
 import { colors, fonts, gradients, radii, shadows, spacing, typeScale } from '../../constants/tokens';
 import { Glyph, GlyphName } from './Glyph';
 
-type Variant = 'primary' | 'outlined' | 'ghost' | 'iconOnly';
+type Variant = 'primary' | 'outlined' | 'ghost' | 'iconOnly' | 'glass';
 type Size = 'md' | 'lg' | 'xl' | 'iconBig';
 
 interface Props {
@@ -31,6 +36,14 @@ interface Props {
   disabled?: boolean;
   style?: ViewStyle;
   accessibilityLabel?: string;
+  /** @deprecated legacy prop — ignored. Use `breath` for modern ambient life. */
+  shimmer?: boolean;
+  /** When both `icon` and `label` are present, wraps the icon in a subtle
+   *  white-alpha 28x28 circle for extra visual weight. */
+  iconBg?: boolean;
+  /** Ambient breathing (scale 1 → 1.012 @ 3.2s loop) for primary/iconOnly.
+   *  Off by default — enable sparingly for hero CTAs. */
+  breath?: boolean;
 }
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -54,8 +67,25 @@ export const PillCTA: React.FC<Props> = ({
   disabled = false,
   style,
   accessibilityLabel,
+  shimmer: _legacyShimmer = false,
+  iconBg = false,
+  breath = false,
 }) => {
   const scale = useSharedValue(1);
+  const breathScale = useSharedValue(1);
+  const reduceMotion = useReducedMotion();
+
+  const breathActive =
+    breath && (variant === 'primary' || variant === 'iconOnly') && !disabled;
+
+  useEffect(() => {
+    if (!breathActive || reduceMotion) return;
+    breathScale.value = withRepeat(
+      withTiming(1.012, { duration: 3200, easing: Easing.inOut(Easing.quad) }),
+      -1,
+      true,
+    );
+  }, [breathActive, reduceMotion, breathScale]);
 
   const handlePressIn = () => {
     scale.value = withTiming(0.97, { duration: 100 });
@@ -73,7 +103,9 @@ export const PillCTA: React.FC<Props> = ({
     onPress?.();
   };
 
-  const animStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
+  const animStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value * breathScale.value }],
+  }));
 
   const sizeMap: Record<Size, { height: number; padX: number; textSize: number; iconSize: number }> = {
     md: { height: 48, padX: 20, textSize: 15, iconSize: 18 },
@@ -109,7 +141,18 @@ export const PillCTA: React.FC<Props> = ({
         {children}
       </Text>
     );
-    const iconEl = icon && <Glyph name={icon} size={s.iconSize} color={iconColor} />;
+    const rawIconEl =
+      icon && <Glyph name={icon} size={s.iconSize} color={iconColor} />;
+    // iconBg: wrap the icon in a 28x28 white-alpha circle when we have BOTH
+    // an icon and a label (label check keeps circle out of `iconOnly` variant).
+    const iconEl =
+      rawIconEl && iconBg && children
+        ? (
+          <View style={styles.iconBg}>
+            <Glyph name={icon!} size={s.iconSize} color={iconColor} />
+          </View>
+        )
+        : rawIconEl;
     return (
       <View style={styles.rowContent}>
         {iconPosition === 'leading' && iconEl}
@@ -147,13 +190,78 @@ export const PillCTA: React.FC<Props> = ({
           style,
         ]}
       >
+        {/* Base — 4-stop diagonal mesh. Top-left blush, bottom-right ember. */}
         <LinearGradient
-          colors={gradients.ctaCoral as unknown as readonly [string, string, ...string[]]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
+          colors={gradients.ctaMesh as unknown as readonly [string, string, ...string[]]}
+          locations={[0, 0.38, 0.72, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
           style={[StyleSheet.absoluteFill, { borderRadius: radii.pill }]}
         />
-        {/* top-inner highlight */}
+        {/* Matte gloss overlay — soft top highlight fading to nothing. */}
+        <LinearGradient
+          pointerEvents="none"
+          colors={gradients.ctaGloss as unknown as readonly [string, string, ...string[]]}
+          locations={[0, 0.55, 1]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 0.9 }}
+          style={[StyleSheet.absoluteFill, { borderRadius: radii.pill }]}
+        />
+        {/* thin top-inner hairline for glass feel */}
+        <View style={styles.topHighlight} pointerEvents="none" />
+        {renderContent()}
+      </AnimatedPressable>
+    );
+  }
+
+  // GLASS — matte frosted glass with coral tint
+  if (variant === 'glass') {
+    return (
+      <AnimatedPressable
+        onPress={handlePress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        disabled={disabled || loading}
+        accessibilityRole="button"
+        accessibilityLabel={accessibilityLabel || children}
+        style={[
+          animStyle,
+          styles.pillBase,
+          shadows.soft,
+          {
+            height: s.height,
+            paddingHorizontal: s.padX,
+            borderRadius: radii.pill,
+            opacity: disabled ? 0.5 : 1,
+            borderWidth: 1,
+            borderColor: 'rgba(232,123,78,0.35)',
+          },
+          style,
+        ]}
+      >
+        {Platform.OS === 'ios' ? (
+          <BlurView
+            intensity={24}
+            tint="light"
+            style={[StyleSheet.absoluteFill, { borderRadius: radii.pill, overflow: 'hidden' }]}
+          >
+            <View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFill,
+                { backgroundColor: 'rgba(255,181,153,0.28)', borderRadius: radii.pill },
+              ]}
+            />
+          </BlurView>
+        ) : (
+          <View
+            pointerEvents="none"
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: 'rgba(255,219,206,0.72)', borderRadius: radii.pill },
+            ]}
+          />
+        )}
         <View style={styles.topHighlight} pointerEvents="none" />
         {renderContent()}
       </AnimatedPressable>
@@ -238,5 +346,13 @@ const styles = StyleSheet.create({
     right: 16,
     height: 1,
     backgroundColor: 'rgba(255,255,255,0.35)',
+  },
+  iconBg: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.22)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

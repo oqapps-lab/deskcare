@@ -1,77 +1,247 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import * as Haptics from 'expo-haptics';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AtmosphericBackground } from '../../components/ui/AtmosphericBackground';
+import { BgPattern } from '../../components/ui/BgPattern';
+import { DecorativeArc } from '../../components/ui/DecorativeArc';
 import { NavHeader } from '../../components/ui/NavHeader';
 import { Eyebrow } from '../../components/ui/Eyebrow';
 import { PillChip } from '../../components/ui/PillChip';
-import { SettingsRow } from '../../components/ui/SettingsRow';
-import { spacing } from '../../constants/tokens';
+import { PillCTA } from '../../components/ui/PillCTA';
+import { IconHalo } from '../../components/ui/IconHalo';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { ToggleSwitch } from '../../components/ui/ToggleSwitch';
+import { Glyph } from '../../components/ui/Glyph';
+import type { GlyphName } from '../../components/ui/Glyph';
+import type { HaloTone } from '../../components/ui/IconHalo';
+import { colors, spacing, typeScale } from '../../constants/tokens';
 
-const TIMES = ['9:00', '12:00', '15:00', '18:00'];
+const TIMES = ['09:00', '12:00', '15:00', '18:00'];
 
-export default function NotificationSettings() {
+/**
+ * Notification & reminder settings. Flow entry: after Permission Prompt.
+ * Primary CTA "Продолжить" continues the demo into /eye/break.
+ */
+export default function NotificationSettingsScreen() {
   const insets = useSafeAreaInsets();
+  const reduceMotion = useReducedMotion();
+
   const [activeTime, setActiveTime] = useState('15:00');
   const [eyeTimer, setEyeTimer] = useState(true);
   const [sound, setSound] = useState(true);
 
-  const goBack = () => {
+  const contentOpacity = useSharedValue(0);
+  const contentY = useSharedValue(14);
+  const chipsOpacity = useSharedValue(0);
+  const rowsOpacity = useSharedValue(0);
+  const ctaOpacity = useSharedValue(0);
+
+  useEffect(() => {
+    contentOpacity.value = withTiming(1, { duration: 400 });
+    contentY.value = withTiming(0, { duration: 500, easing: Easing.out(Easing.cubic) });
+    chipsOpacity.value = withDelay(reduceMotion ? 0 : 180, withTiming(1, { duration: 400 }));
+    rowsOpacity.value = withDelay(reduceMotion ? 0 : 320, withTiming(1, { duration: 500 }));
+    ctaOpacity.value = withDelay(reduceMotion ? 0 : 480, withTiming(1, { duration: 400 }));
+  }, [reduceMotion, contentOpacity, contentY, chipsOpacity, rowsOpacity, ctaOpacity]);
+
+  const contentStyle = useAnimatedStyle(() => ({
+    opacity: contentOpacity.value,
+    transform: [{ translateY: contentY.value }],
+  }));
+  const chipsStyle = useAnimatedStyle(() => ({ opacity: chipsOpacity.value }));
+  const rowsStyle = useAnimatedStyle(() => ({ opacity: rowsOpacity.value }));
+  const ctaStyle = useAnimatedStyle(() => ({ opacity: ctaOpacity.value }));
+
+  const back = () => {
+    Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
-    else router.replace('/');
+  };
+  const continueFlow = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push('/eye/break');
   };
 
   return (
     <AtmosphericBackground>
-      <NavHeader title="Настройки и напоминания" onBack={goBack} />
-      <ScrollView
-        contentContainerStyle={{
-          paddingTop: spacing.md,
-          paddingBottom: insets.bottom + spacing.huge,
-          paddingHorizontal: spacing.xxl,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.eyebrowRow}>
-          <Eyebrow>Напоминания</Eyebrow>
-        </View>
+      <BgPattern variant="waves" opacity={0.05} tone="coral" />
+      <DecorativeArc position="top-right" tone="peach" size={220} opacity={0.20} />
 
-        <View style={styles.chipRow}>
-          {TIMES.map((t) => (
-            <PillChip
-              key={t}
-              active={t === activeTime}
-              onPress={() => setActiveTime(t)}
-            >
-              {t}
-            </PillChip>
-          ))}
-        </View>
+      <NavHeader title="Reminders" onBack={back} />
 
-        <View style={styles.listGap}>
-          <SettingsRow
-            icon="eye"
-            title="20-20-20 таймер для глаз"
-            right={{ type: 'toggle', value: eyeTimer, onChange: setEyeTimer }}
-          />
-          <SettingsRow
-            icon="speaker"
-            title="Звук уведомлений"
-            right={{ type: 'toggle', value: sound, onChange: setSound }}
-          />
-          <SettingsRow
-            icon="crown"
-            title="Управление подпиской"
-            right={{ type: 'chevron', badge: 'PREMIUM', onPress: () => {} }}
-          />
-        </View>
-      </ScrollView>
+      <Animated.View style={[styles.wrap, contentStyle]}>
+        <ScrollView
+          contentContainerStyle={{
+            paddingTop: spacing.md,
+            paddingBottom: insets.bottom + 120, // floating CTA clearance
+            paddingHorizontal: spacing.xxl,
+          }}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.headerBlock}>
+            <Text style={styles.title}>When should we{'\n'}nudge you?</Text>
+            <Text style={styles.subtitle}>
+              Pick a time that fits your day —{'\n'}we'll adapt the rest
+            </Text>
+          </View>
+
+          <View style={styles.eyebrowRow}>
+            <Eyebrow>DAILY SCHEDULE</Eyebrow>
+          </View>
+
+          <Animated.View style={[styles.chipRow, chipsStyle]}>
+            {TIMES.map((t) => (
+              <PillChip
+                key={t}
+                active={t === activeTime}
+                onPress={() => setActiveTime(t)}
+                size="md"
+              >
+                {t}
+              </PillChip>
+            ))}
+          </Animated.View>
+
+          <View style={styles.eyebrowRow}>
+            <Eyebrow>MORE OPTIONS</Eyebrow>
+          </View>
+
+          <Animated.View style={[styles.rows, rowsStyle]}>
+            <GlassRow
+              icon="eye"
+              tone="lavender"
+              tint="lavender"
+              title="20-20-20 for eyes"
+              sub="Every 20 min — 20 sec, 20 ft away"
+              right={
+                <ToggleSwitch value={eyeTimer} onChange={setEyeTimer} />
+              }
+            />
+            <GlassRow
+              icon="speaker"
+              tone="coral"
+              tint="peach"
+              title="Notification sound"
+              sub="Soft tone, never sharp"
+              right={<ToggleSwitch value={sound} onChange={setSound} />}
+            />
+            <GlassRow
+              icon="crown"
+              tone="coral"
+              tint="coral"
+              title="DeskCare Premium"
+              sub="Sciatica & carpal-tunnel programs"
+              badge="PRO"
+              innerGradient
+              decorativeCorner
+              right={<Glyph name="chevron-right" size={18} color={colors.inkSubtle} />}
+            />
+          </Animated.View>
+        </ScrollView>
+
+        <Animated.View
+          style={[
+            styles.ctaFloating,
+            ctaStyle,
+            { paddingBottom: insets.bottom + spacing.md },
+          ]}
+        >
+          <PillCTA
+            variant="primary"
+            size="lg"
+            icon="check"
+            iconBg
+            breath
+            onPress={continueFlow}
+          >
+            Continue
+          </PillCTA>
+        </Animated.View>
+      </Animated.View>
     </AtmosphericBackground>
   );
 }
 
+interface GlassRowProps {
+  icon: GlyphName;
+  tone: HaloTone;
+  tint: 'cream' | 'peach' | 'lavender' | 'mint' | 'coral';
+  title: string;
+  sub: string;
+  badge?: string;
+  right: React.ReactNode;
+  innerGradient?: boolean;
+  decorativeCorner?: boolean;
+}
+
+const GlassRow: React.FC<GlassRowProps> = ({
+  icon,
+  tone,
+  tint,
+  title,
+  sub,
+  badge,
+  right,
+  innerGradient = true,
+  decorativeCorner = false,
+}) => (
+  <GlassCard
+    tint={tint}
+    radius="xl"
+    padding={spacing.lg}
+    innerGradient={innerGradient}
+    decorativeCorner={decorativeCorner}
+  >
+    <View style={rowStyles.row}>
+      <IconHalo icon={icon} size="md" tone={tone} variant="tinted" glow={false} />
+      <View style={rowStyles.textCol}>
+        <View style={rowStyles.titleRow}>
+          <Text style={rowStyles.title} numberOfLines={1}>
+            {title}
+          </Text>
+          {badge && (
+            <View style={rowStyles.badge}>
+              <Eyebrow variant="accent" size="sm">
+                {badge}
+              </Eyebrow>
+            </View>
+          )}
+        </View>
+        <Text style={rowStyles.sub} numberOfLines={2}>
+          {sub}
+        </Text>
+      </View>
+      <View style={rowStyles.rightCol}>{right}</View>
+    </View>
+  </GlassCard>
+);
+
 const styles = StyleSheet.create({
+  wrap: {
+    flex: 1,
+  },
+  headerBlock: {
+    marginTop: spacing.lg,
+    marginBottom: spacing.xxl,
+  },
+  title: {
+    ...typeScale.headline,
+    color: colors.ink,
+  },
+  subtitle: {
+    ...typeScale.body,
+    color: colors.inkMuted,
+    marginTop: spacing.sm,
+  },
   eyebrowRow: {
     marginTop: spacing.lg,
     marginBottom: spacing.md,
@@ -80,9 +250,55 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.sm,
-    marginBottom: spacing.xxxl,
+    marginBottom: spacing.lg,
   },
-  listGap: {
+  rows: {
     gap: spacing.md,
+  },
+  ctaFloating: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    paddingHorizontal: spacing.xxl,
+    paddingTop: spacing.md,
+    alignItems: 'center',
+  },
+});
+
+const rowStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  textCol: {
+    flex: 1,
+  },
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  title: {
+    ...typeScale.titleLg,
+    color: colors.ink,
+    flexShrink: 1,
+  },
+  sub: {
+    ...typeScale.bodySm,
+    color: colors.inkMuted,
+    marginTop: 2,
+  },
+  badge: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 2,
+    borderRadius: 999,
+    backgroundColor: colors.primarySoft,
+  },
+  rightCol: {
+    marginLeft: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

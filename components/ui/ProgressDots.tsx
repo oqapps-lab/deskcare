@@ -12,7 +12,7 @@ interface Props {
  */
 export const ProgressDots: React.FC<Props> = ({ count, active }) => {
   return (
-    <View style={styles.row} accessibilityLabel={`Шаг ${active + 1} из ${count}`}>
+    <View style={styles.row} accessibilityLabel={`Step ${active + 1} of ${count}`}>
       {Array.from({ length: count }).map((_, i) => {
         const isActive = i === active;
         return (

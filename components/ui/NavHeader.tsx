@@ -46,7 +46,7 @@ export const NavHeader: React.FC<Props> = ({
             onPress={handleBack}
             hitSlop={16}
             accessibilityRole="button"
-            accessibilityLabel="Назад"
+            accessibilityLabel="Back"
             style={({ pressed }) => [styles.iconBtn, pressed && styles.pressed]}
           >
             <Glyph name="back-chevron" size={24} color={colors.ink} />
