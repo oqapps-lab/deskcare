@@ -94,7 +94,7 @@ export default function EyeBreakScreen() {
       >
         <Animated.View style={[styles.heroWrap, heroStyle]}>
           <View style={styles.eyebrowRow}>
-            <Eyebrow>EYE BREAK</Eyebrow>
+            <Eyebrow variant="accent">EYE BREAK</Eyebrow>
           </View>
           <View style={{ height: spacing.md }} />
           <Animated.View style={haloStyle}>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
@@ -138,12 +139,15 @@ export default function NotificationSettingsScreen() {
               icon="crown"
               tone="coral"
               tint="coral"
-              title="DeskCare Premium"
+              title="Premium"
               sub="Sciatica & carpal-tunnel programs"
               badge="PRO"
               innerGradient
               decorativeCorner
               right={<Glyph name="chevron-right" size={18} color={colors.inkSubtle} />}
+              onPress={() => {
+                Haptics.selectionAsync();
+              }}
             />
           </Animated.View>
         </ScrollView>
@@ -154,7 +158,18 @@ export default function NotificationSettingsScreen() {
             ctaStyle,
             { paddingBottom: insets.bottom + spacing.md },
           ]}
+          pointerEvents="box-none"
         >
+          <LinearGradient
+            colors={[
+              'rgba(251,249,245,0)',
+              'rgba(251,249,245,0.85)',
+              'rgba(251,249,245,1)',
+            ]}
+            locations={[0, 0.5, 1]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
           <PillCTA
             variant="primary"
             size="lg"
@@ -181,6 +196,7 @@ interface GlassRowProps {
   right: React.ReactNode;
   innerGradient?: boolean;
   decorativeCorner?: boolean;
+  onPress?: () => void;
 }
 
 const GlassRow: React.FC<GlassRowProps> = ({
@@ -193,37 +209,54 @@ const GlassRow: React.FC<GlassRowProps> = ({
   right,
   innerGradient = true,
   decorativeCorner = false,
-}) => (
-  <GlassCard
-    tint={tint}
-    radius="xl"
-    padding={spacing.lg}
-    innerGradient={innerGradient}
-    decorativeCorner={decorativeCorner}
-  >
-    <View style={rowStyles.row}>
-      <IconHalo icon={icon} size="md" tone={tone} variant="tinted" glow={false} />
-      <View style={rowStyles.textCol}>
-        <View style={rowStyles.titleRow}>
-          <Text style={rowStyles.title} numberOfLines={1}>
-            {title}
+  onPress,
+}) => {
+  const content = (
+    <GlassCard
+      tint={tint}
+      radius="xl"
+      padding={spacing.lg}
+      innerGradient={innerGradient}
+      decorativeCorner={decorativeCorner}
+    >
+      <View style={rowStyles.row}>
+        <IconHalo icon={icon} size="md" tone={tone} variant="tinted" glow={false} />
+        <View style={rowStyles.textCol}>
+          <View style={rowStyles.titleRow}>
+            <Text style={rowStyles.title} numberOfLines={1} ellipsizeMode="tail">
+              {title}
+            </Text>
+            {badge && (
+              <View style={rowStyles.badge}>
+                <Eyebrow variant="accent" size="sm">
+                  {badge}
+                </Eyebrow>
+              </View>
+            )}
+          </View>
+          <Text style={rowStyles.sub} numberOfLines={2}>
+            {sub}
           </Text>
-          {badge && (
-            <View style={rowStyles.badge}>
-              <Eyebrow variant="accent" size="sm">
-                {badge}
-              </Eyebrow>
-            </View>
-          )}
         </View>
-        <Text style={rowStyles.sub} numberOfLines={2}>
-          {sub}
-        </Text>
+        <View style={rowStyles.rightCol}>{right}</View>
       </View>
-      <View style={rowStyles.rightCol}>{right}</View>
-    </View>
-  </GlassCard>
-);
+    </GlassCard>
+  );
+
+  if (!onPress) return content;
+
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+      hitSlop={4}
+      style={({ pressed }) => (pressed ? rowStyles.pressed : undefined)}
+    >
+      {content}
+    </Pressable>
+  );
+};
 
 const styles = StyleSheet.create({
   wrap: {
@@ -249,7 +282,8 @@ const styles = StyleSheet.create({
   chipRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.sm,
+    justifyContent: 'space-between',
+    gap: spacing.xs,
     marginBottom: spacing.lg,
   },
   rows: {
@@ -261,7 +295,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: spacing.xxl,
-    paddingTop: spacing.md,
+    paddingTop: spacing.xxxl,
     alignItems: 'center',
   },
 });
@@ -283,7 +317,8 @@ const rowStyles = StyleSheet.create({
   title: {
     ...typeScale.titleLg,
     color: colors.ink,
-    flexShrink: 1,
+    flex: 1,
+    minWidth: 0,
   },
   sub: {
     ...typeScale.bodySm,
@@ -295,10 +330,15 @@ const rowStyles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 999,
     backgroundColor: colors.primarySoft,
+    flexShrink: 0,
   },
   rightCol: {
     marginLeft: spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  pressed: {
+    opacity: 0.85,
+    transform: [{ scale: 0.98 }],
   },
 });

@@ -22,7 +22,7 @@ export const ProgressDots: React.FC<Props> = ({ count, active }) => {
               styles.dot,
               isActive
                 ? { width: 22, backgroundColor: colors.primaryMid, borderRadius: radii.pill }
-                : { width: 6, backgroundColor: colors.surfaceHighest, borderRadius: 3 },
+                : { width: 8, backgroundColor: colors.secondaryDim, borderRadius: 4 },
             ]}
           />
         );
@@ -38,6 +38,6 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   dot: {
-    height: 6,
+    height: 8,
   },
 });

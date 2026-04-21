@@ -39,14 +39,14 @@ npm start
 deskcare/
 ├── app/                                expo-router screens
 │   ├── _layout.tsx                     root: fonts + gesture handler + Stack
-│   ├── index.tsx                       design-review hub (temporary)
+│   ├── index.tsx                       animated splash → /onboarding/permission (~1.8s)
 │   ├── settings/notifications.tsx      01 — Notification Settings
 │   ├── eye/break.tsx                   02 — 30-Second Eye Break
 │   ├── eye/session.tsx                 04 — Eye Exercise Session
 │   ├── onboarding/permission.tsx       03 — Permission Prompt
-│   ├── errors/no-connection.tsx        05 — Нет подключения
+│   ├── errors/no-connection.tsx        05 — No Connection
 │   ├── pain/check-in.tsx               06 — Pain Location + Severity
-│   └── sync.tsx                        07 — Синхронизация
+│   └── sync.tsx                        07 — Sync
 │
 ├── components/ui/                      20 primitives (see DESIGN-GUIDE §4)
 │   ├── AtmosphericBackground.tsx       5-stop gradient + 3 orbs

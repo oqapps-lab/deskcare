@@ -1,5 +1,12 @@
 # DeskCare
 
+## iOS Simulator
+- **UDID**: `D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C`
+- **Device**: iPhone 16e — deskcare
+- **Metro port**: 8083
+- **How to open**: `xcrun simctl openurl D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C "exp://127.0.0.1:8083"`
+- **Screenshot**: `~/.claude/bin/ios-shot D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C`
+
 ## Stack
 - Expo SDK 55, React Native, TypeScript strict
 - expo-router (file-based routing)

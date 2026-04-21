@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
@@ -42,6 +43,22 @@ const ZONES: ReadonlyArray<ZoneDef> = [
   { id: 'lowerBack', label: 'Lower back', icon: 'plus', tone: 'mint' },
 ];
 
+// Slider value (0..1) → discrete severity level. Thresholds chosen so that
+// 1-3/10 = mild, 4-7/10 = moderate, 8-10/10 = severe.
+const levelFromPct = (pct: number): SeverityLevel => {
+  const tenths = Math.round(pct * 10);
+  if (tenths <= 3) return 'mild';
+  if (tenths <= 7) return 'moderate';
+  return 'severe';
+};
+
+// Chip selection → slider value. Put slider in the middle of each level's range.
+const pctFromLevel = (level: SeverityLevel): number => {
+  if (level === 'mild') return 0.2;
+  if (level === 'moderate') return 0.5;
+  return 0.9;
+};
+
 /**
  * Pain Check-in — user selects zones on body, sets severity, picks label.
  * Demo flow continues to /sync on save.
@@ -53,8 +70,20 @@ export default function PainCheckInScreen() {
   const [selectedZones, setSelectedZones] = useState<Set<PainZone>>(
     new Set<PainZone>(['neck']),
   );
-  const [severityPct, setSeverityPct] = useState(0.4);
-  const [level, setLevel] = useState<SeverityLevel>('moderate');
+  const [severityPct, setSeverityPctRaw] = useState(0.4);
+  const [level, setLevelRaw] = useState<SeverityLevel>('moderate');
+
+  const setSeverityPct = (pct: number) => {
+    setSeverityPctRaw(pct);
+    const next = levelFromPct(pct);
+    if (next !== level) setLevelRaw(next);
+  };
+
+  const setLevel = (nextLevel: SeverityLevel) => {
+    if (nextLevel === level) return;
+    setLevelRaw(nextLevel);
+    setSeverityPctRaw(pctFromLevel(nextLevel));
+  };
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(16);
@@ -213,7 +242,18 @@ export default function PainCheckInScreen() {
             ctaStyle,
             { paddingBottom: insets.bottom + spacing.md },
           ]}
+          pointerEvents="box-none"
         >
+          <LinearGradient
+            colors={[
+              'rgba(251,249,245,0)',
+              'rgba(251,249,245,0.85)',
+              'rgba(251,249,245,1)',
+            ]}
+            locations={[0, 0.5, 1]}
+            style={StyleSheet.absoluteFill}
+            pointerEvents="none"
+          />
           <PillCTA
             variant="primary"
             size="lg"
@@ -240,12 +280,17 @@ interface ZoneTileProps {
 
 const ZoneTile: React.FC<ZoneTileProps> = ({ label, icon, tone, active, onPress }) => (
   <View style={tileStyles.wrap}>
-    <View
-      style={[
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: active }}
+      hitSlop={6}
+      style={({ pressed }) => [
         tileStyles.btn,
         active && tileStyles.btnActive,
+        pressed && tileStyles.btnPressed,
       ]}
-      onTouchEnd={onPress}
     >
       <IconHalo
         icon={icon}
@@ -257,7 +302,7 @@ const ZoneTile: React.FC<ZoneTileProps> = ({ label, icon, tone, active, onPress 
       <Text style={[tileStyles.label, active && tileStyles.labelActive]}>
         {label}
       </Text>
-    </View>
+    </Pressable>
   </View>
 );
 
@@ -276,6 +321,10 @@ const tileStyles = StyleSheet.create({
   btnActive: {
     backgroundColor: colors.surfaceCard,
     ...shadows.soft,
+  },
+  btnPressed: {
+    opacity: 0.7,
+    transform: [{ scale: 0.96 }],
   },
   label: {
     ...typeScale.bodySm,
@@ -349,7 +398,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: spacing.xxl,
-    paddingTop: spacing.md,
+    paddingTop: spacing.xxxl,
     alignItems: 'center',
   },
 });

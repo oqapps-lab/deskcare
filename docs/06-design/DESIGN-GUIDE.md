@@ -46,9 +46,9 @@ Mood one-liner: **sun-drenched editorial wellness — a high-end studio where th
 7. **Subtle haptics** везде (expo-haptics) на CTA/chip/toggle
 8. **Анимированные pulse-dots** на body map — coral glow pulsing на зонах боли
 
-### 11 primitives, которые закрывают всё
+### Primitives библиотека
 
-`<AtmosphericBackground>`, `<OrbField>`, `<Screen>`, `<NavHeader>`, `<GlassCard>`, `<PillCTA>`, `<PillChip>`, `<GlassIconChip>`, `<HeroNumber>`, `<Eyebrow>`, `<ToggleSwitch>`, `<PulseRings>`, `<BodyPainMap>`, `<ProgressDots>`, `<Glyph>` (иконки)
+Полный каталог в [README.md](../../README.md) → Project structure → `components/ui/`. На момент Batch 1 — 20 примитивов. Все в `components/ui/*.tsx` + barrel-экспорт через `index.ts`. Base primitives: `<AtmosphericBackground>`, `<OrbField>`, `<BgPattern>`, `<DecorativeArc>`, `<Screen>`, `<NavHeader>`, `<BrandMark>`, `<Glyph>`. Content: `<GlassCard>`, `<PillCTA>`, `<PillChip>`, `<IconHalo>`, `<GlassIconChip>`, `<HeroNumber>`, `<Eyebrow>`, `<BulletRow>`. Interactive/animated: `<ToggleSwitch>`, `<PulseRings>`, `<BodyPainMap>`, `<ProgressDots>`, `<SeveritySlider>`, `<ClayIllustration>`.
 
 ---
 
@@ -301,7 +301,7 @@ SVG-композиция из 4 концентрических колец + cent
 
 ### `<BodyPainMap>`
 
-SVG-силуэт мужского торса (anterior view) — outline thin, fill `inkHairline`. Поверх — 3-5 coral `Circle` pulse-dots, только те которые «активны» (из props `painZones: ('neck'|'shoulder'|'chest'|'abdomen'|'lowerBack'|'wrist')[]`). Каждый dot — radial gradient coral → transparent, opacity pulsing 0.5→1.0 via reanimated loop 1600ms.
+Dramatic dark-silhouette panel — rounded `Rect` fill `ink → inkDeep` vertical gradient inside the `240×320` viewBox, thin white outline strokes (`rgba(255,255,255,0.06–0.12)`) для torso / neck / head / midline. Поверх — coral `Circle` pulse-dots только на активных зонах (из props `painZones: ('neck'|'leftShoulder'|'rightShoulder'|'chest'|'abdomen'|'lowerBack')[]`). Каждый dot — radial gradient coral → transparent, outer radius anim 1→1.18 + inner core 0.45×base, reanimated loop 1600ms. Дизайн: контрастный «editorial medical» тон относительно cream-canvas вокруг — такой был намеренный upgrade vs Stitch photo-JPG.
 
 ### `<ProgressDots>`
 
@@ -343,57 +343,87 @@ Inline SVG icon set, единый API: `<Glyph name="bell" size={24} color={...}
 
 ## 6. Screen recipes
 
+Copy — English (shipped). Product language decision: EN-only для MVP; i18n откладывается до post-launch.
+
 ### 1. Notification Settings (`/settings/notifications`)
 
 ```
 <Screen scroll>
-  <NavHeader title="Настройки и напоминания" />
-  <Eyebrow>НАПОМИНАНИЯ</Eyebrow>
-  <PillChipRow>
-    <PillChip>9:00</PillChip>
+  <NavHeader title="Reminders" />
+  <Headline>When should we nudge you?</Headline>
+  <Subtitle>Pick a time that fits your day — we'll adapt the rest</Subtitle>
+
+  <Eyebrow>DAILY SCHEDULE</Eyebrow>
+  <PillChipRow>            // 4 chips, flex-wrap, gap xs
+    <PillChip>09:00</PillChip>
     <PillChip>12:00</PillChip>
     <PillChip active>15:00</PillChip>
     <PillChip>18:00</PillChip>
   </PillChipRow>
 
-  <SettingsRow icon="eye" title="20-20-20 таймер для глаз" toggle={on} />
-  <SettingsRow icon="speaker" title="Звук уведомлений" toggle={on} />
-  <SettingsRow icon="crown" title="Управление подпиской" badge="PREMIUM" chevron />
+  <Eyebrow>MORE OPTIONS</Eyebrow>
+  <GlassRow icon="eye" tint="lavender" title="20-20-20 for eyes"
+            sub="Every 20 min — 20 sec, 20 ft away" toggle={on} />
+  <GlassRow icon="speaker" tint="peach" title="Notification sound"
+            sub="Soft tone, never sharp" toggle={on} />
+  <GlassRow icon="crown" tint="coral" title="Premium" badge="PRO"
+            sub="Sciatica & carpal-tunnel programs"
+            onPress={openSubscription} chevron />
+
+  <FloatingCTA withScrim>Continue</FloatingCTA>
 </Screen>
 ```
 
-`<SettingsRow>` — composition of `<GlassCard>` + `<GlassIconChip>` + title + right slot (ToggleSwitch | Eyebrow badge + chevron).
+`<GlassRow>` — композиция `<GlassCard>` + `<IconHalo>` + title row (title + optional badge) + sub + right slot (ToggleSwitch | chevron). Если передан `onPress`, оборачивается в `<Pressable>` с a11y-role/label. Для title — `flex: 1 + minWidth: 0` чтобы ellipsis работал корректно рядом с badge.
+
+`FloatingCTA withScrim` — absolute bottom container + `<LinearGradient>` scrim от `transparent → canvas` (0 → 0.85 → 1) на абсолютный фон, чтобы контент под пилюлей мягко растворялся, а не резко обрезался.
 
 ### 2. Thirty-Second Eye Break (`/eye/break`)
 
-Standalone fullscreen. No nav header.
+Fullscreen standalone (nav header с одной back-стрелкой, без title).
 
 ```
 <Screen>
+  <NavHeader onBack />
   <Center>
-    <HeroNumber ghost>30</HeroNumber>
-    <Eyebrow variant="accent">СЕК</Eyebrow>
-    <Headline>Отдохните от экрана</Headline>
-    <PillCTA variant="icon-only" icon="play" size={72} />
+    <Eyebrow variant="accent">EYE BREAK</Eyebrow>
+    <HeroNumber ghost halo size="xl">30</HeroNumber>
+    <Eyebrow variant="accent" size="md">SECONDS</Eyebrow>
+
+    <Headline>Rest{'\n'}your eyes</Headline>
+    <BodyText muted align="center">
+      Look at a point 20 ft away —{'\n'}let your eye muscles relax
+    </BodyText>
+    <InlineRow icon="infinity" tone="lavender">
+      20 min · 20 sec · 20 ft
+    </InlineRow>
+
+    <PillCTA icon="play" breath>Start break</PillCTA>
+    <GhostLink>Skip</GhostLink>
   </Center>
-  <FloatingLink bottomRight>SKIP</FloatingLink>
 </Screen>
 ```
 
 ### 3. Permission Prompt (`/onboarding/permission`)
 
 ```
-<Screen>
-  <BrandMark>DeskCare</BrandMark>               // NOT "MicroMove"
-  <GlassIconChip icon="bell" size={96} glow />
-  <Headline>Мы поможем{'\n'}не забыть</Headline>
-  <GlassCard>
-    <BulletRow icon="check">87% людей занимаются регулярно с напоминаниями</BulletRow>
-    <BulletRow icon="check">Не пропустите ни одной разминки в течение дня</BulletRow>
-    <BulletRow icon="check">Оставайтесь последовательными в своих целях</BulletRow>
+<Screen scroll>
+  <IconHalo icon="bell" size="xl" tone="coral" variant="gradient" glow />
+  <Eyebrow>REMINDERS</Eyebrow>
+  <Headline align="center">Allow gentle{'\n'}nudges</Headline>
+  <Subtitle align="center">
+    We'll softly remind you when it's time{'\n'}
+    to roll your shoulders or look away.{'\n'}No spam, ever.
+  </Subtitle>
+
+  <GlassCard tint="peach" innerGradient decorativeCorner>
+    <BenefitRow icon="clock"   tone="coral">Every 2 hours · A short 2-minute stretch</BenefitRow>
+    <BenefitRow icon="eye"     tone="lavender">20-20-20 for your eyes · A break every 20 minutes</BenefitRow>
+    <BenefitRow icon="settings" tone="mint">Full control · Snooze, tune, turn off</BenefitRow>
   </GlassCard>
-  <LinkRow>Позже</LinkRow>
-  <PillCTA>Включить напоминания</PillCTA>
+
+  <PillCTA icon="bell" breath>Turn on reminders</PillCTA>
+  <GhostLink>Not now</GhostLink>
 </Screen>
 ```
 
@@ -401,67 +431,102 @@ Standalone fullscreen. No nav header.
 
 ```
 <Screen>
-  <NavHeader title="Упражнение для глаз" rightIcon="settings" />
-  <HeroNumber>00:18</HeroNumber>
+  <NavHeader title="Eye exercise" onBack />
+  <Eyebrow>STEP 1 OF 5</Eyebrow>
+  <Headline size="sm">Distance focus</Headline>
+  <ProgressDots count={5} active={0} />
 
-  <GlassIconChip icon="infinity" size={180} glow="big" />
-  <BodyText align="center">Посмотрите на{'\n'}дальний объект</BodyText>
+  <Ring progress={elapsed/30}>
+    <AnimatedEye breathing />       // SVG eye silhouette + iris + highlights
+    <TimerPill>{mm}:{ss}</TimerPill>
+  </Ring>
 
-  <ProgressDots count={5} active={1} />
+  <BodyText muted align="center">
+    Look at an object{'\n'}20 ft away from you
+  </BodyText>
 
-  <TransportBar>
-    <IconButton icon="skip-back" />
-    <PillCTA variant="icon-only" icon="pause" size={72} />
-    <IconButton icon="refresh" />
-  </TransportBar>
+  <TransportRow>
+    <IconHalo icon="skip-back" variant="glass" onPress={rewind10} />
+    <PillCTA variant="iconOnly" size="xl" icon="pause" />
+    <IconHalo icon="check"      variant="glass" onPress={finish} />
+  </TransportRow>
 </Screen>
 ```
 
-### 5. Нет подключения (`/errors/no-connection`)
+### 5. No Connection (`/errors/no-connection`)
 
 ```
 <Screen>
-  <ClayIllustration name="wifi-cloud" />    // SVG rounded-square tile, coral 3D clay
-  <Headline>Нет подключения</Headline>
-  <BodyText muted>Кэшированные упражнения{'\n'}доступны оффлайн</BodyText>
-  <PillCTA variant="outlined" icon="refresh">Попробовать снова</PillCTA>
+  <Eyebrow>OFFLINE</Eyebrow>
+  <ClayIllustration name="wifi-cloud" size={220} />   // floating animated
+
+  <Headline align="center">No network{'\n'}connection</Headline>
+  <Subtitle align="center">
+    Check your connection or hang tight —{'\n'}we'll retry automatically
+  </Subtitle>
+
+  <PillCTA icon="refresh" breath>Try again</PillCTA>
+  <GhostLink>Work offline</GhostLink>
 </Screen>
 ```
+
+Note: CTA `variant="primary"` (gradient). Ранее в guide стоял `outlined`, но шипнутый вариант — primary: visually сильнее, match остальным экранам.
 
 ### 6. Pain Location + Severity (`/pain/check-in`)
 
 ```
-<Screen>
-  <NavHeader back />
-  <Headline align="center">Где именно болит?</Headline>
-  <BodyPainMap painZones={['neck', 'chest']} />
-  <GlassCard>
-    <Eyebrow>SEVERITY</Eyebrow>
-    <Slider value={4} min={1} max={10} />
+<Screen scroll>
+  <NavHeader title="How do you feel?" onBack />
+  <Headline>Where does it hurt?</Headline>
+  <Subtitle>Tap the areas of discomfort — we'll tailor your routine</Subtitle>
+
+  <ZoneRow horizontal>           // horizontal ScrollView, 4 Pressable tiles
+    <ZoneTile label="Neck"       icon="infinity" tone="coral"    />
+    <ZoneTile label="Shoulders"  icon="plus"     tone="peach"    />
+    <ZoneTile label="Upper back" icon="plus"     tone="lavender" />
+    <ZoneTile label="Lower back" icon="plus"     tone="mint"     />
+  </ZoneRow>
+
+  <GlassCard tint="cream" radius="xl">
+    <BodyPainMap painZones={selectedZones} width={220} height={300} />
   </GlassCard>
-  <PillChipColumn>
-    <PillChip>Лёгкий дискомфорт</PillChip>
-    <PillChip active icon="check">Умеренная боль</PillChip>
-    <PillChip>Сильная боль</PillChip>
+
+  <GlassCard tint="peach" innerGradient decorativeCorner>
+    <Eyebrow>INTENSITY</Eyebrow>  <Text>{round(pct*10)}/10</Text>
+    <SeveritySlider value={pct} onChange={setSeverityPct} />
+    <Labels>No pain — Sharp</Labels>
+  </GlassCard>
+
+  <Eyebrow>DESCRIBE IT</Eyebrow>
+  <PillChipColumn>              // synced with slider (thresholds 1-3 / 4-7 / 8-10)
+    <PillChip>Mild discomfort</PillChip>
+    <PillChip active icon="check">Moderate pain</PillChip>
+    <PillChip>Sharp, hard to work through</PillChip>
   </PillChipColumn>
-  <FloatingCTA>Сохранить</FloatingCTA>
+
+  <FloatingCTA withScrim icon="check">Save & continue</FloatingCTA>
 </Screen>
 ```
 
-### 7. Синхронизация (`/sync`)
+Slider ↔ chip sync: slider value `0..1` мапится через `levelFromPct` (≤0.3 → mild, ≤0.7 → moderate, > → severe). Chip onPress вызывает `pctFromLevel` (mid-range: 0.2 / 0.5 / 0.9). Оба всегда согласованы.
+
+### 7. Sync (`/sync`)
 
 ```
 <Screen>
-  <NavHeader title="Синхронизация" back />
+  <Eyebrow>PLEASE WAIT</Eyebrow>
   <Center>
-    <PulseRings count={4} />
-    <Headline>Синхронизация данных…</Headline>
-    <BodyText muted align="center">
-      Пожалуйста, подождите. Мы обновляем{'\n'}вашу информацию.
-    </BodyText>
+    <SoftAura pulsing />            // radial coral backdrop, scale loop
+    <PulseRings size={260} rings={4} />
   </Center>
+  <Headline align="center">Syncing{'\n'}your data</Headline>
+  <Subtitle align="center">
+    Saving your stretch progress and{'\n'}reminder preferences
+  </Subtitle>
 </Screen>
 ```
+
+Flow note: screen auto-redirects to `/errors/no-connection` после ~2.4s (hardcoded for design-review demo — заменить на реальный sync-status в Stage 6).
 
 ---
 
