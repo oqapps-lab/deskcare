@@ -36,7 +36,7 @@ export default function Splash() {
     taglineOpacity.value = withDelay(850, withTiming(1, { duration: 500 }));
 
     const t = setTimeout(() => {
-      router.replace('/onboarding/permission');
+      router.replace('/onboarding/welcome');
     }, reduceMotion ? 900 : 1900);
     return () => clearTimeout(t);
   }, [reduceMotion, logoScale, logoOpacity, haloOpacity, wordOpacity, wordY, taglineOpacity]);

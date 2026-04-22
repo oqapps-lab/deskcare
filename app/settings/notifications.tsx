@@ -69,7 +69,7 @@ export default function NotificationSettingsScreen() {
   };
   const continueFlow = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.push('/eye/break');
+    router.push('/onboarding/paywall');
   };
 
   return (
