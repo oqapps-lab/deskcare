@@ -39,18 +39,30 @@ npm start
 
 ```
 deskcare/
-├── app/                                expo-router screens
+├── app/                                expo-router screens (41 routes)
 │   ├── _layout.tsx                     root: fonts + gesture handler + Stack
-│   ├── index.tsx                       animated splash → /onboarding/permission (~1.8s)
+│   ├── index.tsx                       animated splash → /onboarding/welcome (~1.8s)
+│   │
+│   ├── onboarding/                     welcome, 4 quiz screens, labor-illusion, plan,
+│   │                                   permission, paywall (Batch 2)
+│   ├── main/                           home / library / programs / profile (Batch 3 tabs)
+│   ├── library/[exerciseId].tsx        Exercise Detail — free + ?locked=1 states
+│   ├── programs/                       sciatica (+?active=1) · symptom-checker · eye
+│   ├── exercise/                       preview · player · complete (Batch 5)
+│   ├── profile/                        progress · pain-history · settings (Batch 5)
+│   ├── auth/                           sign-in · sign-up (Batch 6)
+│   ├── modals/                         milestone · streak-freeze · rate-app · mini-paywall
+│   │                                   · share · push-primer (Batch 6)
+│   ├── system/                         force-update · maintenance (Batch 6)
+│   │
 │   ├── settings/notifications.tsx      01 — Notification Settings
 │   ├── eye/break.tsx                   02 — 30-Second Eye Break
 │   ├── eye/session.tsx                 04 — Eye Exercise Session
-│   ├── onboarding/permission.tsx       03 — Permission Prompt
 │   ├── errors/no-connection.tsx        05 — No Connection
 │   ├── pain/check-in.tsx               06 — Pain Location + Severity
 │   └── sync.tsx                        07 — Sync
 │
-├── components/ui/                      20 primitives (see DESIGN-GUIDE §4)
+├── components/ui/                      25 primitives (see DESIGN-GUIDE §4)
 │   ├── AtmosphericBackground.tsx       5-stop gradient + 3 orbs
 │   ├── OrbField.tsx                    3 radial SVG orbs
 │   ├── Screen.tsx                      SafeArea + scroll wrapper
@@ -71,6 +83,14 @@ deskcare/
 │   ├── BulletRow.tsx                   coral check + benefit line
 │   ├── SeveritySlider.tsx              warm-gradient pan-slider
 │   ├── Glyph.tsx                       inline SVG icon set
+│   ├── BgPattern.tsx                   subtle tonal pattern (waves/dots)
+│   ├── DecorativeArc.tsx               corner-anchored decorative arc
+│   ├── IconHalo.tsx                    icon in a tinted halo + optional glow
+│   ├── ProgressBar.tsx                 thin animated progress 0..1 (Batch 2)
+│   ├── QuizTile.tsx                    2x2 grid tile w/ optional custom icon (Batch 2)
+│   ├── SizeCircleRow.tsx               3 growing circles (hours-at-desk picker) (Batch 2)
+│   ├── TabBar.tsx                      floating blurred 4-tab bar (Batch 3)
+│   ├── VideoPlaceholder.tsx            tinted placeholder for exercise video (Batch 3)
 │   └── index.ts                        barrel export
 │
 ├── constants/
@@ -112,7 +132,7 @@ See [docs/06-design/DESIGN-GUIDE.md](./docs/06-design/DESIGN-GUIDE.md) for:
 
 - The Radiant Sanctuary mood (warm cream + coral + peach)
 - Full color / gradient / typography / shadow tokens
-- 20-primitive catalog with contracts
+- 25-primitive catalog with contracts
 - 3-layer layout rule
 - Per-screen recipes (composition diagrams)
 - Motion + haptics specs
