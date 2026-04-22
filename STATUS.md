@@ -41,20 +41,7 @@ Stage 5 закрыт. Stage 6 — инжиниринг:
 
 ## Чтобы возобновить работу
 
-```bash
-cd /Users/evgenij/Desktop/work/APP_DEVELOPMENT/deskcare
-
-# Boot the sim if needed
-xcrun simctl boot D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C
-
-# Start Metro
-RCT_METRO_PORT=8083 npx expo start --port 8083
-
-# Open the app on 16e
-xcrun simctl openurl D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C "exp://localhost:8083"
-```
-
-Все предыдущие процессы Metro остановлены. Симулятор 16e в shutdown (его остановил iOS, не другой проект — безопасно грузить обратно).
+**Metro поднимает пользователь вручную, Claude — не должен.** Команды и UDID — в [`docs/07-development/RUN-LOCAL.md`](./docs/07-development/RUN-LOCAL.md) и [`CLAUDE.md`](./CLAUDE.md). При завершении сессии Claude Code хук `SessionEnd` (см. `.claude/settings.json`) убивает Metro на порту 8083, чтобы процессы не копились.
 
 ## Следующая сессия — с чего начать
 

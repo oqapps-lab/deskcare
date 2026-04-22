@@ -1,10 +1,17 @@
 # DeskCare
 
+## Metro / Simulator — правила для Claude
+
+- **НЕ запускай `npx expo start` автоматически**. Никогда не в начале сессии, никогда по собственной инициативе. Metro поднимает пользователь вручную в своём терминале.
+- Если Metro нужен для выполнения задачи и его нет на порту 8083 → **спроси пользователя** «Metro не запущен, запустить?» и дождись явного OK. Без OK — ничего не запускай.
+- Если пользователь явно сказал «запусти Metro / протестируй экран / прогони QA» — тогда запуск разрешён.
+- При завершении сессии хук `SessionEnd` из [`.claude/settings.json`](./.claude/settings.json) автоматически убивает `expo start.*8083`. Не копится.
+
 ## iOS Simulator
 - **UDID**: `D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C`
 - **Device**: iPhone 16e — deskcare
 - **Metro port**: 8083
-- **How to open**: `xcrun simctl openurl D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C "exp://127.0.0.1:8083"`
+- **How to open (когда Metro уже запущен пользователем)**: `xcrun simctl openurl D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C "exp://127.0.0.1:8083"`
 - **Screenshot**: `~/.claude/bin/ios-shot D4C009F7-3BB8-43DC-B2AA-87D7F34BA82C`
 
 ## Stack
