@@ -24,4 +24,6 @@ export { PulseRings } from './PulseRings';
 export { Screen } from './Screen';
 export { SettingsRow } from './SettingsRow';
 export { SeveritySlider } from './SeveritySlider';
+export { TabBar, type TabId } from './TabBar';
 export { ToggleSwitch } from './ToggleSwitch';
+export { VideoPlaceholder } from './VideoPlaceholder';

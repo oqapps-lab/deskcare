@@ -66,11 +66,11 @@ export default function PaywallScreen() {
 
   const close = () => {
     Haptics.selectionAsync();
-    router.replace('/eye/break');
+    router.replace('/main/home');
   };
   const begin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.replace('/eye/break');
+    router.replace('/main/home');
   };
   const pickPlan = (p: Plan) => {
     Haptics.selectionAsync();
