@@ -5,8 +5,10 @@ for neck, back, eyes, wrists — done right at the desk, no mat, no changing
 clothes. Specialized programs (sciatica, carpal tunnel). Smart reminders,
 body-part targeting, pain tracking.
 
-Currently in **Stage 5 — Design**. Batch 1 of 6 shipped: **7 screens** from
-the "Radiant Sanctuary" mood, all built from a shared primitive library.
+Currently in **Stage 5 — Design**. All 6 batches shipped: **41 screens** from
+the "Radiant Sanctuary" mood, all built from a shared primitive library (25
+primitives). Next stage: wire Supabase + Adapty and replace placeholder video
+tiles with the real shoots.
 
 ## Stack
 
@@ -135,16 +137,26 @@ Phases:
 7. Run locally + verify on simulator
 8. RUN-LOCAL.md + README + commit + push
 
-## Roadmap (next batches)
+## Roadmap
 
-From [docs/04-ux/SCREEN-MAP.md](./docs/04-ux/SCREEN-MAP.md) — 39 total screens:
+From [docs/04-ux/SCREEN-MAP.md](./docs/04-ux/SCREEN-MAP.md) — 39 screens in the
+spec; **41 routes shipped** (some screens cover multiple states via query params).
 
-- **Batch 1** (this): Settings + Eye flow + Permission + Pain + Sync + Offline (7 screens) ✓
-- **Batch 2**: Onboarding (Welcome + 4 Quiz + Labor Illusion + Plan + Paywall) — 9 screens
-- **Batch 3**: Main Tabs — Home (4 states), Library (3 states) — 7 screens
-- **Batch 4**: Programs + Sciatica + Symptom Checker + Eye Program — 5 screens
-- **Batch 5**: Exercise Flow (Routine Preview + Player states + Session Complete) + Profile — 7 screens
-- **Batch 6**: Modals + Auth + System — 10 screens
+- **Batch 1** ✓ Settings + Eye flow + Permission + Pain + Sync + Offline — 7 screens
+- **Batch 2** ✓ Onboarding (Welcome + 4 Quiz + Labor Illusion + Plan + Paywall) — 8 screens
+- **Batch 3** ✓ Main Tabs — Home (4 states) + Library + Programs + Profile + Exercise Detail (free/locked) — 6 screens
+- **Batch 4** ✓ Sciatica (locked/active) + Symptom Checker + Eye Program — 3 screens
+- **Batch 5** ✓ Exercise Flow (Routine Preview + Player + Complete) + Profile detail (Progress + Pain History + Settings) — 6 screens
+- **Batch 6** ✓ Auth (Sign In + Sign Up) + Modals (Milestone · Streak Freeze · Rate · Mini-Paywall · Share · Push Primer) + System (Force Update · Maintenance) — 10 screens
+- **QA Pass 1** ✓ 4 HIGH / 3 MEDIUM / 6 LOW bugs closed + polish audit on 16e — see [docs/07-development/QA-BATCH-1.md](./docs/07-development/QA-BATCH-1.md)
+
+### What comes next (Stage 6)
+
+- **Real video shoots** replace `<VideoPlaceholder>` on exercise cards, player, routine previews.
+- **Supabase** — auth, plan sync, pain-rating history, streak persistence.
+- **Adapty** — paywall purchase flow, trial enforcement, entitlement gates on locked zones / programs.
+- **Proper Tabs navigator** — swap the current `/main/*` + fake `<TabBar>` pattern for expo-router `(tabs)` group with tab-preserved scroll.
+- **Cold-start hydration** + deep-link fallbacks for the onboarding re-entry edge cases.
 
 Each batch runs the same pipeline; DESIGN-GUIDE is appended (never replaced)
 and the primitive library grows only when a screen needs something it doesn't
