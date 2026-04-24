@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Luminous Sanctuary - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed": "#001f27",
+                      "inverse-surface": "#2d3133",
+                      "surface-bright": "#f7f9fb",
+                      "tertiary-container": "#93a9ac",
+                      "error": "#ba1a1a",
+                      "tertiary-fixed-dim": "#b4cbce",
+                      "on-secondary": "#ffffff",
+                      "secondary": "#516072",
+                      "outline": "#6d797e",
+                      "outline-variant": "#bcc9ce",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-container": "#2a3e41",
+                      "surface-tint": "#00677d",
+                      "primary-fixed-dim": "#4cd6fb",
+                      "surface-container-high": "#e6e8ea",
+                      "primary": "#00677d",
+                      "on-secondary-container": "#556477",
+                      "on-tertiary-fixed-variant": "#364a4d",
+                      "on-primary-fixed-variant": "#004e5f",
+                      "on-secondary-fixed": "#0d1c2d",
+                      "on-primary": "#ffffff",
+                      "secondary-container": "#d2e1f7",
+                      "on-primary-container": "#00414f",
+                      "surface-container": "#eceef0",
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-variant": "#e0e3e5",
+                      "secondary-fixed": "#d4e4fa",
+                      "tertiary-fixed": "#d0e7ea",
+                      "surface": "#f7f9fb",
+                      "inverse-primary": "#4cd6fb",
+                      "error-container": "#ffdad6",
+                      "surface-container-lowest": "#ffffff",
+                      "on-error": "#ffffff",
+                      "primary-fixed": "#b3ebff",
+                      "on-background": "#191c1e",
+                      "primary-container": "#00b4d8",
+                      "tertiary": "#4d6265",
+                      "on-surface": "#191c1e",
+                      "on-surface-variant": "#3d494d",
+                      "secondary-fixed-dim": "#b9c8de",
+                      "surface-dim": "#d8dadc",
+                      "background": "#f7f9fb",
+                      "on-tertiary-fixed": "#091f21",
+                      "surface-container-low": "#f2f4f6",
+                      "on-tertiary": "#ffffff",
+                      "on-secondary-fixed-variant": "#39485a",
+                      "surface-container-highest": "#e0e3e5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Manrope",
+                              "sans-serif"
+                      ],
+                      "body": [
+                              "Inter",
+                              "sans-serif"
+                      ],
+                      "label": [
+                              "Inter",
+                              "sans-serif"
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            font-family: theme('fontFamily.body');
+        }
+        h1, h2, h3, h4, h5, h6, .headline {
+            font-family: theme('fontFamily.headline');
+        }
+        
+        /* Ambient shadows */
+        .ambient-shadow-primary {
+            box-shadow: 0 20px 40px -10px rgba(0, 103, 125, 0.08);
+        }
+        .ambient-glow-primary {
+            box-shadow: 0 0 30px rgba(0, 103, 125, 0.15);
+        }
+        
+        /* Ghost borders */
+        .ghost-border {
+            box-shadow: inset 0 0 0 1px rgba(188, 201, 206, 0.15);
+        }
+        
+        /* Safe area padding */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="min-h-screen relative pb-[100px] md:pb-0 pt-[80px]">
+<!-- TopAppBar (From JSON) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-2xl docked full-width top-0 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-slate-300/20 after:to-transparent flat no shadows text-cyan-500 dark:text-cyan-400">
+<button aria-label="Menu" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-200/10 hover:backdrop-blur-lg Active: scale 0.95x transition-all duration-300 ease-out text-slate-400/60">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-manrope tracking-[0.2em] text-sm font-black text-slate-900 dark:text-slate-100">
+            Luminous Sanctuary
+        </h1>
+<button aria-label="Profile" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-200/10 hover:backdrop-blur-lg Active: scale 0.95x transition-all duration-300 ease-out text-slate-400/60">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="max-w-5xl mx-auto px-6 py-12 flex flex-col gap-16">
+<!-- Widget 4: Reminder Capsule (Floating top) -->
+<div class="flex justify-center -mt-8 mb-4 relative z-10">
+<div class="bg-surface-container-lowest/80 backdrop-blur-md px-6 py-3 rounded-full ghost-border ambient-shadow-primary flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-body text-sm font-medium text-on-surface-variant">Next Session: 2:00 PM</span>
+</div>
+</div>
+<!-- Widget 1 (Hero): The Primary Droplet -->
+<section class="relative">
+<div class="bg-surface-container-lowest rounded-[3rem] p-10 flex flex-col items-center justify-center ambient-shadow-primary ghost-border relative overflow-hidden min-h-[400px]">
+<!-- Background decorative glow -->
+<div class="absolute inset-0 bg-gradient-to-b from-primary-fixed/20 to-transparent opacity-50"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary-fixed-dim/20 rounded-full blur-3xl mix-blend-multiply"></div>
+<!-- Central Arc & Score -->
+<div class="relative z-10 flex flex-col items-center mb-12 mt-8">
+<div class="relative w-48 h-48 flex items-center justify-center">
+<!-- Simulated Arc Ring -->
+<svg class="absolute inset-0 w-full h-full -rotate-90" viewbox="0 0 100 100">
+<circle cx="50" cy="50" fill="none" r="46" stroke="var(--surface-container-high)" stroke-width="2"></circle>
+<circle class="opacity-80" cx="50" cy="50" fill="none" r="46" stroke="var(--primary)" stroke-dasharray="289" stroke-dashoffset="46" stroke-linecap="round" stroke-width="4"></circle>
+</svg>
+<div class="text-center flex flex-col items-center">
+<span class="font-headline text-6xl font-extrabold text-primary tracking-tighter" style="text-shadow: 0 4px 20px rgba(76,214,251,0.4);">84</span>
+<span class="font-body text-xs font-semibold text-on-surface-variant uppercase tracking-widest mt-2">Vitals Score</span>
+</div>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="relative z-10 bg-gradient-to-r from-primary to-primary-container text-on-primary rounded-full px-10 py-5 font-headline text-lg font-bold tracking-wide ambient-glow-primary hover:opacity-95 transition-opacity flex items-center gap-3">
+<!-- High-key refraction inner glow -->
+<div class="absolute inset-0 rounded-full box-border border-t border-primary-fixed opacity-50 pointer-events-none"></div>
+<span>Initiate Recalibration</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+</section>
+<!-- Widget 2: Body Zone Droplets -->
+<section class="flex flex-col gap-6">
+<h2 class="font-headline text-xl font-bold text-on-surface tracking-wide px-2">Body Zones</h2>
+<div class="flex overflow-x-auto pb-6 -mx-6 px-6 gap-4 snap-x hide-scrollbar">
+<!-- Zone: Neck (Attention) -->
+<button class="snap-start flex-none w-28 h-36 bg-surface-container-lowest rounded-[3rem] flex flex-col items-center justify-center gap-3 ghost-border ambient-shadow-primary relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center ambient-glow-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">accessibility_new</span>
+</div>
+<span class="font-body text-sm font-medium text-on-surface">Neck</span>
+<!-- Attention indicator -->
+<div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]"></div>
+</button>
+<!-- Zone: Spine -->
+<button class="snap-start flex-none w-28 h-36 bg-surface-container rounded-[3rem] flex flex-col items-center justify-center gap-3 ghost-border hover:bg-surface-container-lowest transition-colors">
+<div class="w-12 h-12 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined">airline_seat_recline_extra</span>
+</div>
+<span class="font-body text-sm font-medium text-on-surface-variant">Spine</span>
+</button>
+<!-- Zone: Eyes -->
+<button class="snap-start flex-none w-28 h-36 bg-surface-container rounded-[3rem] flex flex-col items-center justify-center gap-3 ghost-border hover:bg-surface-container-lowest transition-colors">
+<div class="w-12 h-12 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined">visibility</span>
+</div>
+<span class="font-body text-sm font-medium text-on-surface-variant">Eyes</span>
+</button>
+<!-- Zone: Wrists -->
+<button class="snap-start flex-none w-28 h-36 bg-surface-container rounded-[3rem] flex flex-col items-center justify-center gap-3 ghost-border hover:bg-surface-container-lowest transition-colors">
+<div class="w-12 h-12 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined">front_hand</span>
+</div>
+<span class="font-body text-sm font-medium text-on-surface-variant">Wrists</span>
+</button>
+<!-- Zone: Hips (Attention) -->
+<button class="snap-start flex-none w-28 h-36 bg-surface-container-lowest rounded-[3rem] flex flex-col items-center justify-center gap-3 ghost-border ambient-shadow-primary relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center ambient-glow-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">directions_walk</span>
+</div>
+<span class="font-body text-sm font-medium text-on-surface">Hips</span>
+<!-- Attention indicator -->
+<div class="absolute top-4 right-4 w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_var(--primary)]"></div>
+</button>
+</div>
+</section>
+<!-- Widget 3: Session Recommendation Crystal -->
+<section class="mb-12">
+<div class="bg-surface-container-lowest rounded-[3rem] p-8 flex flex-col md:flex-row items-center justify-between gap-8 ghost-border ambient-shadow-primary">
+<div class="flex items-center gap-6 w-full md:w-auto">
+<div class="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-primary relative">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">self_improvement</span>
+<!-- Refraction glow -->
+<div class="absolute inset-0 rounded-full border border-primary-fixed-dim/30 pointer-events-none"></div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="font-body text-xs font-semibold text-primary uppercase tracking-wider">Recommended</span>
+<h3 class="font-headline text-xl font-bold text-on-surface">Cervical Spine Reset</h3>
+<span class="font-body text-sm text-on-surface-variant">Duration: 4:00</span>
+</div>
+</div>
+<!-- Slow turquoise waveform representation -->
+<div class="w-full md:w-48 h-12 flex items-center justify-center gap-1 opacity-70">
+<div class="w-1 h-4 bg-primary-container rounded-full"></div>
+<div class="w-1 h-8 bg-primary rounded-full"></div>
+<div class="w-1 h-5 bg-primary-fixed-dim rounded-full"></div>
+<div class="w-1 h-10 bg-primary rounded-full"></div>
+<div class="w-1 h-6 bg-primary-container rounded-full"></div>
+<div class="w-1 h-12 bg-primary rounded-full"></div>
+<div class="w-1 h-7 bg-primary-fixed-dim rounded-full"></div>
+<div class="w-1 h-9 bg-primary rounded-full"></div>
+<div class="w-1 h-3 bg-primary-container rounded-full"></div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (From JSON) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-center pb-safe px-4">
+<div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl rounded-full mx-auto w-[90%] max-w-lg mb-8 h-16 border border-white/20 dark:border-slate-800/20 shadow-[0_20px_50px_rgba(0,103,125,0.08)] flex items-center justify-between px-2 font-manrope text-[10px] font-semibold tracking-wider">
+<!-- Active Tab: Sanctuary -->
+<a class="flex items-center gap-2 bg-cyan-400/10 text-cyan-500 rounded-full px-5 py-2 ring-1 ring-cyan-400/30 shadow-[0_0_15px_rgba(76,214,251,0.4)] Active: cubic-bezier(0.34, 1.56, 0.64, 1) duration-500 transform scale-105" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home_max</span>
+<span>Sanctuary</span>
+</a>
+<!-- Inactive Tab: Flow -->
+<a class="flex flex-col items-center justify-center text-slate-900/40 dark:text-slate-100/40 scale-90 hover:text-cyan-400 transition-colors px-4" href="#">
+<span class="material-symbols-outlined">waves</span>
+<span class="mt-1">Flow</span>
+</a>
+<!-- Inactive Tab: Vitals -->
+<a class="flex flex-col items-center justify-center text-slate-900/40 dark:text-slate-100/40 scale-90 hover:text-cyan-400 transition-colors px-4" href="#">
+<span class="material-symbols-outlined">bubble_chart</span>
+<span class="mt-1">Vitals</span>
+</a>
+<!-- Inactive Tab: Profile -->
+<a class="flex flex-col items-center justify-center text-slate-900/40 dark:text-slate-100/40 scale-90 hover:text-cyan-400 transition-colors px-4" href="#">
+<span class="material-symbols-outlined">person_pin</span>
+<span class="mt-1">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Web Navigation (Hidden on Mobile) -->
+<nav class="hidden md:flex fixed top-0 right-8 h-full items-center z-40 pointer-events-none">
+<div class="pointer-events-auto bg-surface-container-lowest/80 backdrop-blur-2xl py-8 px-4 rounded-full flex flex-col gap-8 ghost-border ambient-shadow-primary mr-4">
+<a class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center ambient-glow-primary relative group" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home_max</span>
+<div class="absolute right-full mr-4 bg-surface-container-lowest px-3 py-1 rounded-lg text-sm font-medium ghost-border opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Sanctuary</div>
+</a>
+<a class="w-12 h-12 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors flex items-center justify-center relative group" href="#">
+<span class="material-symbols-outlined">waves</span>
+<div class="absolute right-full mr-4 bg-surface-container-lowest px-3 py-1 rounded-lg text-sm font-medium ghost-border opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Flow</div>
+</a>
+<a class="w-12 h-12 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors flex items-center justify-center relative group" href="#">
+<span class="material-symbols-outlined">bubble_chart</span>
+<div class="absolute right-full mr-4 bg-surface-container-lowest px-3 py-1 rounded-lg text-sm font-medium ghost-border opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Vitals</div>
+</a>
+<a class="w-12 h-12 rounded-full text-on-surface-variant hover:bg-surface-container hover:text-primary transition-colors flex items-center justify-center relative group" href="#">
+<span class="material-symbols-outlined">person_pin</span>
+<div class="absolute right-full mr-4 bg-surface-container-lowest px-3 py-1 rounded-lg text-sm font-medium ghost-border opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">Profile</div>
+</a>
+</div>
+</nav>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

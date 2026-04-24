@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Progress - Telemetry Sanctuary</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#001f27",
+                        "inverse-surface": "#2d3133",
+                        "surface-bright": "#f7f9fb",
+                        "tertiary-container": "#93a9ac",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#b4cbce",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#516072",
+                        "outline": "#6d797e",
+                        "outline-variant": "#bcc9ce",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-container": "#2a3e41",
+                        "surface-tint": "#00677d",
+                        "primary-fixed-dim": "#4cd6fb",
+                        "surface-container-high": "#e6e8ea",
+                        "primary": "#00677d",
+                        "on-secondary-container": "#556477",
+                        "on-tertiary-fixed-variant": "#364a4d",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "on-secondary-fixed": "#0d1c2d",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#d2e1f7",
+                        "on-primary-container": "#00414f",
+                        "surface-container": "#eceef0",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-variant": "#e0e3e5",
+                        "secondary-fixed": "#d4e4fa",
+                        "tertiary-fixed": "#d0e7ea",
+                        "surface": "#f7f9fb",
+                        "inverse-primary": "#4cd6fb",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#b3ebff",
+                        "on-background": "#191c1e",
+                        "primary-container": "#00b4d8",
+                        "tertiary": "#4d6265",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#3d494d",
+                        "secondary-fixed-dim": "#b9c8de",
+                        "surface-dim": "#d8dadc",
+                        "background": "#f7f9fb",
+                        "on-tertiary-fixed": "#091f21",
+                        "surface-container-low": "#f2f4f6",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#39485a",
+                        "surface-container-highest": "#e0e3e5"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {},
+                    "fontFamily": {
+                        "headline": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .font-headline {
+            font-family: 'Manrope', sans-serif;
+        }
+        /* Holographic text effect */
+        .text-holographic {
+            text-shadow: 0 0 20px rgba(76, 214, 251, 0.4);
+        }
+        /* Hide scrollbar for artifact shelf */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background min-h-screen antialiased overflow-x-hidden flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 bg-slate-50/80 dark:bg-slate-900/80 backdrop-blur-2xl after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[1px] after:bg-gradient-to-r after:from-transparent after:via-slate-300/20 after:to-transparent">
+<button class="text-cyan-500 dark:text-cyan-400 hover:bg-slate-200/10 hover:backdrop-blur-lg p-2 rounded-full transition-all duration-300 ease-out active:scale-95">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-manrope tracking-[0.2em] text-sm font-black text-slate-900 dark:text-slate-100">Luminous Sanctuary</h1>
+<button class="text-cyan-500 dark:text-cyan-400 hover:bg-slate-200/10 hover:backdrop-blur-lg p-2 rounded-full transition-all duration-300 ease-out active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-24 pb-32 px-6 md:px-12 max-w-7xl mx-auto w-full flex flex-col gap-12 lg:gap-20">
+<!-- Header -->
+<div class="space-y-4 pt-8 md:pt-16 max-w-2xl">
+<h2 class="font-headline text-4xl md:text-5xl lg:text-6xl tracking-widest text-on-surface font-light">Telemetry</h2>
+<p class="font-body text-lg text-on-surface-variant font-light max-w-md leading-relaxed">Analyzing your resonance patterns and physical restoration cycles.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
+<!-- Total Output Crystal (Monument) -->
+<div class="lg:col-span-7 bg-surface-container-lowest rounded-[3rem] p-8 md:p-12 relative overflow-hidden flex flex-col justify-between min-h-[300px]">
+<div class="absolute inset-0 bg-gradient-to-br from-white/60 to-white/10 backdrop-blur-3xl z-0 rounded-[3rem]"></div>
+<!-- Refraction Glow -->
+<div class="absolute -top-20 -right-20 w-64 h-64 bg-primary/10 rounded-full blur-[64px] z-0"></div>
+<div class="relative z-10 flex flex-col h-full justify-between">
+<div class="flex justify-between items-start">
+<span class="font-body text-sm text-outline tracking-wider uppercase">Output Monument</span>
+<span class="material-symbols-outlined text-primary/40">data_exploration</span>
+</div>
+<div class="mt-12 md:mt-20">
+<div class="font-headline text-7xl md:text-8xl lg:text-9xl text-primary text-holographic font-light tracking-tighter leading-none">
+                            2,840
+                        </div>
+<p class="font-body text-lg md:text-xl text-on-surface-variant mt-6 max-w-sm">
+                            Recovery minutes logged this cycle. Exceptional restoration resonance.
+                        </p>
+</div>
+</div>
+</div>
+<!-- Body Spectrogram Crystal -->
+<div class="lg:col-span-5 bg-surface-container-lowest rounded-[3rem] p-8 md:p-12 relative overflow-hidden min-h-[400px] flex flex-col">
+<div class="absolute inset-0 bg-gradient-to-t from-surface-container-low/50 to-transparent z-0"></div>
+<div class="relative z-10 flex justify-between items-start mb-8">
+<span class="font-body text-sm text-outline tracking-wider uppercase">Body Spectrogram</span>
+<span class="material-symbols-outlined text-primary/40">accessibility_new</span>
+</div>
+<div class="relative z-10 flex-grow flex items-center justify-center">
+<!-- Abstract representation of a human schematic -->
+<div class="relative w-full h-full max-w-[200px] max-h-[300px] bg-center bg-contain bg-no-repeat opacity-80" data-alt="minimalist white line drawing of a human body schematic on a clinical background with glowing turquoise auras around the joints and muscles" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCIbt23BaZfGRBUTARUB0oZxqi1CjqzwknW-h6Mh_6aUl9D_6olVZOV_hP_WWVCa_Gl64R41xgDvkDW7zwctdJK4kh0xiUbfKEK3eVd9SjJYG3k5-kOSrHbcFJNiM8LxcB5PDlhBUrYaSIuCr2L6rZR0EjO4ZnLLaNJ0JPwgsLRX-8agxFS-uJFgchUe2laP3ZCKljt85U4wNjWk9-skZHQ8h46k22Ami8zd2HnqCyoKMMVQS9NkiF0_7PW1F4NQWUnpxXXurai3E8'); mix-blend-mode: multiply;">
+<!-- Diffractive Blooms (simulated with gradients) -->
+<div class="absolute top-[30%] left-[40%] w-16 h-16 bg-primary/30 rounded-full blur-xl mix-blend-screen"></div>
+<div class="absolute top-[60%] left-[20%] w-24 h-24 bg-primary-container/20 rounded-full blur-2xl mix-blend-screen"></div>
+<div class="absolute bottom-[10%] right-[30%] w-20 h-20 bg-inverse-primary/25 rounded-full blur-xl mix-blend-screen"></div>
+</div>
+</div>
+</div>
+<!-- Luminance History Field -->
+<div class="lg:col-span-12 bg-surface-container p-8 md:p-12 rounded-[3rem]">
+<div class="flex justify-between items-start mb-12">
+<div>
+<h3 class="font-headline text-2xl text-on-surface tracking-wide">Luminance History Field</h3>
+<p class="font-body text-sm text-on-surface-variant mt-2">Intensity distribution over the current epoch.</p>
+</div>
+<span class="material-symbols-outlined text-primary/40">calendar_month</span>
+</div>
+<!-- 4x7 Grid -->
+<div class="grid grid-cols-7 gap-3 md:gap-4 lg:gap-6">
+<!-- Row 1 -->
+<div class="aspect-square rounded-full bg-surface-container-lowest/40 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-primary/10 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-primary/40 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center shadow-[0_0_15px_rgba(76,214,251,0.2)]"></div>
+<div class="aspect-square rounded-full bg-surface-container-lowest/40 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-primary/20 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-primary/80 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center shadow-[0_0_20px_rgba(0,180,216,0.4)]"></div>
+<div class="aspect-square rounded-full bg-surface-container-lowest/40 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<!-- Row 2 -->
+<div class="aspect-square rounded-full bg-primary/30 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-surface-container-lowest/40 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-primary/10 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-primary/60 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center shadow-[0_0_15px_rgba(76,214,251,0.3)]"></div>
+<div class="aspect-square rounded-full bg-surface-container-lowest/40 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-primary/20 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+<div class="aspect-square rounded-full bg-primary/10 backdrop-blur-sm border border-outline-variant/15 flex items-center justify-center"></div>
+</div>
+</div>
+<!-- Artifact Droplet Shelf -->
+<div class="lg:col-span-12 pt-8">
+<div class="flex justify-between items-center mb-8 px-4">
+<h3 class="font-headline text-xl text-on-surface tracking-wide">Artifact Collection</h3>
+<button class="text-primary font-body text-sm flex items-center gap-1 hover:text-primary-container transition-colors">
+                        View Compendium <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<div class="flex overflow-x-auto gap-6 pb-8 pt-4 px-4 no-scrollbar snap-x snap-mandatory">
+<!-- Prism -->
+<div class="snap-center shrink-0 w-48 h-48 rounded-[2.5rem] bg-surface-container-lowest relative flex flex-col items-center justify-center group hover:bg-surface-container-low transition-colors duration-500">
+<div class="absolute inset-0 border border-outline-variant/10 rounded-[2.5rem]"></div>
+<span class="material-symbols-outlined text-5xl text-primary/60 group-hover:scale-110 transition-transform duration-500 font-light" style="font-variation-settings: 'wght' 200;">change_history</span>
+<span class="font-body text-xs text-on-surface-variant mt-6 uppercase tracking-widest">Lucid Prism</span>
+</div>
+<!-- Helix -->
+<div class="snap-center shrink-0 w-48 h-48 rounded-[2.5rem] bg-surface-container-lowest relative flex flex-col items-center justify-center group hover:bg-surface-container-low transition-colors duration-500">
+<div class="absolute inset-0 border border-outline-variant/10 rounded-[2.5rem]"></div>
+<span class="material-symbols-outlined text-5xl text-primary-container group-hover:scale-110 transition-transform duration-500 font-light" style="font-variation-settings: 'wght' 200;">all_inclusive</span>
+<span class="font-body text-xs text-on-surface-variant mt-6 uppercase tracking-widest">Deep Helix</span>
+</div>
+<!-- Sphere -->
+<div class="snap-center shrink-0 w-48 h-48 rounded-[2.5rem] bg-surface-container-lowest relative flex flex-col items-center justify-center group hover:bg-surface-container-low transition-colors duration-500">
+<div class="absolute inset-0 border border-outline-variant/10 rounded-[2.5rem]"></div>
+<span class="material-symbols-outlined text-5xl text-inverse-primary/80 group-hover:scale-110 transition-transform duration-500 font-light" style="font-variation-settings: 'wght' 200;">fiber_manual_record</span>
+<span class="font-body text-xs text-on-surface-variant mt-6 uppercase tracking-widest">Void Sphere</span>
+</div>
+<!-- Lens -->
+<div class="snap-center shrink-0 w-48 h-48 rounded-[2.5rem] bg-surface-container-lowest relative flex flex-col items-center justify-center group hover:bg-surface-container-low transition-colors duration-500">
+<div class="absolute inset-0 border border-outline-variant/10 rounded-[2.5rem]"></div>
+<span class="material-symbols-outlined text-5xl text-tertiary-container group-hover:scale-110 transition-transform duration-500 font-light" style="font-variation-settings: 'wght' 200;">lens_blur</span>
+<span class="font-body text-xs text-on-surface-variant mt-6 uppercase tracking-widest">Focus Lens</span>
+</div>
+<!-- Locked -->
+<div class="snap-center shrink-0 w-48 h-48 rounded-[2.5rem] bg-surface/50 border border-dashed border-outline-variant/30 relative flex flex-col items-center justify-center">
+<span class="material-symbols-outlined text-3xl text-outline-variant/50 font-light" style="font-variation-settings: 'wght' 200;">lock</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-center pb-safe px-4 md:hidden">
+<div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-3xl rounded-full mx-auto w-[90%] max-w-lg mb-8 h-16 border border-white/20 dark:border-slate-800/20 shadow-[0_20px_50px_rgba(0,103,125,0.08)] flex justify-around items-center px-2">
+<a class="flex flex-col items-center justify-center text-slate-900/40 dark:text-slate-100/40 scale-90 hover:text-cyan-400 transition-colors" href="#">
+<span class="material-symbols-outlined">home_max</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider mt-1">Sanctuary</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-900/40 dark:text-slate-100/40 scale-90 hover:text-cyan-400 transition-colors" href="#">
+<span class="material-symbols-outlined">waves</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider mt-1">Flow</span>
+</a>
+<!-- Active State for Progress/Telemetry maps closest to Vitals -->
+<a class="flex items-center gap-2 bg-cyan-400/10 text-cyan-500 rounded-full px-5 py-2 ring-1 ring-cyan-400/30 shadow-[0_0_15px_rgba(76,214,251,0.4)] transition-transform duration-500 hover:text-cyan-400" href="#" style="transition-timing-function: cubic-bezier(0.34, 1.56, 0.64, 1); transform: scale(1.05);">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bubble_chart</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider">Vitals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-900/40 dark:text-slate-100/40 scale-90 hover:text-cyan-400 transition-colors" href="#">
+<span class="material-symbols-outlined">person_pin</span>
+<span class="font-manrope text-[10px] font-semibold tracking-wider mt-1">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

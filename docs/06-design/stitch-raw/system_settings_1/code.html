@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sanctuary - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-highest": "#e1e3e3",
+                        "on-secondary-container": "#376d6d",
+                        "on-tertiary-container": "#5c4284",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#26094c",
+                        "surface-tint": "#006a6a",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#b5edec",
+                        "surface-container-high": "#e6e8e9",
+                        "inverse-primary": "#1adcdc",
+                        "surface-variant": "#e1e3e3",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#b5edec",
+                        "inverse-on-surface": "#eff1f1",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#50f9f9",
+                        "outline-variant": "#bacac9",
+                        "on-surface": "#191c1d",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2e3131",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "background": "#f8fafa",
+                        "secondary": "#316766",
+                        "primary": "#006a6a",
+                        "primary-container": "#00d7d7",
+                        "surface-dim": "#d8dada",
+                        "surface-container-low": "#f2f4f4",
+                        "surface": "#f8fafa",
+                        "tertiary-fixed": "#ecdcff",
+                        "on-primary-container": "#005959",
+                        "on-background": "#191c1d",
+                        "secondary-fixed-dim": "#9ad0d0",
+                        "on-primary-fixed": "#002020",
+                        "primary-fixed-dim": "#1adcdc",
+                        "on-surface-variant": "#3b4949",
+                        "tertiary-container": "#d2b4ff",
+                        "on-secondary-fixed-variant": "#144f4e",
+                        "surface-container": "#eceeee",
+                        "on-error-container": "#93000a",
+                        "on-tertiary-fixed-variant": "#53397b",
+                        "surface-bright": "#f8fafa",
+                        "outline": "#6b7a79",
+                        "on-secondary-fixed": "#002020",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#d6baff",
+                        "tertiary": "#6c5194"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk", "sans-serif"],
+                        "display": ["Space Grotesk", "sans-serif"],
+                        "body": ["Manrope", "sans-serif"],
+                        "label": ["Manrope", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        h1, h2, h3, .font-headline, .font-display { font-family: 'Space Grotesk', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .material-symbols-outlined.fill { font-variation-settings: 'FILL' 1; }
+        
+        /* Smooth scrolling and hide scrollbar */
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col items-center">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full max-w-md z-50 bg-[#f8fafa]/60 dark:bg-[#191c1d]/60 backdrop-blur-2xl rounded-b-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-[#bacac9]/15">
+<div class="flex justify-between items-center px-8 py-4 w-full h-20">
+<button aria-label="Go Back" class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-low hover:bg-[#ffffff]/40 transition-colors text-[#006a6a] dark:text-[#00d7d7]">
+<span class="material-symbols-outlined text-2xl" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Space_Grotesk'] text-xl font-bold tracking-tight text-[#006a6a] dark:text-[#00d7d7]">Settings</h1>
+<div class="w-12 h-12"></div> <!-- Spacer for centering -->
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-md px-6 pt-32 pb-32 flex-1 flex flex-col gap-8">
+<!-- Section 1: Preferences -->
+<section class="flex flex-col gap-6">
+<h2 class="font-headline text-lg font-medium text-on-surface-variant px-2">Preferences</h2>
+<div class="bg-surface-container-lowest rounded-xl p-8 flex flex-col gap-8 relative overflow-hidden">
+<!-- Decorative gradient leak -->
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-primary-fixed rounded-full opacity-5 blur-[64px]"></div>
+<!-- Reminder Frequency -->
+<div class="flex flex-col gap-4 relative z-10">
+<label class="font-label text-sm font-semibold text-on-surface">Reminder Frequency</label>
+<div class="flex gap-3 overflow-x-auto pb-2 snap-x">
+<button class="snap-start shrink-0 px-6 py-3 rounded-full bg-primary text-on-primary font-body text-sm font-medium shadow-[0_4px_15px_rgba(0,215,215,0.2)] bg-gradient-to-br from-primary to-primary-container relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-[1px] bg-white/20 blur-[1px]"></div>
+                            Daily
+                        </button>
+<button class="snap-start shrink-0 px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-body text-sm font-medium hover:bg-surface-container-high transition-colors">Every 2 Days</button>
+<button class="snap-start shrink-0 px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-body text-sm font-medium hover:bg-surface-container-high transition-colors">Weekly</button>
+</div>
+</div>
+<!-- Duration -->
+<div class="flex flex-col gap-4 relative z-10">
+<label class="font-label text-sm font-semibold text-on-surface">Target Duration</label>
+<div class="flex gap-3 overflow-x-auto pb-2 snap-x">
+<button class="snap-start shrink-0 px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-body text-sm font-medium hover:bg-surface-container-high transition-colors">15 min</button>
+<button class="snap-start shrink-0 px-6 py-3 rounded-full bg-primary text-on-primary font-body text-sm font-medium shadow-[0_4px_15px_rgba(0,215,215,0.2)] bg-gradient-to-br from-primary to-primary-container relative overflow-hidden group">
+<div class="absolute top-0 left-0 right-0 h-[1px] bg-white/20 blur-[1px]"></div>
+                            30 min
+                        </button>
+<button class="snap-start shrink-0 px-6 py-3 rounded-full bg-surface-container-low text-on-surface-variant font-body text-sm font-medium hover:bg-surface-container-high transition-colors">60 min</button>
+</div>
+</div>
+<!-- Body Zones -->
+<div class="flex flex-col gap-4 relative z-10">
+<label class="font-label text-sm font-semibold text-on-surface">Focus Zones</label>
+<div class="flex flex-wrap gap-3">
+<button class="px-5 py-2.5 rounded-full bg-surface-container-low text-on-surface-variant font-body text-sm flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="back_hand">back_hand</span>
+                            Upper Body
+                        </button>
+<button class="px-5 py-2.5 rounded-full bg-primary/10 text-primary font-body text-sm font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] fill" data-icon="foot_bones" data-weight="fill">foot_bones</span>
+                            Lower Body
+                        </button>
+<button class="px-5 py-2.5 rounded-full bg-primary/10 text-primary font-body text-sm font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] fill" data-icon="psychology" data-weight="fill">psychology</span>
+                            Mindfulness
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: App Behavior -->
+<section class="flex flex-col gap-6">
+<h2 class="font-headline text-lg font-medium text-on-surface-variant px-2">App Behavior</h2>
+<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col gap-2 relative overflow-hidden">
+<!-- Decorative gradient leak -->
+<div class="absolute bottom-0 left-0 w-32 h-32 bg-primary-container rounded-full opacity-5 blur-[48px]"></div>
+<!-- Haptic Feedback -->
+<div class="flex items-center justify-between py-4 px-2 relative z-10">
+<div class="flex flex-col">
+<span class="font-label text-base font-medium text-on-surface">Haptic Feedback</span>
+<span class="font-body text-sm text-on-surface-variant/70">Tactile responses during sessions</span>
+</div>
+<button aria-pressed="true" class="w-14 h-8 rounded-full bg-primary-container flex items-center px-1 shadow-inner relative transition-colors duration-300">
+<div class="w-6 h-6 rounded-full bg-white shadow-sm transform translate-x-6 transition-transform duration-300"></div>
+</button>
+</div>
+<!-- Sound -->
+<div class="flex items-center justify-between py-4 px-2 relative z-10">
+<div class="flex flex-col">
+<span class="font-label text-base font-medium text-on-surface">Ambient Sounds</span>
+<span class="font-body text-sm text-on-surface-variant/70">Background audioscapes</span>
+</div>
+<button aria-pressed="false" class="w-14 h-8 rounded-full bg-surface-container-highest flex items-center px-1 relative transition-colors duration-300">
+<div class="w-6 h-6 rounded-full bg-white shadow-sm transform translate-x-0 transition-transform duration-300"></div>
+</button>
+</div>
+<!-- Sync -->
+<div class="flex items-center justify-between py-4 px-2 relative z-10">
+<div class="flex flex-col">
+<span class="font-label text-base font-medium text-on-surface">Health Sync</span>
+<span class="font-body text-sm text-on-surface-variant/70">Connect with external wearables</span>
+</div>
+<button aria-pressed="true" class="w-14 h-8 rounded-full bg-primary-container flex items-center px-1 shadow-inner relative transition-colors duration-300">
+<div class="w-6 h-6 rounded-full bg-white shadow-sm transform translate-x-6 transition-transform duration-300"></div>
+</button>
+</div>
+</div>
+</section>
+<!-- Version Whisper -->
+<div class="flex justify-center pt-8 pb-4">
+<span class="font-display text-xs text-outline-variant tracking-widest uppercase">Sanctuary v2.4.1</span>
+</div>
+</main>
+<!-- Navigation Suppressed for Settings Screen as per rules -->
+</body></html>

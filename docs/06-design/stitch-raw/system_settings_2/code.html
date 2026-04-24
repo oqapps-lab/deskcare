@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DeskCare Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#005959",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8fafa",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ecdcff",
+                        "on-secondary-container": "#376d6d",
+                        "background": "#f8fafa",
+                        "surface-dim": "#d8dada",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#5c4284",
+                        "on-secondary-fixed-variant": "#144f4e",
+                        "error": "#ba1a1a",
+                        "tertiary-container": "#d2b4ff",
+                        "surface-variant": "#e1e3e3",
+                        "on-background": "#191c1d",
+                        "secondary": "#316766",
+                        "inverse-primary": "#1adcdc",
+                        "inverse-on-surface": "#eff1f1",
+                        "surface-container": "#eceeee",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#53397b",
+                        "surface-container-low": "#f2f4f4",
+                        "on-secondary-fixed": "#002020",
+                        "inverse-surface": "#2e3131",
+                        "surface-container-high": "#e6e8e9",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#26094c",
+                        "on-surface-variant": "#3b4949",
+                        "secondary-fixed-dim": "#9ad0d0",
+                        "on-surface": "#191c1d",
+                        "surface-tint": "#006a6a",
+                        "on-primary-fixed-variant": "#004f4f",
+                        "outline": "#6b7a79",
+                        "outline-variant": "#bacac9",
+                        "secondary-fixed": "#b5edec",
+                        "tertiary": "#6c5194",
+                        "primary": "#006a6a",
+                        "primary-fixed-dim": "#1adcdc",
+                        "on-primary-fixed": "#002020",
+                        "primary-container": "#00d7d7",
+                        "surface-container-highest": "#e1e3e3",
+                        "primary-fixed": "#50f9f9",
+                        "secondary-container": "#b5edec",
+                        "tertiary-fixed-dim": "#d6baff",
+                        "surface-bright": "#f8fafa"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "display": ["Space Grotesk"],
+                        "body": ["Manrope"],
+                        "label": ["Manrope"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.surface');
+            color: theme('colors.on-surface');
+            font-family: theme('fontFamily.body');
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-capsule {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow: 0 32px 64px -12px rgba(25, 28, 29, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen flex flex-col relative pb-32">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center px-8 py-4 w-full sticky top-0 z-50 bg-[#f8fafa]/80 dark:bg-[#191c1d]/80 backdrop-blur-2xl rounded-b-[3rem] no-border tonal-transition-surface-container-low shadow-none scale-95 active:duration-150">
+<div class="flex items-center gap-4">
+<img alt="Profile" class="w-12 h-12 rounded-full object-cover shadow-[0_8px_24px_-8px_rgba(0,106,106,0.3)] border-2 border-surface-container-lowest" data-alt="close-up portrait of a serene user with soft lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCcYpOE8BbDUjOOicoTGTuSTb3vNz1CrgJb6pCqnOZMY_2yFjW424X9tEVKJqaBXn7zKbILyiesFA_MJhiKjvm2y57ThwEcNzeCnLNuvaqHBVCeCfEqG4-5dKWF1370jLJaWzXjd6b7mQ6W_m8klpsp00-N2pVHo3aHc53Wh3_gGWCRrsJ36sgAKEOOmsOu70d9xEdYLApbFK9gGI2tc_9nfWiaEEgbzj6ML-O6gDrP0Pw6h7sNwtx8DJw0x5LZnVZwj4QAd5dwPCo"/>
+</div>
+<h1 class="text-[#006a6a] dark:text-[#00d7d7] font-['Space_Grotesk'] font-bold tracking-[0.1em] uppercase text-lg tracking-widest">SANCTUARY</h1>
+<button class="w-12 h-12 rounded-full flex items-center justify-center bg-surface-container-low text-primary hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow max-w-4xl w-full mx-auto px-6 pt-12 pb-24 space-y-12">
+<section class="space-y-4">
+<h2 class="font-headline text-4xl text-on-surface font-bold tracking-tight px-4">Preferences</h2>
+<p class="font-body text-on-surface-variant text-lg px-4 mb-8">Tune your sanctuary environment.</p>
+<div class="space-y-6">
+<!-- Option 1: Haptic Calibration -->
+<div class="glass-capsule rounded-[3rem] p-6 flex items-center justify-between transition-transform duration-300 hover:scale-[1.02]">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-3xl" data-icon="vibration">vibration</span>
+</div>
+<div>
+<h3 class="font-body font-semibold text-xl text-on-surface">Haptic Calibration</h3>
+<p class="font-body text-on-surface-variant mt-1">Adjust feedback resonance.</p>
+</div>
+</div>
+<!-- Turquoise Pill Switch -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-14 h-8 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-primary peer-checked:to-primary-container shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"></div>
+</label>
+</div>
+<!-- Option 2: Reminder Frequency -->
+<div class="glass-capsule rounded-[3rem] p-6 flex items-center justify-between transition-transform duration-300 hover:scale-[1.02]">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-3xl" data-icon="schedule">schedule</span>
+</div>
+<div>
+<h3 class="font-body font-semibold text-xl text-on-surface">Reminder Frequency</h3>
+<p class="font-body text-on-surface-variant mt-1">Pacing for notifications.</p>
+</div>
+</div>
+<!-- Turquoise Pill Switch -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-14 h-8 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-primary peer-checked:to-primary-container shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"></div>
+</label>
+</div>
+<!-- Option 3: Prismatic Intensity -->
+<div class="glass-capsule rounded-[3rem] p-6 flex items-center justify-between transition-transform duration-300 hover:scale-[1.02]">
+<div class="flex items-center gap-6">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center text-primary shadow-inner">
+<span class="material-symbols-outlined text-3xl" data-icon="brightness_5">brightness_5</span>
+</div>
+<div>
+<h3 class="font-body font-semibold text-xl text-on-surface">Prismatic Intensity</h3>
+<p class="font-body text-on-surface-variant mt-1">Ambient light diffusion.</p>
+</div>
+</div>
+<!-- Turquoise Pill Switch -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-14 h-8 bg-surface-container-high peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-primary peer-checked:to-primary-container shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"></div>
+</label>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom NavBar suppressed as this is a Settings (Contextual/Deep) screen per Shell Visibility rules -->
+</body></html>

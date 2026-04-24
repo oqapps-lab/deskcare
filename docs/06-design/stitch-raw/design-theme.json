@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "project": "DeskCare: Micro-Stretching for Workers",
+    "stitch_project_id": "5170445839020635015",
+    "creative_north_star": "The Ethereal Atrium / Architectural Ethereal",
+    "design_philosophy": "High-performance recovery sanctuary. UI feels grown, not built — high-key lighting, continuous curvature, no sharp corners, no solid lines."
+  },
+
+  "themes": {
+    "aetheria_porcelain": {
+      "label": "The Luminous Sanctuary (Aetheria Porcelain)",
+      "colors": {
+        "surface":                  "#f8fafa",
+        "surface_dim":              "#d8dada",
+        "surface_bright":           "#f8fafa",
+        "surface_container_lowest": "#ffffff",
+        "surface_container_low":    "#f2f4f4",
+        "surface_container_high":   "#e6e8e9",
+        "on_surface":               "#191c1d",
+        "outline_variant":          "#bacac9",
+        "primary":                  "#006a6a",
+        "primary_container":        "#00d7d7",
+        "primary_fixed_dim":        "#1adcdc"
+      },
+      "gradient_cta": "linear-gradient(135deg, #006a6a, #00d7d7)",
+      "typography": {
+        "display_headline": "Space Grotesk",
+        "body_label": "Manrope",
+        "number_color": "#1adcdc",
+        "number_letter_spacing": "0.05em"
+      }
+    },
+
+    "luminous_sanctuary": {
+      "label": "The Architectural Ethereal (Luminous Sanctuary)",
+      "colors": {
+        "background":               "#f7f9fb",
+        "surface":                  "#f7f9fb",
+        "surface_container":        "#eceef0",
+        "surface_container_low":    "#f2f4f6",
+        "surface_container_lowest": "#ffffff",
+        "surface_container_highest":"#e0e3e5",
+        "on_surface":               "#191c1e",
+        "on_surface_variant":       "#3d494d",
+        "outline_variant":          "#bcc9ce",
+        "primary":                  "#00677d",
+        "primary_container":        "#00b4d8",
+        "primary_fixed":            "#4cd6fb",
+        "primary_fixed_dim":        "#4cd6fb",
+        "tertiary_container":       "#93a9ac"
+      },
+      "gradient_cta": "linear-gradient(to right, #00677d, #00b4d8)",
+      "typography": {
+        "display_headline": "Manrope",
+        "body_label": "Inter",
+        "number_color": "#00677d",
+        "number_text_shadow": "rgba(76, 214, 251, 0.40)"
+      }
+    }
+  },
+
+  "shared_rules": {
+    "border_radius": {
+      "cards": "3rem",
+      "buttons_chips": "9999px",
+      "inputs": "9999px"
+    },
+    "no_sharp_corners": true,
+    "no_solid_1px_borders": true,
+    "no_pure_black": true,
+    "no_grey_shadows": true,
+    "ghost_border_fallback": "outline_variant at 15% opacity",
+    "ambient_shadow": {
+      "color": "primary at 5-8% opacity",
+      "blur": "32px+"
+    },
+    "glassmorphism": {
+      "backdrop_blur": "20-24px",
+      "surface_opacity": "60%"
+    },
+    "elevation_method": "tonal_layering",
+    "dividers": "refraction gradient (transparent → outline_variant 20% → transparent)"
+  },
+
+  "screens": [
+    { "id": "ed333bb61ae6452da3412d6b655340ab", "name": "Recovery Sanctuary Hub (Rounded)",  "folder": "recovery_sanctuary_hub_rounded" },
+    { "id": "96af6dfecc624cb09a5ab83434de3215", "name": "Exercise Instrument Chamber",         "folder": "exercise_instrument_chamber" },
+    { "id": "7108565b735d4970a774c1e4d8358021", "name": "Telemetry Sanctuary",                 "folder": "telemetry_sanctuary" },
+    { "id": "90f7444693d24011a838049756f7c947", "name": "Mission Brief: Cervical Reset",       "folder": "mission_brief_cervical_reset" },
+    { "id": "3b69c28052b242fbaeaa22f56f16eb26", "name": "System Settings (variant 1)",         "folder": "system_settings_1" },
+    { "id": "3b69c28052b242fbaeaa22f56f16eb26", "name": "System Settings (variant 2)",         "folder": "system_settings_2" },
+    { "id": "bc4e8cc6c66d4c28929c7fc8278adc30", "name": "System Intake",                      "folder": "system_intake" },
+    { "id": "9580fce9d7584deea0779b703881e02d", "name": "Operator Profile",                   "folder": "operator_profile" },
+    { "id": "1179d0c0afbd4c64bed08f63e1c82f2a", "name": "System Calibration",                 "folder": "system_calibration" }
+  ]
+}
