@@ -5,9 +5,11 @@ import {
   View,
   ViewStyle,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import { Colors, Layout, Radii, Shadows, Typography } from '@/constants/tokens';
+import { Colors, Layout, Radii, Spacing } from '@/constants/tokens';
 import { Text } from './Text';
 
 interface PillCTAProps {
@@ -16,8 +18,9 @@ interface PillCTAProps {
   disabled?: boolean;
   loading?: boolean;
   style?: ViewStyle;
-  /** Icon rendered after the label */
   icon?: React.ReactNode;
+  /** Gradient direction: horizontal (default) or diagonal */
+  direction?: 'horizontal' | 'diagonal';
 }
 
 export function PillCTA({
@@ -27,12 +30,16 @@ export function PillCTA({
   loading = false,
   style,
   icon,
+  direction = 'horizontal',
 }: PillCTAProps) {
   function handlePress() {
     if (disabled || loading) return;
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     onPress();
   }
+
+  const start = direction === 'diagonal' ? { x: 0, y: 0 } : { x: 0, y: 0.5 };
+  const end   = direction === 'diagonal' ? { x: 1, y: 1 } : { x: 1, y: 0.5 };
 
   return (
     <Pressable
@@ -42,26 +49,24 @@ export function PillCTA({
       accessibilityState={{ disabled: disabled || loading }}
       style={({ pressed }) => [
         styles.wrapper,
-        Shadows.float,
+        styles.glow,
         (disabled || loading) && styles.disabled,
         pressed && styles.pressed,
         style,
       ]}
     >
-      {/* Gradient simulation: two overlapping layers */}
-      <View style={styles.gradientStart} />
-      <View style={styles.gradientEnd} />
-
+      <LinearGradient
+        colors={[Colors.gradientStart, Colors.primaryLight, Colors.gradientEnd]}
+        start={start}
+        end={end}
+        style={StyleSheet.absoluteFillObject}
+      />
       <View style={styles.content}>
         {loading ? (
           <ActivityIndicator color={Colors.onPrimary} />
         ) : (
           <>
-            <Text
-              variant="h3"
-              color={Colors.onPrimary}
-              style={styles.label}
-            >
+            <Text variant="h3" color={Colors.onPrimary} style={styles.label}>
               {label}
             </Text>
             {icon != null && <View style={styles.icon}>{icon}</View>}
@@ -74,38 +79,31 @@ export function PillCTA({
 
 const styles = StyleSheet.create({
   wrapper: {
-    height: 56,
+    height: 58,
     borderRadius: Radii.full,
     minWidth: Layout.minTouchTarget,
     overflow: 'hidden',
   },
-  gradientStart: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.gradientStart,
-  },
-  gradientEnd: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: Colors.gradientEnd,
-    opacity: 0.55,
-  },
+  glow: Platform.select({
+    ios: {
+      shadowColor: Colors.primaryLight,
+      shadowOpacity: 0.55,
+      shadowRadius: 18,
+      shadowOffset: { width: 0, height: 6 },
+    },
+    android: { elevation: 10 },
+    default: {},
+  }) ?? {},
   content: {
     ...StyleSheet.absoluteFillObject,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
-    gap: 8,
+    paddingHorizontal: Spacing.xxl,
+    gap: Spacing.sm,
   },
-  label: {
-    // override Typography.h3 color
-  },
-  icon: {
-    marginLeft: 4,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  pressed: {
-    opacity: 0.85,
-  },
+  label: {},
+  icon: {},
+  disabled: { opacity: 0.5 },
+  pressed: { opacity: 0.88, transform: [{ scale: 0.98 }] },
 });

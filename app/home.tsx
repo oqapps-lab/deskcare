@@ -1,7 +1,3 @@
-/**
- * Home Screen (HOME-01)
- * Zones: photo cards grid, no emoji. Clean spacing.
- */
 import React from 'react';
 import {
   View,
@@ -10,27 +6,22 @@ import {
   Pressable,
   StatusBar,
   useWindowDimensions,
+  Platform,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 
 import {
-  Card,
-  Text,
-  H2,
-  PillCTA,
-  BottomNav,
-  Badge,
-  Divider,
+  Card, Text, H2, PillCTA, BottomNav, Badge, Divider,
 } from '@/components/primitives';
 import type { TabId, TabItem } from '@/components/primitives';
 import { Colors, Layout, Spacing, Radii, Shadows } from '@/constants/tokens';
 import { mockUser, mockRoutines, BODY_ZONES, WEEK_DAYS } from '@/mock/data';
 import type { ZoneId } from '@/mock/data';
 
-// ── Zone photos ──────────────────────────────────────────────────────────────
 const ZONE_PHOTOS: Record<ZoneId, string> = {
   neck:   'https://images.unsplash.com/photo-1616279969856-759f316a5ac1?w=400&q=80&auto=format&fit=crop',
   back:   'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80&auto=format&fit=crop',
@@ -38,52 +29,11 @@ const ZONE_PHOTOS: Record<ZoneId, string> = {
   wrists: 'https://images.unsplash.com/photo-1573884985872-e62b4d20d4d5?w=400&q=80&auto=format&fit=crop',
 };
 
-// ── Tabs ─────────────────────────────────────────────────────────────────────
 const makeTabs = (active: TabId): TabItem[] => [
-  {
-    id: 'home',
-    label: 'Home',
-    icon: (
-      <Ionicons
-        name={active === 'home' ? 'home' : 'home-outline'}
-        size={20}
-        color={active === 'home' ? Colors.onPrimary : Colors.onSurfaceVar}
-      />
-    ),
-  },
-  {
-    id: 'library',
-    label: 'Library',
-    icon: (
-      <Ionicons
-        name="library-outline"
-        size={20}
-        color={Colors.onSurfaceVar}
-      />
-    ),
-  },
-  {
-    id: 'programs',
-    label: 'Programs',
-    icon: (
-      <Ionicons
-        name="grid-outline"
-        size={20}
-        color={Colors.onSurfaceVar}
-      />
-    ),
-  },
-  {
-    id: 'profile',
-    label: 'Profile',
-    icon: (
-      <Ionicons
-        name={active === 'profile' ? 'person' : 'person-outline'}
-        size={20}
-        color={active === 'profile' ? Colors.onPrimary : Colors.onSurfaceVar}
-      />
-    ),
-  },
+  { id: 'home',     label: 'Home',     icon: <Ionicons name={active === 'home'    ? 'home'          : 'home-outline'}    size={20} color={active === 'home'    ? Colors.onPrimary : Colors.onSurfaceVar} /> },
+  { id: 'library',  label: 'Library',  icon: <Ionicons name="library-outline"                                            size={20} color={Colors.onSurfaceVar} /> },
+  { id: 'programs', label: 'Programs', icon: <Ionicons name="grid-outline"                                               size={20} color={Colors.onSurfaceVar} /> },
+  { id: 'profile',  label: 'Profile',  icon: <Ionicons name={active === 'profile' ? 'person'        : 'person-outline'}  size={20} color={active === 'profile' ? Colors.onPrimary : Colors.onSurfaceVar} /> },
 ];
 
 export default function HomeScreen() {
@@ -96,7 +46,7 @@ export default function HomeScreen() {
   const cardWidth = (width - Layout.screenPadding * 2 - Layout.cardGap) / 2;
   const tabBarHeight = Layout.tabBarHeight + Math.max(insets.bottom, Spacing.md);
 
-  function handleZonePress(zoneId: ZoneId) {
+  function goZone(zoneId: ZoneId) {
     router.push({ pathname: '/routine', params: { zone: zoneId } });
   }
 
@@ -107,138 +57,131 @@ export default function HomeScreen() {
       <ScrollView
         contentContainerStyle={[
           styles.scroll,
-          { paddingBottom: tabBarHeight + Spacing.lg },
+          { paddingBottom: tabBarHeight + Spacing.xl },
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {/* ── Header ── */}
+        {/* ── Header ─────────────────────────────────── */}
         <View style={styles.header}>
-          <View>
-            <Text variant="bodyMd" color={Colors.onSurfaceVar}>
-              Добро пожаловать
-            </Text>
+          <View style={styles.headerText}>
+            <Text variant="bodyMd" color={Colors.onSurfaceVar}>Добро пожаловать</Text>
             <Text variant="h1">{user.name}</Text>
           </View>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Настройки"
-            style={styles.gearBtn}
-          >
+          <Pressable style={styles.gearBtn} accessibilityRole="button" accessibilityLabel="Настройки">
             <Ionicons name="settings-outline" size={22} color={Colors.onSurfaceVar} />
           </Pressable>
         </View>
 
-        <Divider size="lg" />
+        <Divider size="xl" />
 
-        {/* ── Streak ── */}
-        <Card elevated>
+        {/* ── Streak card ─────────────────────────────── */}
+        <Card elevated style={styles.streakCard}>
+          {/* Subtle teal glow behind the card */}
           <View style={styles.streakRow}>
-            <View style={styles.streakLeft}>
-              <Ionicons name="flame" size={20} color={Colors.primaryLight} />
-              <Text variant="h2" color={Colors.primary}>
-                {user.streak} дней подряд
-              </Text>
-            </View>
+            <Ionicons name="flame" size={22} color={Colors.primaryLight} />
+            <Text variant="h2" color={Colors.primary} style={styles.streakNum}>
+              {user.streak} дней подряд
+            </Text>
           </View>
-          <Divider size="md" />
+
+          <Divider size="lg" />
+
           <View style={styles.weekRow}>
             {WEEK_DAYS.map((day, i) => (
               <View key={day} style={styles.dayItem}>
                 <Text variant="caption" color={Colors.onSurfaceVar}>{day}</Text>
-                <View
-                  style={[
-                    styles.daydot,
-                    user.weekActivity[i] ? styles.daydotOn : styles.daydotOff,
-                  ]}
-                />
+                <View style={[styles.daydot, user.weekActivity[i] ? styles.daydotOn : styles.daydotOff]}>
+                  {user.weekActivity[i] && (
+                    <Ionicons name="checkmark" size={12} color={Colors.onPrimary} />
+                  )}
+                </View>
               </View>
             ))}
           </View>
         </Card>
 
-        <Divider size="md" />
+        <Divider size="lg" />
 
-        {/* ── Recommended ── */}
-        <Card elevated>
+        {/* ── Recommended ─────────────────────────────── */}
+        <Card elevated style={styles.recommendCard}>
           <Badge label={recommended.zoneLabel} variant="zone" />
-          <Divider size="sm" />
+          <Divider size="md" />
           <Text variant="h2">{recommended.name}</Text>
           <Text variant="bodyMd" color={Colors.onSurfaceVar}>
             {recommended.durationMin} мин · {recommended.exercises.length} упражнения
           </Text>
-          <Divider size="md" />
+          <Divider size="xl" />
           <PillCTA
             label="Начать рутину"
-            onPress={() =>
-              router.push({ pathname: '/routine', params: { zone: 'neck' } })
-            }
+            onPress={() => goZone('neck')}
             icon={<Ionicons name="play" size={16} color={Colors.onPrimary} />}
+            direction="diagonal"
           />
         </Card>
 
-        <Divider size="lg" />
+        <Divider size="xxxl" />
 
-        {/* ── Body Zones ── */}
+        {/* ── Body Zones ──────────────────────────────── */}
         <H2>Выберите зону</H2>
-        <Divider size="md" />
+        <Divider size="lg" />
 
         <View style={styles.zonesGrid}>
           {BODY_ZONES.map((zone) => (
             <Pressable
               key={zone.id}
-              onPress={() => handleZonePress(zone.id)}
+              onPress={() => goZone(zone.id)}
               accessibilityRole="button"
               accessibilityLabel={zone.label}
               style={({ pressed }) => [
                 styles.zoneCard,
-                { width: cardWidth, height: cardWidth },
-                Shadows.card,
+                { width: cardWidth, height: cardWidth * 1.1 },
                 pressed && styles.pressed,
               ]}
             >
-              {/* Photo */}
               <Image
                 source={ZONE_PHOTOS[zone.id]}
                 style={StyleSheet.absoluteFillObject}
                 contentFit="cover"
                 transition={300}
               />
-              {/* Dark overlay */}
-              <View style={styles.zoneOverlay} />
-              {/* Label */}
+              {/* Gradient overlay: clear top → dark bottom */}
+              <LinearGradient
+                colors={['transparent', 'rgba(0,0,0,0.58)']}
+                style={StyleSheet.absoluteFillObject}
+              />
               <View style={styles.zoneLabelWrap}>
                 {user.painZones.includes(zone.id) && (
                   <View style={styles.activeBar} />
                 )}
-                <Text variant="h3" color={Colors.onPrimary}>
-                  {zone.label}
-                </Text>
+                <Text variant="h3" color={Colors.onPrimary}>{zone.label}</Text>
               </View>
             </Pressable>
           ))}
         </View>
 
-        <Divider size="md" />
+        <Divider size="xxxl" />
 
-        {/* ── Eye Break ── */}
+        {/* ── Eye Break ───────────────────────────────── */}
         <Pressable
-          onPress={() => handleZonePress('eyes')}
+          onPress={() => goZone('eyes')}
           accessibilityRole="button"
           style={({ pressed }) => [styles.eyeBreak, pressed && styles.pressed]}
         >
-          <Ionicons name="eye-outline" size={18} color={Colors.primary} />
+          <View style={styles.eyeIconWrap}>
+            <Ionicons name="eye-outline" size={20} color={Colors.primary} />
+          </View>
           <View style={styles.eyeText}>
             <Text variant="h3" color={Colors.primary}>Eye Break</Text>
             <Text variant="bodyMd" color={Colors.onSurfaceVar}>
               Глаза устали? 30 сек без звука
             </Text>
           </View>
-          <Ionicons name="chevron-forward" size={18} color={Colors.primary} />
+          <Ionicons name="chevron-forward" size={18} color={Colors.onSurfaceVar} />
         </Pressable>
 
-        <Divider size="md" />
+        <Divider size="lg" />
 
-        {/* ── Pain check-in ── */}
+        {/* ── Pain check-in ────────────────────────────── */}
         {!user.hasPainCheckInToday && (
           <Pressable
             accessibilityRole="button"
@@ -266,15 +209,27 @@ export default function HomeScreen() {
   );
 }
 
+const glowShadow = Platform.select({
+  ios: {
+    shadowColor: Colors.primary,
+    shadowOpacity: 0.14,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 8 },
+  },
+  android: { elevation: 6 },
+  default: {},
+}) ?? {};
+
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: Colors.canvas },
   scroll: { paddingHorizontal: Layout.screenPadding, paddingTop: Spacing.lg },
 
   header: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
+  headerText: { gap: 2 },
   gearBtn: {
     width: 40,
     height: 40,
@@ -283,13 +238,23 @@ const styles = StyleSheet.create({
   },
 
   // Streak
-  streakRow: { flexDirection: 'row', alignItems: 'center' },
-  streakLeft: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, flex: 1 },
+  streakCard: { ...glowShadow },
+  streakRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
+  streakNum: { letterSpacing: -0.3 },
   weekRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  dayItem: { alignItems: 'center', gap: 4 },
-  daydot: { width: 26, height: 26, borderRadius: Radii.full },
+  dayItem: { alignItems: 'center', gap: Spacing.xs },
+  daydot: {
+    width: 28,
+    height: 28,
+    borderRadius: Radii.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   daydotOn: { backgroundColor: Colors.primary },
   daydotOff: { backgroundColor: Colors.surfaceLow },
+
+  // Recommended
+  recommendCard: { ...glowShadow },
 
   // Zones
   zonesGrid: {
@@ -301,10 +266,7 @@ const styles = StyleSheet.create({
     borderRadius: Radii.lg,
     overflow: 'hidden',
     justifyContent: 'flex-end',
-  },
-  zoneOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    ...glowShadow,
   },
   zoneLabelWrap: {
     padding: Spacing.md,
@@ -326,7 +288,15 @@ const styles = StyleSheet.create({
     borderRadius: Radii.lg,
     padding: Spacing.lg,
     gap: Spacing.md,
-    ...Shadows.card,
+    ...glowShadow,
+  },
+  eyeIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: Radii.full,
+    backgroundColor: Colors.surfaceLow,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   eyeText: { flex: 1 },
 
@@ -335,8 +305,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.lg,
+    padding: Spacing.lg,
     backgroundColor: Colors.surface,
     borderRadius: Radii.lg,
   },

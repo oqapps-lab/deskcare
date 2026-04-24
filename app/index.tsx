@@ -1,15 +1,12 @@
-/**
- * Welcome Screen (ONB-02)
- * Full-bleed hero photo + bottom overlay + CTA
- */
 import React from 'react';
-import { View, StyleSheet, Pressable, StatusBar } from 'react-native';
+import { View, StyleSheet, Pressable, StatusBar, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 
-import { PillCTA, Text } from '@/components/primitives';
+import { PillCTA, Text, Divider } from '@/components/primitives';
 import { Colors, Spacing, Radii } from '@/constants/tokens';
 
 const HERO =
@@ -23,25 +20,29 @@ export default function WelcomeScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
-      {/* ── Full-bleed hero ── */}
+      {/* Hero photo */}
       <Image
         source={HERO}
         style={StyleSheet.absoluteFillObject}
         contentFit="cover"
-        transition={400}
+        transition={500}
       />
 
-      {/* ── Dark gradient overlay at bottom ── */}
-      <View style={styles.overlay} />
+      {/* Multi-stop gradient overlay: clear top → dark bottom */}
+      <LinearGradient
+        colors={['transparent', 'rgba(10,18,20,0.55)', 'rgba(10,18,20,0.93)']}
+        locations={[0.3, 0.6, 1]}
+        style={StyleSheet.absoluteFillObject}
+      />
 
-      {/* ── Brand mark top-left ── */}
+      {/* Brand mark */}
       <View style={[styles.brand, { paddingTop: insets.top + Spacing.lg }]}>
-        <Text variant="label" upper color="rgba(255,255,255,0.8)">
+        <Text variant="label" upper color="rgba(255,255,255,0.7)" style={styles.brandText}>
           DeskCare
         </Text>
       </View>
 
-      {/* ── Bottom content block ── */}
+      {/* Bottom content */}
       <View
         style={[
           styles.bottom,
@@ -51,29 +52,37 @@ export default function WelcomeScreen() {
           },
         ]}
       >
+        <Divider size="xl" />
+
         <Text variant="h1" color={Colors.onPrimary} style={styles.headline}>
           2 минуты в день —{'\n'}шея перестанет болеть
         </Text>
 
-        <Text variant="body" color="rgba(255,255,255,0.75)" style={styles.sub}>
+        <Divider size="md" />
+
+        <Text variant="body" color="rgba(255,255,255,0.68)" style={styles.sub}>
           Микро-растяжки прямо за рабочим столом.{'\n'}Без коврика. Без переодевания.
         </Text>
+
+        <Divider size="xl" />
 
         <PillCTA
           label="Начать"
           onPress={() => router.push('/home')}
           icon={<Ionicons name="arrow-forward" size={18} color={Colors.onPrimary} />}
-          style={styles.cta}
+          direction="diagonal"
         />
+
+        <Divider size="md" />
 
         <Pressable
           onPress={() => { /* TODO: Sign In */ }}
           accessibilityRole="link"
           style={styles.signIn}
         >
-          <Text variant="bodyMd" color="rgba(255,255,255,0.6)">
-            Уже есть аккаунт?{' '}
-            <Text variant="bodyMd" color="rgba(255,255,255,0.95)">
+          <Text variant="bodyMd" color="rgba(255,255,255,0.5)">
+            Уже есть аккаунт?{'  '}
+            <Text variant="bodyMd" color="rgba(255,255,255,0.9)">
               Войти
             </Text>
           </Text>
@@ -86,13 +95,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: '#1a1f20',
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    // Gradient simulation: transparent top → dark bottom
-    backgroundColor: 'transparent',
-    // Use two nested views instead of LinearGradient
+    backgroundColor: '#0a1214',
   },
   brand: {
     position: 'absolute',
@@ -100,24 +103,21 @@ const styles = StyleSheet.create({
     left: Spacing.xl,
     zIndex: 10,
   },
+  brandText: {
+    letterSpacing: 3,
+  },
   bottom: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    // Dark gradient from top of this block
-    backgroundColor: 'rgba(20, 24, 26, 0.72)',
-    paddingTop: Spacing.xxxl,
-    gap: Spacing.lg,
   },
   headline: {
-    lineHeight: 38,
+    lineHeight: 40,
+    letterSpacing: -0.3,
   },
   sub: {
     lineHeight: 24,
-  },
-  cta: {
-    marginTop: Spacing.sm,
   },
   signIn: {
     alignSelf: 'center',
