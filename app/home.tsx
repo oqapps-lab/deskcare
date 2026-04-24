@@ -19,7 +19,7 @@ const ZONE_PHOTOS: Record<ZoneId, string> = {
   neck:   'https://images.unsplash.com/photo-1616279969856-759f316a5ac1?w=400&q=80&auto=format&fit=crop',
   back:   'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80&auto=format&fit=crop',
   eyes:   'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=400&q=80&auto=format&fit=crop',
-  wrists: 'https://images.unsplash.com/photo-1573884985872-e62b4d20d4d5?w=400&q=80&auto=format&fit=crop',
+  wrists: 'https://images.unsplash.com/photo-1616803140344-6682af8dfd0b?w=400&q=80&auto=format&fit=crop',
 };
 
 const makeTabs = (active: TabId): TabItem[] => [
@@ -73,16 +73,24 @@ export default function HomeScreen() {
           </View>
           <Divider size="lg" />
           <View style={styles.weekRow}>
-            {WEEK_DAYS.map((day, i) => (
-              <View key={day} style={styles.dayCol}>
-                <Text variant="caption" color={Colors.onSurfaceVar}>{day}</Text>
-                <View style={[styles.dot, user.weekActivity[i] ? styles.dotOn : styles.dotOff]}>
-                  {user.weekActivity[i] && (
-                    <Ionicons name="checkmark" size={11} color={Colors.onPrimary} />
+            {WEEK_DAYS.map((day, i) => {
+              const active = user.weekActivity[i];
+              return (
+                <View key={day} style={styles.dayCol}>
+                  {active ? (
+                    <View style={styles.dayHalo}>
+                      <Text variant="caption" color={Colors.primary} style={styles.dayTextActive}>
+                        {day}
+                      </Text>
+                    </View>
+                  ) : (
+                    <Text variant="caption" color={Colors.onSurfaceVar} style={styles.dayTextInactive}>
+                      {day}
+                    </Text>
                   )}
                 </View>
-              </View>
-            ))}
+              );
+            })}
           </View>
         </Card>
 
@@ -203,10 +211,24 @@ const styles = StyleSheet.create({
 
   streakRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   weekRow:   { flexDirection: 'row', justifyContent: 'space-between' },
-  dayCol:    { alignItems: 'center', gap: 5 },
-  dot:       { width: 27, height: 27, borderRadius: Radii.full, alignItems: 'center', justifyContent: 'center' },
-  dotOn:     { backgroundColor: Colors.primary },
-  dotOff:    { backgroundColor: Colors.surfaceLow },
+  dayCol: { alignItems: 'center' },
+
+  // Active day — circular halo with teal glow
+  dayHalo: {
+    width: 34,
+    height: 34,
+    borderRadius: Radii.full,
+    backgroundColor: 'rgba(0, 103, 125, 0.10)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: Colors.primaryLight,
+    shadowOpacity: 0.45,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 0 },
+    elevation: 3,
+  },
+  dayTextActive:   { fontWeight: '700', letterSpacing: 0.2 },
+  dayTextInactive: { letterSpacing: 0.2 },
 
   grid:     { flexDirection: 'row', flexWrap: 'wrap', gap: Layout.cardGap },
   zoneCard: { borderRadius: Radii.lg, overflow: 'hidden', justifyContent: 'flex-end' },
