@@ -3,10 +3,12 @@
 <html class="light" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Profile - Sanctuary</title>
+<title>DeskCare - Profile</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Manrope:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
         tailwind.config = {
@@ -14,53 +16,53 @@
             theme: {
                 extend: {
                     "colors": {
-                        "surface-container-highest": "#e1e3e3",
-                        "on-secondary-container": "#376d6d",
-                        "on-tertiary-container": "#5c4284",
-                        "error-container": "#ffdad6",
-                        "on-tertiary-fixed": "#26094c",
-                        "surface-tint": "#006a6a",
+                        "secondary-fixed-dim": "#b9c8de",
+                        "secondary-container": "#d2e1f7",
+                        "outline-variant": "#bcc9ce",
+                        "on-secondary-fixed-variant": "#39485a",
+                        "secondary": "#516072",
                         "on-secondary": "#ffffff",
-                        "secondary-fixed": "#b5edec",
-                        "surface-container-high": "#e6e8e9",
-                        "inverse-primary": "#1adcdc",
-                        "surface-variant": "#e1e3e3",
-                        "on-primary": "#ffffff",
-                        "secondary-container": "#b5edec",
-                        "inverse-on-surface": "#eff1f1",
-                        "surface-container-lowest": "#ffffff",
-                        "primary-fixed": "#50f9f9",
-                        "outline-variant": "#bacac9",
-                        "on-surface": "#191c1d",
+                        "primary": "#00677d",
+                        "surface-variant": "#e0e3e5",
+                        "on-tertiary-container": "#2a3e41",
+                        "on-tertiary-fixed-variant": "#364a4d",
+                        "surface-container-highest": "#e0e3e5",
+                        "inverse-on-surface": "#eff1f3",
+                        "outline": "#6d797e",
+                        "on-tertiary-fixed": "#091f21",
+                        "on-surface": "#191c1e",
+                        "on-primary-fixed-variant": "#004e5f",
+                        "on-primary-fixed": "#001f27",
+                        "primary-fixed-dim": "#4cd6fb",
+                        "on-primary-container": "#00414f",
+                        "tertiary-fixed": "#d0e7ea",
                         "on-error": "#ffffff",
-                        "inverse-surface": "#2e3131",
-                        "on-primary-fixed-variant": "#004f4f",
-                        "background": "#f8fafa",
-                        "secondary": "#316766",
-                        "primary": "#006a6a",
-                        "primary-container": "#00d7d7",
-                        "surface-dim": "#d8dada",
-                        "surface-container-low": "#f2f4f4",
-                        "surface": "#f8fafa",
-                        "tertiary-fixed": "#ecdcff",
-                        "on-primary-container": "#005959",
-                        "on-background": "#191c1d",
-                        "secondary-fixed-dim": "#9ad0d0",
-                        "on-primary-fixed": "#002020",
-                        "primary-fixed-dim": "#1adcdc",
-                        "on-surface-variant": "#3b4949",
-                        "tertiary-container": "#d2b4ff",
-                        "on-secondary-fixed-variant": "#144f4e",
-                        "surface-container": "#eceeee",
+                        "tertiary": "#4d6265",
+                        "tertiary-container": "#93a9ac",
+                        "surface-tint": "#00677d",
+                        "on-surface-variant": "#3d494d",
+                        "surface-container": "#eceef0",
+                        "surface": "#f7f9fb",
                         "on-error-container": "#93000a",
-                        "on-tertiary-fixed-variant": "#53397b",
-                        "surface-bright": "#f8fafa",
-                        "outline": "#6b7a79",
-                        "on-secondary-fixed": "#002020",
+                        "secondary-fixed": "#d4e4fa",
+                        "surface-container-high": "#e6e8ea",
                         "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "background": "#f7f9fb",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#b4cbce",
+                        "on-secondary-container": "#556477",
+                        "surface-dim": "#d8dadc",
+                        "surface-bright": "#f7f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "on-background": "#191c1e",
                         "error": "#ba1a1a",
-                        "tertiary-fixed-dim": "#d6baff",
-                        "tertiary": "#6c5194"
+                        "error-container": "#ffdad6",
+                        "primary-fixed": "#b3ebff",
+                        "inverse-primary": "#4cd6fb",
+                        "primary-container": "#00b4d8",
+                        "on-secondary-fixed": "#0d1c2d",
+                        "inverse-surface": "#2d3133"
                     },
                     "borderRadius": {
                         "DEFAULT": "1rem",
@@ -69,175 +71,153 @@
                         "full": "9999px"
                     },
                     "fontFamily": {
-                        "headline": ["Space Grotesk"],
-                        "display": ["Space Grotesk"],
-                        "body": ["Manrope"],
-                        "label": ["Manrope"]
+                        "headline": ["Manrope"],
+                        "display": ["Manrope"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
                     }
                 }
             }
         }
     </script>
 <style>
-        body { font-family: 'Manrope', sans-serif; background-color: #f8fafa; color: #191c1d; }
-        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Space Grotesk', sans-serif; }
-    </style>
-<style>
     body {
       min-height: max(884px, 100dvh);
     }
   </style>
   </head>
-<body class="bg-background min-h-screen text-on-surface antialiased selection:bg-primary selection:text-on-primary">
+<body class="bg-background text-on-surface font-body antialiased min-h-screen pt-24 pb-32">
 <!-- TopAppBar -->
-<header class="fixed top-0 left-0 right-0 z-40 bg-[#f8fafa]/60 dark:bg-[#191c1d]/60 backdrop-blur-2xl rounded-b-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.02)] border-b border-[#bacac9]/15">
-<div class="flex justify-between items-center px-8 py-4 w-full max-w-5xl mx-auto">
-<button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-low text-on-surface hover:bg-[#ffffff]/40 transition-colors Active: scale-95 transition-transform duration-300">
-<span class="material-symbols-outlined" data-icon="menu">menu</span>
-</button>
-<div class="font-['Space_Grotesk'] text-xl font-bold text-[#006a6a] dark:text-[#00d7d7]">
-                Sanctuary
-            </div>
-<button class="w-12 h-12 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface shadow-[0_4px_15px_rgba(0,0,0,0.05)] hover:bg-[#ffffff]/40 transition-colors Active: scale-95 transition-transform duration-300">
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#f7f9fb]/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-b-[3rem] no-border shadow-[0_20px_50px_rgba(0,103,125,0.05)]">
+<div class="flex items-center gap-3">
+<img alt="User Avatar" class="w-10 h-10 rounded-full object-cover shadow-sm" data-alt="close up portrait of a young woman with natural makeup looking slightly off camera, soft diffused lighting, neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgPGnD3NkXBd4czEqY7crRVLjV7avPEu62QfE95nGCgCCMcFCnFXlQ28LOQtefLI36_FbgczBGRzO4TGtfmx0CQ2EhrjrWpuIUoH5l9eI1MpsyoAlMnEHLG2fK8cly8Yy9TeuxdAJqRG11X2IPIdqu23AV01j4hkKZbyNgAR6mC6Sq5-v6akw7qMraAZ1stxr55vUHGelRcI3zg-xtT88tOE8Epi8AT7Fbe4JT7hR7jCAFJpwPdlJIa7wSx6zjJHrf0vy2oSZ3lnA"/>
+<h1 class="font-manrope tracking-tight font-extrabold text-xl text-[#191c1e] dark:text-white">DeskCare</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#ffffff]/50 dark:hover:bg-slate-800/50 transition-all scale-95 duration-300 ease-out text-[#00B4D8] dark:text-[#4cd6fb]">
 <span class="material-symbols-outlined" data-icon="settings">settings</span>
 </button>
-</div>
 </header>
-<!-- Main Content -->
-<main class="pt-32 pb-32 px-6 max-w-5xl mx-auto flex flex-col gap-8 md:flex-row md:items-start">
-<!-- Left Column (Identity & Stats) -->
-<div class="flex-1 flex flex-col gap-8">
-<!-- Widget 1: Identity Crystal -->
-<section class="bg-surface-container-lowest rounded-xl p-8 flex flex-col items-center justify-center relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-outline-variant/15">
-<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent pointer-events-none"></div>
-<div class="w-32 h-32 rounded-full mb-6 p-1 bg-gradient-to-br from-primary to-primary-container shadow-[0_10px_30px_rgba(0,106,106,0.2)]">
-<img alt="User profile avatar" class="w-full h-full rounded-full object-cover border-4 border-surface-container-lowest" data-alt="Close up portrait of a young woman with soft natural lighting and neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOJKj0fttA2-8bHkGS_XykZBD13JSaeBVF_O79iq0CENtg7nJqwRD4cDm2-45Jte6DEFDN_5hfgGA4HSsP-4FyCfflC6CV8jgOufwSOA-z0OR_YChVkOt4OSKZW7FFW83wBor0EbOwi8AHz6t3KD6FrAcQ6wHywdeZvRDnF-Y5i8w-aPJSqodWkayVq1VEE9RlZW2HMgpTomSmmkd-uLAewTL66evhsAI2vJcpNV6vlP8nn7riX1bglWwtCcCsAAKNK-ytrrv_HhI"/>
+<main class="max-w-4xl mx-auto px-6 space-y-12">
+<!-- Profile Header Area -->
+<section class="flex flex-col items-center pt-8 space-y-6">
+<div class="relative group">
+<div class="w-32 h-32 rounded-[3rem] overflow-hidden p-1 bg-gradient-to-br from-primary to-primary-container shadow-[0_20px_40px_rgba(0,103,125,0.15)]">
+<img alt="User Avatar Large" class="w-full h-full rounded-[2.8rem] object-cover" data-alt="close up portrait of a young woman with natural makeup looking slightly off camera, soft diffused lighting, neutral background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOFBkmEfYgAbRzfJFmPHOEV0Al5eMk0DmFT-KMNvj9LHPhm4q_bjcxKJLwAXWvUeUzQ8ABkii2se0Kiswt37ikp-si4Sj2Ho86gebCHiiabVbBcfkZXaGCUwjd4pYP2_5pvaboaW0iILV1pbToTqO0tDV55bkQxE8ym7zVhCXMfIhVhhXWTE51lyQi36BP2sbi2Dojy4Vmjyix3WvC_VTwvWMogLByRzEgStBpGeS6v_dkXoUQLKIverAVuqweQa6s9TyR93O7gSg"/>
 </div>
-<h1 class="font-headline text-3xl font-bold text-on-surface mb-2 tracking-tight z-10">Elena Vance</h1>
-<p class="font-body text-outline z-10">Sanctuary Member since 2023</p>
-<div class="mt-6 z-10">
-<button class="px-8 py-3 rounded-full bg-gradient-to-br from-primary to-primary-container text-on-primary font-body font-semibold tracking-wide shadow-[0_10px_20px_rgba(0,106,106,0.3)] hover:opacity-90 transition-opacity">
-                        View Log
-                    </button>
+<button class="absolute bottom-[-10px] right-[-10px] w-12 h-12 bg-surface-container-lowest rounded-full flex items-center justify-center shadow-[0_10px_20px_rgba(0,0,0,0.05)] border border-outline-variant/15 text-primary hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-xl" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="text-center space-y-2">
+<h2 class="font-headline text-3xl font-bold tracking-tight text-on-surface">Alex Mercer</h2>
+<p class="font-body text-on-surface-variant font-medium">Member since 2023</p>
 </div>
 </section>
-<!-- Widget 2: Stats Droplet Row -->
-<section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-outline-variant/15">
-<div class="absolute inset-0 bg-gradient-to-b from-surface-container-low to-transparent opacity-50"></div>
-<span class="material-symbols-outlined text-primary mb-2 opacity-80" data-icon="history">history</span>
-<div class="font-headline text-4xl font-bold text-primary-fixed-dim mb-1 tracking-widest drop-shadow-[0_2px_4px_rgba(26,220,220,0.3)] z-10" style="letter-spacing: 0.05em;">142</div>
-<p class="font-body text-sm text-outline z-10">Total Sessions</p>
+<!-- Stats Bento Grid -->
+<section class="grid grid-cols-2 gap-6">
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center space-y-2 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<span class="material-symbols-outlined text-primary text-3xl mb-1" data-icon="local_fire_department">local_fire_department</span>
+<p class="font-headline text-4xl font-bold text-primary drop-shadow-[0_4px_12px_rgba(76,214,251,0.4)]">14</p>
+<p class="font-label text-sm text-on-surface-variant tracking-wide">Day Streak</p>
 </div>
-<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-outline-variant/15">
-<div class="absolute inset-0 bg-gradient-to-b from-surface-container-low to-transparent opacity-50"></div>
-<span class="material-symbols-outlined text-primary mb-2 opacity-80" data-icon="timer">timer</span>
-<div class="font-headline text-4xl font-bold text-primary-fixed-dim mb-1 tracking-widest drop-shadow-[0_2px_4px_rgba(26,220,220,0.3)] z-10" style="letter-spacing: 0.05em;">2,840</div>
-<p class="font-body text-sm text-outline z-10">Total Minutes</p>
-</div>
-<div class="bg-surface-container-lowest rounded-xl p-6 flex flex-col items-center justify-center relative overflow-hidden shadow-[0_10px_30px_rgba(0,0,0,0.02)] border border-outline-variant/15">
-<div class="absolute inset-0 bg-gradient-to-b from-surface-container-low to-transparent opacity-50"></div>
-<span class="material-symbols-outlined text-primary mb-2 opacity-80" data-icon="local_fire_department">local_fire_department</span>
-<div class="font-headline text-4xl font-bold text-primary-fixed-dim mb-1 tracking-widest drop-shadow-[0_2px_4px_rgba(26,220,220,0.3)] z-10" style="letter-spacing: 0.05em;">14</div>
-<p class="font-body text-sm text-outline z-10">Day Streak</p>
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-[0_10px_30px_rgba(0,0,0,0.02)] flex flex-col items-center justify-center space-y-2 relative overflow-hidden group">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<span class="material-symbols-outlined text-primary text-3xl mb-1" data-icon="timer">timer</span>
+<p class="font-headline text-4xl font-bold text-primary drop-shadow-[0_4px_12px_rgba(76,214,251,0.4)]">42h</p>
+<p class="font-label text-sm text-on-surface-variant tracking-wide">Active Time</p>
 </div>
 </section>
+<!-- Badges Section -->
+<section class="bg-surface-container rounded-xl p-8 shadow-sm">
+<div class="flex justify-between items-end mb-6">
+<h3 class="font-headline text-xl font-bold text-on-surface">Badges</h3>
+<button class="font-label text-sm text-primary font-medium hover:text-primary-container transition-colors">View All</button>
 </div>
-<!-- Right Column (Artifacts & Actions) -->
-<div class="flex-1 flex flex-col gap-8 w-full md:w-[32rem]">
-<!-- Widget 3: Achievement Artifact Shelf -->
-<section class="bg-surface-container-low rounded-xl p-6 border border-outline-variant/10 shadow-[0_10px_40px_rgba(0,0,0,0.03)]">
-<h2 class="font-headline font-semibold text-lg text-on-surface mb-6 ml-2">Artifacts</h2>
-<div class="flex justify-between items-center gap-4 px-2">
-<!-- Prism -->
-<div class="w-16 h-16 rounded-full bg-surface-container-lowest shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center justify-center relative group cursor-pointer border border-outline-variant/15">
-<div class="absolute inset-0 rounded-full bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<span class="material-symbols-outlined text-primary z-10 drop-shadow-[0_2px_4px_rgba(0,106,106,0.3)]" data-icon="change_history">change_history</span>
+<div class="flex gap-4 overflow-x-auto pb-4 snap-x">
+<!-- Badge 1 -->
+<div class="flex-none snap-center flex flex-col items-center space-y-3 w-28 p-4 bg-surface-container-lowest rounded-[2rem] shadow-[0_8px_24px_rgba(0,0,0,0.03)] border border-outline-variant/15">
+<div class="w-16 h-16 rounded-full bg-tertiary-container flex items-center justify-center shadow-[inset_0_-4px_8px_rgba(0,0,0,0.1)]">
+<span class="material-symbols-outlined text-on-tertiary-container text-2xl" data-icon="emoji_events">emoji_events</span>
 </div>
-<!-- Helix -->
-<div class="w-16 h-16 rounded-full bg-surface-container-lowest shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center justify-center relative group cursor-pointer border border-outline-variant/15">
-<div class="absolute inset-0 rounded-full bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<span class="material-symbols-outlined text-primary z-10 drop-shadow-[0_2px_4px_rgba(0,106,106,0.3)]" data-icon="all_inclusive">all_inclusive</span>
+<p class="font-label text-xs text-center font-medium text-on-surface-variant leading-tight">Early Bird</p>
 </div>
-<!-- Sphere -->
-<div class="w-16 h-16 rounded-full bg-surface-container-lowest shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center justify-center relative group cursor-pointer border border-outline-variant/15">
-<div class="absolute inset-0 rounded-full bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<span class="material-symbols-outlined text-primary z-10 drop-shadow-[0_2px_4px_rgba(0,106,106,0.3)]" data-icon="language">language</span>
+<!-- Badge 2 -->
+<div class="flex-none snap-center flex flex-col items-center space-y-3 w-28 p-4 bg-surface-container-lowest rounded-[2rem] shadow-[0_8px_24px_rgba(0,0,0,0.03)] border border-outline-variant/15">
+<div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center shadow-[inset_0_-4px_8px_rgba(0,0,0,0.1)]">
+<span class="material-symbols-outlined text-secondary text-2xl" data-icon="monitor_heart">monitor_heart</span>
 </div>
-<!-- Lens -->
-<div class="w-16 h-16 rounded-full bg-surface-container-lowest shadow-[0_10px_20px_rgba(0,0,0,0.05)] flex items-center justify-center relative group cursor-pointer border border-outline-variant/15">
-<div class="absolute inset-0 rounded-full bg-gradient-to-br from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-<span class="material-symbols-outlined text-primary z-10 drop-shadow-[0_2px_4px_rgba(0,106,106,0.3)]" data-icon="lens">lens</span>
+<p class="font-label text-xs text-center font-medium text-on-surface-variant leading-tight">Posture Pro</p>
+</div>
+<!-- Badge 3 (Locked) -->
+<div class="flex-none snap-center flex flex-col items-center space-y-3 w-28 p-4 bg-surface-container-lowest/50 rounded-[2rem] border border-outline-variant/15 opacity-60">
+<div class="w-16 h-16 rounded-full bg-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-2xl" data-icon="lock">lock</span>
+</div>
+<p class="font-label text-xs text-center font-medium text-outline leading-tight">30 Day Club</p>
 </div>
 </div>
 </section>
-<!-- Widget 4: Account Actions List -->
-<section class="bg-surface-container-lowest rounded-xl flex flex-col overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-outline-variant/15 p-2">
-<a class="flex items-center gap-4 p-4 rounded-full hover:bg-surface-container-low transition-colors group" href="#">
-<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-surface-container-highest transition-colors">
-<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="edit">edit</span>
+<!-- Menu Section -->
+<section class="bg-surface-container-lowest rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.02)] overflow-hidden border border-outline-variant/15">
+<ul class="divide-y divide-outline-variant/10">
+<li>
+<button class="w-full flex items-center justify-between p-6 hover:bg-surface transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="person">person</span>
 </div>
-<span class="font-body font-medium text-on-surface flex-1">Edit Profile</span>
-<span class="material-symbols-outlined text-outline/50" data-icon="chevron_right">chevron_right</span>
-</a>
-<div class="h-8 border-l border-outline-variant/15 ml-10 my-1 hidden"></div>
-<a class="flex items-center gap-4 p-4 rounded-full hover:bg-surface-container-low transition-colors group" href="#">
-<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-surface-container-highest transition-colors">
-<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="notifications">notifications</span>
+<span class="font-headline text-lg font-semibold text-on-surface">Edit Profile</span>
 </div>
-<span class="font-body font-medium text-on-surface flex-1">Notification Preferences</span>
-<span class="material-symbols-outlined text-outline/50" data-icon="chevron_right">chevron_right</span>
-</a>
-<div class="h-8 border-l border-outline-variant/15 ml-10 my-1 hidden"></div>
-<a class="flex items-center gap-4 p-4 rounded-full hover:bg-surface-container-low transition-colors group" href="#">
-<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-surface-container-highest transition-colors">
-<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors" data-icon="devices">devices</span>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between p-6 hover:bg-surface transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="notifications">notifications</span>
 </div>
-<span class="font-body font-medium text-on-surface flex-1">Connected Devices</span>
-<span class="material-symbols-outlined text-outline/50" data-icon="chevron_right">chevron_right</span>
-</a>
-<div class="h-8 border-l border-outline-variant/15 ml-10 my-1 hidden"></div>
-<a class="flex items-center gap-4 p-4 rounded-full hover:bg-error-container/30 transition-colors group mt-4" href="#">
-<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-error-container/50 transition-colors">
-<span class="material-symbols-outlined text-outline group-hover:text-error transition-colors" data-icon="logout">logout</span>
+<span class="font-headline text-lg font-semibold text-on-surface">Notification Preferences</span>
 </div>
-<span class="font-body font-medium text-on-surface flex-1 group-hover:text-error transition-colors">Sign Out</span>
-</a>
+<span class="material-symbols-outlined text-outline-variant" data-icon="chevron_right">chevron_right</span>
+</button>
+</li>
+<li>
+<button class="w-full flex items-center justify-between p-6 hover:bg-error-container/20 transition-colors group">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-error group-hover:bg-error group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="logout">logout</span>
+</div>
+<span class="font-headline text-lg font-semibold text-error">Sign Out</span>
+</div>
+<span class="material-symbols-outlined text-error/50" data-icon="chevron_right">chevron_right</span>
+</button>
+</li>
+</ul>
 </section>
-</div>
 </main>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center h-24 px-4 bg-[#ffffff]/60 dark:bg-[#191c1d]/80 backdrop-blur-3xl rounded-[3rem] mx-6 mb-6 border border-[#bacac9]/10 shadow-[0_-10px_40px_rgba(0,215,215,0.08)] md:hidden">
-<a class="flex flex-col items-center justify-center text-[#566061] dark:text-[#a0aeb0] w-12 h-12 hover:opacity-80 transition-opacity" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="home_max">home_max</span>
-<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest hidden">Sanctuary</span>
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-[#ffffff]/90 dark:bg-slate-950/90 backdrop-blur-2xl rounded-t-[3rem] no-border shadow-[0_-10px_40px_rgba(0,0,0,0.03)] md:hidden">
+<!-- Home (Inactive) -->
+<a class="flex flex-col items-center justify-center text-[#3d494d] dark:text-slate-500 px-4 py-2 hover:opacity-80 transition-opacity active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="house">house</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest">Home</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#566061] dark:text-[#a0aeb0] w-12 h-12 hover:opacity-80 transition-opacity" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="waves">waves</span>
-<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest hidden">Flow</span>
+<!-- Library (Inactive) -->
+<a class="flex flex-col items-center justify-center text-[#3d494d] dark:text-slate-500 px-4 py-2 hover:opacity-80 transition-opacity active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="library_books">library_books</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest">Library</span>
 </a>
-<a class="flex flex-col items-center justify-center text-[#566061] dark:text-[#a0aeb0] w-12 h-12 hover:opacity-80 transition-opacity" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="monitor_heart">monitor_heart</span>
-<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest hidden">Vitals</span>
+<!-- Programs (Inactive) -->
+<a class="flex flex-col items-center justify-center text-[#3d494d] dark:text-slate-500 px-4 py-2 hover:opacity-80 transition-opacity active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="rebase">rebase</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest">Programs</span>
 </a>
-<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#006a6a] to-[#00d7d7] text-white rounded-full w-12 h-12 shadow-[0_4px_15px_rgba(0,215,215,0.4)] Active: scale-90 transition-all cubic-bezier(0.34,1.56,0.64,1)" href="#">
-<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
-<span class="font-['Manrope'] text-[10px] font-semibold uppercase tracking-widest hidden">Profile</span>
-</a>
-</nav>
-<!-- SideNav (Desktop) -->
-<nav class="hidden md:flex flex-col fixed left-0 top-32 bottom-0 w-24 items-center gap-8 py-8 z-30">
-<a class="flex flex-col items-center justify-center text-[#566061] dark:text-[#a0aeb0] w-12 h-12 hover:opacity-80 transition-opacity rounded-full" href="#">
-<span class="material-symbols-outlined" data-icon="home_max">home_max</span>
-</a>
-<a class="flex flex-col items-center justify-center text-[#566061] dark:text-[#a0aeb0] w-12 h-12 hover:opacity-80 transition-opacity rounded-full" href="#">
-<span class="material-symbols-outlined" data-icon="waves">waves</span>
-</a>
-<a class="flex flex-col items-center justify-center text-[#566061] dark:text-[#a0aeb0] w-12 h-12 hover:opacity-80 transition-opacity rounded-full" href="#">
-<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
-</a>
-<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#006a6a] to-[#00d7d7] text-white rounded-full w-12 h-12 shadow-[0_4px_15px_rgba(0,215,215,0.4)]" href="#">
-<span class="material-symbols-outlined" data-icon="person">person</span>
+<!-- Profile (Active) -->
+<a class="flex flex-col items-center justify-center bg-gradient-to-br from-[#00677d] to-[#00B4D8] text-white rounded-full px-6 py-2 transition-all duration-500 active:scale-90 transition-transform duration-200 shadow-[0_10px_20px_rgba(0,103,125,0.2)]" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-manrope text-[10px] font-semibold uppercase tracking-widest">Profile</span>
 </a>
 </nav>
 </body></html>

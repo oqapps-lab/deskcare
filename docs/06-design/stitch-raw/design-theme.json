@@ -83,14 +83,13 @@
   },
 
   "screens": [
-    { "id": "ed333bb61ae6452da3412d6b655340ab", "name": "Recovery Sanctuary Hub (Rounded)",  "folder": "recovery_sanctuary_hub_rounded" },
-    { "id": "96af6dfecc624cb09a5ab83434de3215", "name": "Exercise Instrument Chamber",         "folder": "exercise_instrument_chamber" },
-    { "id": "7108565b735d4970a774c1e4d8358021", "name": "Telemetry Sanctuary",                 "folder": "telemetry_sanctuary" },
-    { "id": "90f7444693d24011a838049756f7c947", "name": "Mission Brief: Cervical Reset",       "folder": "mission_brief_cervical_reset" },
-    { "id": "3b69c28052b242fbaeaa22f56f16eb26", "name": "System Settings (variant 1)",         "folder": "system_settings_1" },
-    { "id": "3b69c28052b242fbaeaa22f56f16eb26", "name": "System Settings (variant 2)",         "folder": "system_settings_2" },
-    { "id": "bc4e8cc6c66d4c28929c7fc8278adc30", "name": "System Intake",                      "folder": "system_intake" },
-    { "id": "9580fce9d7584deea0779b703881e02d", "name": "Operator Profile",                   "folder": "operator_profile" },
-    { "id": "1179d0c0afbd4c64bed08f63e1c82f2a", "name": "System Calibration",                 "folder": "system_calibration" }
+    { "file": "01-intake.png",       "name": "System Intake (Onboarding Quiz)",  "source_folder": "system_intake",    "version": "v1" },
+    { "file": "02-home.png",         "name": "Home Dashboard",                   "source_folder": "home_dashboard",   "version": "v2" },
+    { "file": "03-exercise.png",     "name": "Exercise Player",                  "source_folder": "exercise_player",  "version": "v2" },
+    { "file": "04-session-brief.png","name": "Routine Preview",                  "source_folder": "routine_preview",  "version": "v2" },
+    { "file": "05-telemetry.png",    "name": "Progress & Stats",                 "source_folder": "progress_stats",   "version": "v2" },
+    { "file": "06-profile.png",      "name": "Profile",                          "source_folder": "profile",          "version": "v2" },
+    { "file": "07-settings.png",     "name": "Settings (merged)",                "source_folder": "settings",         "version": "v2" },
+    { "file": "09-calibration.png",  "name": "System Calibration (Onboarding)", "source_folder": "system_calibration","version": "v1" }
   ]
 }
