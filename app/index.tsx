@@ -1,69 +1,64 @@
 /**
  * Welcome Screen (ONB-02)
- * Source of truth: WIREFRAMES.md §1, USER-FLOWS.md Flow 1
- *
- * Stitch vs UX conflicts resolved:
- * - Copy: Stitch "Precision recovery for the high-performance body" →
- *   UX "2 минуты в день — шея перестанет болеть" (direct pain relief value prop)
- * - CTA: UX "Начать" (not "Next →")
- * - Added "Уже есть аккаунт? Войти" link per wireframe
+ * Full-bleed hero photo + bottom overlay + CTA
  */
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  StatusBar,
-  Pressable,
-  ScrollView,
-} from 'react-native';
+import { View, StyleSheet, Pressable, StatusBar } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 
-import { PillCTA, Text, Divider } from '@/components/primitives';
+import { PillCTA, Text } from '@/components/primitives';
 import { Colors, Spacing, Radii } from '@/constants/tokens';
+
+const HERO =
+  'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=900&q=85&auto=format&fit=crop';
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
 
   return (
-    <View
-      style={[
-        styles.root,
-        { paddingTop: insets.top, paddingBottom: insets.bottom },
-      ]}
-    >
-      <StatusBar barStyle="dark-content" backgroundColor={Colors.canvas} />
+    <View style={styles.root}>
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
+      {/* ── Full-bleed hero ── */}
+      <Image
+        source={HERO}
+        style={StyleSheet.absoluteFillObject}
+        contentFit="cover"
+        transition={400}
+      />
+
+      {/* ── Dark gradient overlay at bottom ── */}
+      <View style={styles.overlay} />
+
+      {/* ── Brand mark top-left ── */}
+      <View style={[styles.brand, { paddingTop: insets.top + Spacing.lg }]}>
+        <Text variant="label" upper color="rgba(255,255,255,0.8)">
+          DeskCare
+        </Text>
+      </View>
+
+      {/* ── Bottom content block ── */}
+      <View
+        style={[
+          styles.bottom,
+          {
+            paddingBottom: Math.max(insets.bottom, Spacing.xl) + Spacing.xl,
+            paddingHorizontal: Spacing.xl,
+          },
+        ]}
       >
-        {/* Hero illustration placeholder */}
-        <View style={styles.heroWrap}>
-          <View style={styles.heroCircle}>
-            <Ionicons name="body-outline" size={80} color={Colors.primary} />
-          </View>
-        </View>
-
-        <Divider size="xl" />
-
-        {/* Headline */}
-        <Text variant="h1" center style={styles.headline}>
+        <Text variant="h1" color={Colors.onPrimary} style={styles.headline}>
           2 минуты в день —{'\n'}шея перестанет болеть
         </Text>
 
-        <Divider size="md" />
-
-        {/* Sub-headline */}
-        <Text variant="body" center color={Colors.onSurfaceVar} style={styles.sub}>
+        <Text variant="body" color="rgba(255,255,255,0.75)" style={styles.sub}>
           Микро-растяжки прямо за рабочим столом.{'\n'}Без коврика. Без переодевания.
         </Text>
 
-        <Divider size="xxxl" />
-
-        {/* Primary CTA */}
         <PillCTA
           label="Начать"
           onPress={() => router.push('/home')}
@@ -71,23 +66,19 @@ export default function WelcomeScreen() {
           style={styles.cta}
         />
 
-        <Divider size="lg" />
-
-        {/* Secondary link */}
         <Pressable
           onPress={() => { /* TODO: Sign In */ }}
           accessibilityRole="link"
-          accessibilityLabel="Уже есть аккаунт? Войти"
-          style={styles.signInRow}
+          style={styles.signIn}
         >
-          <Text variant="bodyMd" color={Colors.onSurfaceVar}>
+          <Text variant="bodyMd" color="rgba(255,255,255,0.6)">
             Уже есть аккаунт?{' '}
-          </Text>
-          <Text variant="bodyMd" color={Colors.primary}>
-            Войти
+            <Text variant="bodyMd" color="rgba(255,255,255,0.95)">
+              Войти
+            </Text>
           </Text>
         </Pressable>
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -95,36 +86,41 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: Colors.canvas,
+    backgroundColor: '#1a1f20',
   },
-  scroll: {
-    flexGrow: 1,
-    paddingHorizontal: Spacing.xl,
-    justifyContent: 'center',
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    // Gradient simulation: transparent top → dark bottom
+    backgroundColor: 'transparent',
+    // Use two nested views instead of LinearGradient
   },
-  heroWrap: {
-    alignItems: 'center',
+  brand: {
+    position: 'absolute',
+    top: 0,
+    left: Spacing.xl,
+    zIndex: 10,
   },
-  heroCircle: {
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: Colors.surfaceLow,
-    alignItems: 'center',
-    justifyContent: 'center',
+  bottom: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    // Dark gradient from top of this block
+    backgroundColor: 'rgba(20, 24, 26, 0.72)',
+    paddingTop: Spacing.xxxl,
+    gap: Spacing.lg,
   },
   headline: {
-    lineHeight: 40,
+    lineHeight: 38,
   },
   sub: {
     lineHeight: 24,
   },
   cta: {
-    alignSelf: 'stretch',
+    marginTop: Spacing.sm,
   },
-  signInRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+  signIn: {
+    alignSelf: 'center',
     paddingVertical: Spacing.sm,
   },
 });

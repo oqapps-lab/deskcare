@@ -1,13 +1,6 @@
 /**
- * Routine Preview (EX-01) — P0, highest-frequency flow screen
- * Source of truth: WIREFRAMES.md §6, SCREEN-MAP.md 4.1, FEATURES.md F2/F3
- *
- * Stitch vs UX conflicts resolved:
- * - "Guided Breathwork 5 mins" removed — FEATURES.md Won't Have: mindfulness;
- *   replaced with "Chin Tucks 60 сек" (physical neck exercise)
- * - Zone badge: "NECK" not "RECOVERY" (per DESIGN-GUIDE anti-patterns)
- * - CTA: "Начать рутину" (per WIREFRAMES.md), not "Start Session"
- * - Back button: uses IconButton per WIREFRAMES §6 "← Назад"
+ * Routine Preview (EX-01)
+ * Hero photo per zone, clean sheet layout
  */
 import React from 'react';
 import {
@@ -19,19 +12,25 @@ import {
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Image } from 'expo-image';
 import { Ionicons } from '@expo/vector-icons';
 
-import {
-  Text,
-  PillCTA,
-  Badge,
-  Card,
-  Divider,
-  IconButton,
-} from '@/components/primitives';
+import { Text, PillCTA, Badge, Card, Divider, IconButton } from '@/components/primitives';
 import { Colors, Layout, Spacing, Radii, Shadows } from '@/constants/tokens';
 import { mockRoutines } from '@/mock/data';
 import type { ZoneId } from '@/mock/data';
+
+// ── Zone hero photos ──────────────────────────────────────────────────────────
+const HERO_PHOTOS: Record<ZoneId, string> = {
+  neck:
+    'https://images.unsplash.com/photo-1616279969856-759f316a5ac1?w=800&q=85&auto=format&fit=crop',
+  back:
+    'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&q=85&auto=format&fit=crop',
+  eyes:
+    'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=800&q=85&auto=format&fit=crop',
+  wrists:
+    'https://images.unsplash.com/photo-1573884985872-e62b4d20d4d5?w=800&q=85&auto=format&fit=crop',
+};
 
 export default function RoutineScreen() {
   const router = useRouter();
@@ -47,55 +46,56 @@ export default function RoutineScreen() {
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
-      <StatusBar barStyle="dark-content" backgroundColor={Colors.canvas} />
+      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
-      {/* ── Hero image area ── */}
+      {/* ── Hero photo ── */}
       <View style={styles.hero}>
-        <Ionicons
-          name="body"
-          size={100}
-          color={Colors.primaryLight}
-          style={styles.heroIcon}
+        <Image
+          source={HERO_PHOTOS[zoneId]}
+          style={StyleSheet.absoluteFillObject}
+          contentFit="cover"
+          transition={400}
         />
-        {/* TopBar overlaid on hero */}
-        <View style={styles.heroBar}>
+        {/* Subtle dark overlay for readability of top bar */}
+        <View style={styles.heroOverlay} />
+
+        {/* TopBar */}
+        <View style={[styles.heroBar, { paddingTop: insets.top + Spacing.sm }]}>
           <IconButton
-            icon={<Ionicons name="arrow-back" size={20} color={Colors.onSurface} />}
+            icon={<Ionicons name="arrow-back" size={20} color={Colors.onPrimary} />}
             onPress={() => router.back()}
             accessibilityLabel="Назад"
-            variant="surface"
-            size={40}
+            variant="ghost"
           />
           <IconButton
-            icon={<Ionicons name="bookmark-outline" size={20} color={Colors.onSurface} />}
-            onPress={() => { /* TODO: bookmark */ }}
-            accessibilityLabel="Сохранить рутину"
-            variant="surface"
-            size={40}
+            icon={<Ionicons name="bookmark-outline" size={20} color={Colors.onPrimary} />}
+            onPress={() => { /* TODO */ }}
+            accessibilityLabel="Сохранить"
+            variant="ghost"
           />
         </View>
       </View>
 
-      {/* ── Content card overlapping hero ── */}
+      {/* ── White sheet ── */}
       <View style={styles.sheet}>
         <ScrollView
           contentContainerStyle={[
             styles.scroll,
-            { paddingBottom: insets.bottom + Spacing.xxxl + 56 },
+            { paddingBottom: Math.max(insets.bottom, Spacing.lg) + 56 + Spacing.xl },
           ]}
           showsVerticalScrollIndicator={false}
         >
-          {/* Zone badge + meta */}
+          {/* Meta row */}
           <View style={styles.metaRow}>
             <Badge label={routine.zoneLabel} variant="zone" />
-            <View style={styles.metaMid}>
-              <Ionicons name="time-outline" size={14} color={Colors.onSurfaceVar} />
+            <View style={styles.metaItem}>
+              <Ionicons name="time-outline" size={13} color={Colors.onSurfaceVar} />
               <Text variant="bodyMd" color={Colors.onSurfaceVar}>
                 {routine.durationMin} мин
               </Text>
             </View>
-            <View style={styles.metaMid}>
-              <Ionicons name="bar-chart-outline" size={14} color={Colors.onSurfaceVar} />
+            <View style={styles.metaItem}>
+              <Ionicons name="bar-chart-outline" size={13} color={Colors.onSurfaceVar} />
               <Text variant="bodyMd" color={Colors.onSurfaceVar}>
                 {routine.level}
               </Text>
@@ -103,42 +103,32 @@ export default function RoutineScreen() {
           </View>
 
           <Divider size="sm" />
-
-          {/* Routine name */}
           <Text variant="h1">{routine.name}</Text>
-
           <Divider size="sm" />
-
-          {/* Description */}
           <Text variant="body" color={Colors.onSurfaceVar}>
             {routine.description}
           </Text>
 
-          <Divider size="lg" />
-
-          {/* Exercise list */}
+          <Divider size="xl" />
           <Text variant="h2">Упражнения</Text>
           <Divider size="md" />
 
-          {routine.exercises.map((ex, index) => (
+          {routine.exercises.map((ex, i) => (
             <View key={ex.id}>
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={`${ex.name}, ${ex.duration}`}
                 style={({ pressed }) => [
-                  styles.exerciseRow,
+                  styles.exRow,
                   Shadows.card,
                   pressed && styles.pressed,
                 ]}
               >
-                {/* Number badge */}
-                <View style={styles.exNumber}>
+                <View style={styles.exNum}>
                   <Text variant="label" color={Colors.primary}>
-                    {String(index + 1).padStart(2, '0')}
+                    {String(i + 1).padStart(2, '0')}
                   </Text>
                 </View>
-
-                {/* Name + meta */}
                 <View style={styles.exText}>
                   <Text variant="h3">{ex.name}</Text>
                   <Text variant="bodyMd" color={Colors.onSurfaceVar}>
@@ -147,14 +137,9 @@ export default function RoutineScreen() {
                       : ex.duration}
                   </Text>
                 </View>
-
-                <Ionicons
-                  name="play-circle-outline"
-                  size={28}
-                  color={Colors.primary}
-                />
+                <Ionicons name="play-circle-outline" size={26} color={Colors.primary} />
               </Pressable>
-              {index < routine.exercises.length - 1 && <Divider size="md" />}
+              {i < routine.exercises.length - 1 && <Divider size="md" />}
             </View>
           ))}
 
@@ -172,7 +157,7 @@ export default function RoutineScreen() {
           </Card>
         </ScrollView>
 
-        {/* ── Sticky CTA ── */}
+        {/* Sticky CTA */}
         <View
           style={[
             styles.ctaWrap,
@@ -181,7 +166,7 @@ export default function RoutineScreen() {
         >
           <PillCTA
             label="Начать рутину"
-            onPress={() => { /* TODO: navigate to Exercise Player */ }}
+            onPress={() => { /* TODO: Exercise Player */ }}
             icon={<Ionicons name="play" size={16} color={Colors.onPrimary} />}
           />
         </View>
@@ -191,30 +176,26 @@ export default function RoutineScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: Colors.canvas,
-  },
-  // Hero
+  root: { flex: 1, backgroundColor: Colors.canvas },
+
   hero: {
-    height: 260,
+    height: 300,
     backgroundColor: Colors.surfaceLow,
-    alignItems: 'center',
-    justifyContent: 'center',
     overflow: 'hidden',
   },
-  heroIcon: {
-    opacity: 0.4,
+  heroOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.25)',
   },
   heroBar: {
     position: 'absolute',
-    top: Spacing.md,
+    top: 0,
     left: Layout.screenPadding,
     right: Layout.screenPadding,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  // Sheet overlapping hero
+
   sheet: {
     flex: 1,
     backgroundColor: Colors.surface,
@@ -227,20 +208,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: Layout.screenPadding,
     paddingTop: Spacing.xxl,
   },
-  // Meta row
+
   metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.md,
     flexWrap: 'wrap',
   },
-  metaMid: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  // Exercise row
-  exerciseRow: {
+  metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+
+  exRow: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.surface,
@@ -248,7 +225,7 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     gap: Spacing.md,
   },
-  exNumber: {
+  exNum: {
     width: 32,
     height: 32,
     borderRadius: Radii.full,
@@ -256,22 +233,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  exText: {
-    flex: 1,
-    gap: 2,
-  },
-  // Muscles card
-  musclesCard: {
-    padding: Spacing.lg,
-  },
-  // CTA
+  exText: { flex: 1, gap: 2 },
+
+  musclesCard: { padding: Spacing.lg },
+
   ctaWrap: {
     paddingHorizontal: Layout.screenPadding,
     paddingTop: Spacing.md,
     backgroundColor: Colors.surface,
-    borderTopWidth: 0,
   },
-  pressed: {
-    opacity: 0.75,
-  },
+
+  pressed: { opacity: 0.78 },
 });
