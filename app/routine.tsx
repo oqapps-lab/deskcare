@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  View, ScrollView, StyleSheet, StatusBar, Pressable, Platform,
+  View, ScrollView, StyleSheet, StatusBar, Pressable,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,6 +20,7 @@ const HERO_PHOTOS: Record<ZoneId, string> = {
   wrists: 'https://images.unsplash.com/photo-1573884985872-e62b4d20d4d5?w=800&q=85&auto=format&fit=crop',
 };
 
+
 export default function RoutineScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
@@ -36,16 +37,18 @@ export default function RoutineScreen() {
     <View style={[styles.root, { paddingTop: insets.top }]}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
-      {/* ── Hero photo ── */}
+      {/* Hero */}
       <View style={styles.hero}>
         <Image
           source={HERO_PHOTOS[zoneId]}
           style={StyleSheet.absoluteFillObject}
           contentFit="cover"
-          transition={400}
+          transition={500}
         />
+        {/* Long soft gradient — barely affects top, fades into white at bottom */}
         <LinearGradient
-          colors={['rgba(0,0,0,0.18)', 'rgba(0,0,0,0.52)']}
+          colors={['rgba(0,0,0,0.10)', 'rgba(0,0,0,0.38)', 'rgba(248,250,250,0.0)']}
+          locations={[0, 0.65, 1]}
           style={StyleSheet.absoluteFillObject}
         />
         <View style={[styles.heroBar, { paddingTop: insets.top + Spacing.sm }]}>
@@ -57,14 +60,14 @@ export default function RoutineScreen() {
           />
           <IconButton
             icon={<Ionicons name="bookmark-outline" size={20} color={Colors.onPrimary} />}
-            onPress={() => { }}
+            onPress={() => {}}
             accessibilityLabel="Сохранить"
             variant="ghost"
           />
         </View>
       </View>
 
-      {/* ── White sheet ── */}
+      {/* Sheet */}
       <View style={styles.sheet}>
         <ScrollView
           contentContainerStyle={[
@@ -100,7 +103,7 @@ export default function RoutineScreen() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={`${ex.name}, ${ex.duration}`}
-                style={({ pressed }) => [styles.exRow, styles.exShadow, pressed && styles.pressed]}
+                style={({ pressed }) => [styles.exRow, styles.rowGlow, pressed && styles.pressed]}
               >
                 <View style={styles.exNum}>
                   <Text variant="label" color={Colors.primary}>
@@ -110,10 +113,12 @@ export default function RoutineScreen() {
                 <View style={styles.exText}>
                   <Text variant="h3">{ex.name}</Text>
                   <Text variant="bodyMd" color={Colors.onSurfaceVar}>
-                    {ex.sets != null ? `${ex.sets} сета · ${ex.reps ?? ''} повт` : ex.duration}
+                    {ex.sets != null
+                      ? `${ex.sets} сета · ${ex.reps ?? ''} повт`
+                      : ex.duration}
                   </Text>
                 </View>
-                <Ionicons name="play-circle-outline" size={28} color={Colors.primary} />
+                <Ionicons name="play-circle-outline" size={26} color={Colors.primary} />
               </Pressable>
               {i < routine.exercises.length - 1 && <Divider size="md" />}
             </View>
@@ -128,11 +133,10 @@ export default function RoutineScreen() {
           </Card>
         </ScrollView>
 
-        {/* Sticky CTA with glow */}
         <View style={[styles.ctaWrap, { paddingBottom: Math.max(insets.bottom, Spacing.lg) }]}>
           <PillCTA
             label="Начать рутину"
-            onPress={() => { }}
+            onPress={() => {}}
             icon={<Ionicons name="play" size={16} color={Colors.onPrimary} />}
             direction="diagonal"
           />
@@ -142,30 +146,14 @@ export default function RoutineScreen() {
   );
 }
 
-const exShadow = Platform.select({
-  ios: {
-    shadowColor: Colors.primary,
-    shadowOpacity: 0.07,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 4 },
-  },
-  android: { elevation: 3 },
-  default: {},
-}) ?? {};
-
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: Colors.canvas },
-
-  hero: { height: 320, backgroundColor: Colors.surfaceLow, overflow: 'hidden' },
+  root:  { flex: 1, backgroundColor: Colors.canvas },
+  hero:  { height: 320, backgroundColor: Colors.surfaceLow, overflow: 'hidden' },
   heroBar: {
-    position: 'absolute',
-    top: 0,
-    left: Layout.screenPadding,
-    right: Layout.screenPadding,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    position: 'absolute', top: 0,
+    left: Layout.screenPadding, right: Layout.screenPadding,
+    flexDirection: 'row', justifyContent: 'space-between',
   },
-
   sheet: {
     flex: 1,
     backgroundColor: Colors.surface,
@@ -174,40 +162,32 @@ const styles = StyleSheet.create({
     marginTop: -Radii.lg,
     overflow: 'hidden',
   },
-  scroll: {
-    paddingHorizontal: Layout.screenPadding,
-    paddingTop: Spacing.xxl,
-  },
-
-  metaRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, flexWrap: 'wrap' },
+  scroll:   { paddingHorizontal: Layout.screenPadding, paddingTop: Spacing.xxl },
+  metaRow:  { flexDirection: 'row', alignItems: 'center', gap: Spacing.md, flexWrap: 'wrap' },
   metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-
-  exRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.surface,
-    borderRadius: Radii.md,
-    padding: Spacing.lg,
-    gap: Spacing.md,
+  exRow:    {
+    flexDirection: 'row', alignItems: 'center',
+    backgroundColor: Colors.surface, borderRadius: Radii.md,
+    padding: Spacing.lg, gap: Spacing.md,
   },
-  exShadow: { ...exShadow },
   exNum: {
-    width: 34,
-    height: 34,
-    borderRadius: Radii.full,
+    width: 34, height: 34, borderRadius: Radii.full,
     backgroundColor: Colors.surfaceLow,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',
   },
-  exText: { flex: 1, gap: 2 },
-
-  musclesCard: { padding: Spacing.lg },
-
-  ctaWrap: {
+  exText:  { flex: 1, gap: 2 },
+  rowGlow: {
+    shadowColor: '#00677d',
+    shadowOpacity: 0.06,
+    shadowRadius: 14,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
+  },
+  musclesCard:{ padding: Spacing.lg },
+  ctaWrap:    {
     paddingHorizontal: Layout.screenPadding,
     paddingTop: Spacing.md,
     backgroundColor: Colors.surface,
   },
-
-  pressed: { opacity: 0.78 },
+  pressed: { opacity: 0.76 },
 });

@@ -1,13 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleSheet, View, StyleProp, ViewStyle } from 'react-native';
 import { Colors, Layout, Radii, Shadows } from '@/constants/tokens';
 
 interface CardProps {
   children: React.ReactNode;
-  style?: ViewStyle;
-  /** Elevate the card with ambient shadow */
+  style?: StyleProp<ViewStyle>;
   elevated?: boolean;
-  /** Override background — default is surface (white) */
   bg?: string;
 }
 
