@@ -100,9 +100,9 @@ export default function QuizZoneScreen() {
 
       <Animated.View style={[styles.root, contentStyle, { paddingBottom: insets.bottom + 160 }]}>
         <View style={styles.progressBlock}>
-          <Eyebrow>STEP 1 OF 5</Eyebrow>
+          <Eyebrow>STEP 1 OF 4</Eyebrow>
           <View style={{ height: spacing.sm }} />
-          <ProgressBar value={0.2} accessibilityLabel="Quiz progress: step 1 of 5" />
+          <ProgressBar value={0.25} accessibilityLabel="Quiz progress: step 1 of 4" />
         </View>
 
         <View style={styles.copy}>
@@ -155,6 +155,8 @@ export default function QuizZoneScreen() {
           variant="primary"
           size="lg"
           onPress={next}
+          disabled={!hasAny}
+          breath={hasAny}
           accessibilityLabel={hasAny ? 'Next step' : 'Pick at least one zone'}
         >
           Next

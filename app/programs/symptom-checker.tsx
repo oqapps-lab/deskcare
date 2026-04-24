@@ -126,6 +126,7 @@ export default function SymptomCheckerScreen() {
           variant="primary"
           size="lg"
           breath={canAdapt}
+          disabled={!canAdapt}
           onPress={adapt}
           accessibilityLabel={redFlagActive ? 'Pause program' : canAdapt ? 'Adapt today' : 'Pick at least one'}
         >

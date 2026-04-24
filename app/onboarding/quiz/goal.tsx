@@ -94,9 +94,9 @@ export default function QuizGoalScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.progressBlock}>
-            <Eyebrow>STEP 4 OF 5</Eyebrow>
+            <Eyebrow>STEP 4 OF 4</Eyebrow>
             <View style={{ height: spacing.sm }} />
-            <ProgressBar value={0.8} accessibilityLabel="Quiz progress: step 4 of 5" />
+            <ProgressBar value={1.0} accessibilityLabel="Quiz progress: step 4 of 4" />
           </View>
 
           <Text style={styles.title}>What are you{'\n'}hoping for?</Text>
@@ -159,6 +159,7 @@ export default function QuizGoalScreen() {
           variant="primary"
           size="lg"
           onPress={ready}
+          disabled={!canAdvance}
           breath={canAdvance}
           accessibilityLabel={canAdvance ? 'Ready — continue to plan' : 'Pick a goal and hours'}
         >

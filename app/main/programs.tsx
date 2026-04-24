@@ -44,7 +44,9 @@ const PROGRAMS = [
     tone: 'mint' as const,
     icon: 'plus' as const,
     premium: true,
-    route: '/programs/sciatica', // placeholder — carpal detail not built yet
+    // Detail screen ships in a later batch — for now, premium-gate
+    // routes to the paywall, where the user converts before unlocking.
+    route: '/onboarding/paywall',
   },
 ];
 

@@ -80,7 +80,7 @@ export default function WelcomeScreen() {
   };
   const signIn = () => {
     Haptics.selectionAsync();
-    router.push('/onboarding/quiz/zone'); // no auth in Stage 5; reroute to flow
+    router.push('/auth/sign-in');
   };
 
   return (

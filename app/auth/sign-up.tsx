@@ -112,7 +112,7 @@ export default function SignUpScreen() {
 
           <View style={{ height: spacing.xl }} />
 
-          <PillCTA variant="primary" size="lg" breath={canSubmit} onPress={create}>
+          <PillCTA variant="primary" size="lg" breath={canSubmit} disabled={!canSubmit} onPress={create}>
             Create account
           </PillCTA>
 

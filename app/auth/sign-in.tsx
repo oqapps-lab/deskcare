@@ -103,7 +103,7 @@ export default function SignInScreen() {
 
           <View style={{ height: spacing.xl }} />
 
-          <PillCTA variant="primary" size="lg" breath={canSubmit} onPress={signIn}>
+          <PillCTA variant="primary" size="lg" breath={canSubmit} disabled={!canSubmit} onPress={signIn}>
             Sign in
           </PillCTA>
 

@@ -42,17 +42,17 @@ const REMINDERS: ReadonlyArray<SwitchRowDef> = [
 ];
 
 const ACCOUNT: ReadonlyArray<NavRowDef> = [
-  { key: 'sub',     icon: 'crown',    tone: 'coral',    title: 'Subscription',    sub: 'Trial · 4 days remaining', route: '/onboarding/paywall' },
-  { key: 'profile', icon: 'settings', tone: 'lavender', title: 'Profile details', sub: 'Name, age, pain zones' },
-  { key: 'restore', icon: 'refresh',  tone: 'mint',     title: 'Restore purchase', sub: 'Re-sync your plan from Apple' },
+  { key: 'sub',     icon: 'crown',    tone: 'coral',    title: 'Subscription',    sub: 'Trial · 4 days remaining', route: '/onboarding/paywall', badge: 'TRIAL' },
+  { key: 'profile', icon: 'settings', tone: 'lavender', title: 'Profile details', sub: 'Name, age, pain zones',     route: '/onboarding/quiz/zone' },
+  { key: 'restore', icon: 'refresh',  tone: 'mint',     title: 'Restore purchase', sub: 'Re-sync your plan from Apple', route: '/onboarding/paywall' },
 ];
 
 const PRIVACY: ReadonlyArray<NavRowDef> = [
-  { key: 'data',     icon: 'settings', tone: 'lavender', title: 'Data & analytics', sub: 'What we collect and why' },
-  { key: 'terms',    icon: 'plus',     tone: 'peach',    title: 'Terms of use',     sub: '' },
-  { key: 'privacy',  icon: 'plus',     tone: 'peach',    title: 'Privacy policy',   sub: '' },
-  { key: 'contact',  icon: 'plus',     tone: 'coral',    title: 'Contact support',  sub: 'hi@deskcare.app' },
-  { key: 'signout',  icon: 'close-x',  tone: 'coral',    title: 'Sign out',         sub: '', accent: true },
+  { key: 'data',     icon: 'settings', tone: 'lavender', title: 'Data & analytics', sub: 'What we collect and why', route: '/onboarding/permission' },
+  { key: 'terms',    icon: 'plus',     tone: 'peach',    title: 'Terms of use',     sub: '',                         route: '/onboarding/permission' },
+  { key: 'privacy',  icon: 'plus',     tone: 'peach',    title: 'Privacy policy',   sub: '',                         route: '/onboarding/permission' },
+  { key: 'contact',  icon: 'plus',     tone: 'coral',    title: 'Contact support',  sub: 'hi@deskcare.app',          route: '/onboarding/permission' },
+  { key: 'signout',  icon: 'close-x',  tone: 'coral',    title: 'Sign out',         sub: '',                         route: '/auth/sign-in', accent: true },
 ];
 
 export default function SettingsScreen() {

@@ -80,9 +80,9 @@ export default function QuizFrequencyScreen() {
 
       <Animated.View style={[styles.root, contentStyle, { paddingBottom: insets.bottom + 160 }]}>
         <View style={styles.progressBlock}>
-          <Eyebrow>STEP 2 OF 5</Eyebrow>
+          <Eyebrow>STEP 2 OF 4</Eyebrow>
           <View style={{ height: spacing.sm }} />
-          <ProgressBar value={0.4} accessibilityLabel="Quiz progress: step 2 of 5" />
+          <ProgressBar value={0.5} accessibilityLabel="Quiz progress: step 2 of 4" />
         </View>
 
         <View style={styles.copy}>
@@ -144,6 +144,8 @@ export default function QuizFrequencyScreen() {
           variant="primary"
           size="lg"
           onPress={next}
+          disabled={!choice}
+          breath={!!choice}
           accessibilityLabel={choice ? 'Next step' : 'Pick an option'}
         >
           Next
