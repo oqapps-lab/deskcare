@@ -205,13 +205,18 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:   { flex: 1, backgroundColor: Colors.canvas },
+  root:   { flex: 1, backgroundColor: Colors.surface },
   scroll: { paddingHorizontal: Layout.screenPadding, paddingTop: Spacing.lg },
 
   header: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-between' },
   gearBtn: { width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
 
-  card: {},
+  // Thin-border + soft shadow style for top two widgets
+  card: {
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 103, 125, 0.10)',
+  },
 
   streakRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   weekRow:   { flexDirection: 'row', justifyContent: 'space-between' },
@@ -246,13 +251,13 @@ const styles = StyleSheet.create({
 
   painRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, padding: Spacing.lg, backgroundColor: Colors.surface, borderRadius: Radii.lg },
 
-  // Soft ambient teal glow (shadow* for iOS, elevation for Android)
+  // Light shadow for bordered cards on white background
   glow: {
-    shadowColor: '#00677d',
-    shadowOpacity: 0.09,
-    shadowRadius: 32,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 4,
+    shadowColor: '#000000',
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 3,
   },
 
   nav:     { position: 'absolute', left: 0, right: 0 },
