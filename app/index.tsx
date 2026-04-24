@@ -9,8 +9,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { PillCTA, Text, Divider } from '@/components/primitives';
 import { Colors, Spacing } from '@/constants/tokens';
 
+// Person stretching at a desk / wellness at work
 const HERO =
-  'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=900&q=85&auto=format&fit=crop';
+  'https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=900&q=85&auto=format&fit=crop';
 
 export default function WelcomeScreen() {
   const router = useRouter();

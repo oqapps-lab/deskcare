@@ -16,10 +16,14 @@ import { mockUser, mockRoutines, BODY_ZONES, WEEK_DAYS } from '@/mock/data';
 import type { ZoneId } from '@/mock/data';
 
 const ZONE_PHOTOS: Record<ZoneId, string> = {
-  neck:   'https://images.unsplash.com/photo-1616279969856-759f316a5ac1?w=400&q=80&auto=format&fit=crop',
-  back:   'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80&auto=format&fit=crop',
-  eyes:   'https://images.unsplash.com/photo-1490730141103-6cac27aaab94?w=400&q=80&auto=format&fit=crop',
-  wrists: 'https://images.unsplash.com/photo-1616803140344-6682af8dfd0b?w=400&q=80&auto=format&fit=crop',
+  // Neck: closeup of a neck/throat
+  neck:   'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=85&auto=format&fit=crop',
+  // Back: yoga back stretch
+  back:   'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=85&auto=format&fit=crop',
+  // Eyes: eye closeup
+  eyes:   'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=85&auto=format&fit=crop',
+  // Wrists: hands closeup
+  wrists: 'https://images.unsplash.com/photo-1604480132736-44c188fe4d20?w=400&q=85&auto=format&fit=crop',
 };
 
 const makeTabs = (active: TabId): TabItem[] => [
@@ -213,19 +217,21 @@ const styles = StyleSheet.create({
   weekRow:   { flexDirection: 'row', justifyContent: 'space-between' },
   dayCol: { alignItems: 'center' },
 
-  // Active day — circular halo with teal glow
+  // Active day — ring border with cyan glow, no fill
   dayHalo: {
     width: 34,
     height: 34,
     borderRadius: Radii.full,
-    backgroundColor: 'rgba(0, 103, 125, 0.10)',
+    borderWidth: 1.5,
+    borderColor: Colors.primary,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: Colors.primaryLight,
-    shadowOpacity: 0.45,
-    shadowRadius: 10,
+    shadowOpacity: 0.7,
+    shadowRadius: 8,
     shadowOffset: { width: 0, height: 0 },
-    elevation: 3,
+    elevation: 4,
   },
   dayTextActive:   { fontWeight: '700', letterSpacing: 0.2 },
   dayTextInactive: { letterSpacing: 0.2 },
