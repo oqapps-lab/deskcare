@@ -3,15 +3,17 @@ import { View, ViewStyle } from 'react-native';
 import { Spacing } from '@/constants/tokens';
 
 interface DividerProps {
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'xxxl';
   style?: ViewStyle;
 }
 
 const sizeMap = {
-  sm:  Spacing.sm,
-  md:  Spacing.md,
-  lg:  Spacing.lg,
-  xl:  Spacing.xxl,
+  xs:   Spacing.xs,
+  sm:   Spacing.sm,
+  md:   Spacing.md,
+  lg:   Spacing.lg,
+  xl:   Spacing.xxl,
+  xxxl: Spacing.xxxl,
 } as const;
 
 /**
