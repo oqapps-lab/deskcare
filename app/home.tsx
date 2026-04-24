@@ -17,13 +17,13 @@ import type { ZoneId } from '@/mock/data';
 
 const ZONE_PHOTOS: Record<ZoneId, string> = {
   // Neck: person at laptop with neck pain/strain
-  neck:   'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=85&auto=format&fit=crop',
+  neck:   'https://avatars.mds.yandex.net/i?id=da6b71d8d865a58d49f43c238bdb58a0_l-12585576-images-thumbs&n=13',
   // Back: yoga back stretch
   back:   'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=85&auto=format&fit=crop',
   // Eyes: eye macro closeup
   eyes:   'https://t4.ftcdn.net/jpg/02/60/24/83/360_F_260248388_oImXAM9Qrkv0uuqFuJYFHVycIVyygjJL.jpg',
   // Wrists: hands closeup / fingers
-  wrists: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=85&auto=format&fit=crop',
+  wrists: 'https://avatars.mds.yandex.net/i?id=88efaa9ff48c90b4bb82eb6de37fa820298df2c2-2398678-images-thumbs&n=13',
 };
 
 const makeTabs = (active: TabId): TabItem[] => [
