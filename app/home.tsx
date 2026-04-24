@@ -21,7 +21,7 @@ const ZONE_PHOTOS: Record<ZoneId, string> = {
   // Back: yoga back stretch
   back:   'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=85&auto=format&fit=crop',
   // Eyes: eye macro closeup
-  eyes:   'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=400&q=85&auto=format&fit=crop',
+  eyes:   'https://t4.ftcdn.net/jpg/02/60/24/83/360_F_260248388_oImXAM9Qrkv0uuqFuJYFHVycIVyygjJL.jpg',
   // Wrists: hands closeup / fingers
   wrists: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=85&auto=format&fit=crop',
 };
