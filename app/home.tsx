@@ -16,14 +16,14 @@ import { mockUser, mockRoutines, BODY_ZONES, WEEK_DAYS } from '@/mock/data';
 import type { ZoneId } from '@/mock/data';
 
 const ZONE_PHOTOS: Record<ZoneId, string> = {
-  // Neck: closeup of a neck/throat
-  neck:   'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400&q=85&auto=format&fit=crop',
+  // Neck: person at laptop with neck pain/strain
+  neck:   'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=400&q=85&auto=format&fit=crop',
   // Back: yoga back stretch
   back:   'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=85&auto=format&fit=crop',
-  // Eyes: eye closeup
-  eyes:   'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=85&auto=format&fit=crop',
-  // Wrists: hands closeup
-  wrists: 'https://images.unsplash.com/photo-1604480132736-44c188fe4d20?w=400&q=85&auto=format&fit=crop',
+  // Eyes: eye macro closeup
+  eyes:   'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?w=400&q=85&auto=format&fit=crop',
+  // Wrists: hands closeup / fingers
+  wrists: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&q=85&auto=format&fit=crop',
 };
 
 const makeTabs = (active: TabId): TabItem[] => [
@@ -217,21 +217,21 @@ const styles = StyleSheet.create({
   weekRow:   { flexDirection: 'row', justifyContent: 'space-between' },
   dayCol: { alignItems: 'center' },
 
-  // Active day — ring border with cyan glow, no fill
+  // Active day — thin airy ring, wide diffused glow
   dayHalo: {
-    width: 34,
-    height: 34,
+    width: 32,
+    height: 32,
     borderRadius: Radii.full,
-    borderWidth: 1.5,
-    borderColor: Colors.primary,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 143, 163, 0.55)',
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: Colors.primaryLight,
-    shadowOpacity: 0.7,
-    shadowRadius: 8,
+    shadowOpacity: 0.35,
+    shadowRadius: 14,
     shadowOffset: { width: 0, height: 0 },
-    elevation: 4,
+    elevation: 2,
   },
   dayTextActive:   { fontWeight: '700', letterSpacing: 0.2 },
   dayTextInactive: { letterSpacing: 0.2 },
