@@ -47,23 +47,27 @@
 
 ### Таблица: exercises
 
-**Назначение:** Каталог упражнений (50–80 к запуску). F3: Video Player, F4: Library, F6: Eye Exercises.
+**Назначение:** Каталог атомов — единиц контента (бесшовно зацикленных видео). F3: Video Player, F4: Library, F6: Eye Exercises. Один атом = одна строка. Каталог: 64 атома (см. `EXERCISES-LIBRARY-SUPABASE.md`).
 **Связана с:** body_zones (M:N), routine_exercises, program_exercises, session_exercises, favorites
 
 | Колонка | Тип | Nullable | Default | Описание |
 |---------|-----|----------|---------|----------|
 | id | uuid | NOT NULL | gen_random_uuid() | PK |
-| slug | text | NOT NULL | — | URL-friendly идентификатор |
-| title | text | NOT NULL | — | Название упражнения |
-| description | text | NULL | — | Описание техники |
-| video_url | text | NULL | — | URL видео в Storage |
+| code | text | NOT NULL | — | Внутренний короткий код: `N1`, `B5`, `W12`, `S7`, `E3`. Для удобства seed-скрипта и отладки |
+| slug | text | NOT NULL | — | URL-friendly идентификатор: `neck-lateral-tilt` |
+| title | text | NOT NULL | — | Название упражнения (RU) |
+| title_en | text | NULL | — | Название (EN) |
+| description | text | NULL | — | Короткое UI-описание для карточки в Library/Player |
+| video_url | text | NULL | — | URL видео в Storage (бесшовный loop, 4–21 сек) |
 | thumbnail_url | text | NULL | — | URL превью-изображения |
-| duration_seconds | smallint | NOT NULL | 60 | Длительность в секундах |
-| difficulty | text | NOT NULL | 'easy' | CHECK: easy, medium |
-| exercise_type | text | NOT NULL | 'stretch' | CHECK: stretch, eye, nerve_glide, tendon_glide |
+| duration_seconds | smallint | NOT NULL | 5 | Длительность одного проигрыша атома (значения от 4 до 21) |
+| reps_inside_atom | text | NULL | — | Информационно: сколько повторений уже встроено в один проигрыш ("по 3 в каждую сторону", "1 удержание"). Для подсказок дизайнеру при сборке рутин |
+| difficulty | smallint | NOT NULL | 1 | 1=easy, 2=medium, 3=hard |
+| exercise_type | text | NOT NULL | 'stretch' | CHECK: stretch, mobility, strength, nerve_glide, tendon_glide, breathing |
 | is_premium | boolean | NOT NULL | false | Платный контент |
 | target_muscles | text[] | NULL | — | Целевые мышцы |
 | contraindications | text[] | NULL | — | Противопоказания |
+| cautions | text | NULL | — | Предупреждение в UI ("Прекратите при усилении онемения" — для W8) |
 | modifications | text | NULL | — | Описание модификаций |
 | audio_url | text | NULL | — | URL аудио-инструкции |
 | sort_order | smallint | NOT NULL | 0 | Порядок в каталоге |
@@ -71,12 +75,14 @@
 | updated_at | timestamptz | NOT NULL | now() | |
 
 **Constraints:**
+- `UNIQUE (code)`
 - `UNIQUE (slug)`
-- `CHECK (difficulty IN ('easy', 'medium'))`
-- `CHECK (exercise_type IN ('stretch', 'eye', 'nerve_glide', 'tendon_glide'))`
-- `CHECK (duration_seconds > 0)`
+- `CHECK (difficulty BETWEEN 1 AND 3)`
+- `CHECK (exercise_type IN ('stretch', 'mobility', 'strength', 'nerve_glide', 'tendon_glide', 'breathing'))`
+- `CHECK (duration_seconds > 0 AND duration_seconds <= 60)`
 
 **Индексы:**
+- `idx_exercises_code ON (code)`
 - `idx_exercises_slug ON (slug)`
 - `idx_exercises_type ON (exercise_type)`
 - `idx_exercises_is_premium ON (is_premium)`
@@ -142,7 +148,7 @@
 
 ### Таблица: routine_exercises
 
-**Назначение:** Упражнения в составе рутины с порядком выполнения.
+**Назначение:** Упражнения в составе рутины с порядком, числом повторов и оверлеем для плеера.
 **Связана с:** routines, exercises
 
 | Колонка | Тип | Nullable | Default | Описание |
@@ -150,16 +156,23 @@
 | id | uuid | NOT NULL | gen_random_uuid() | PK |
 | routine_id | uuid | NOT NULL | — | FK → routines(id) ON DELETE CASCADE |
 | exercise_id | uuid | NOT NULL | — | FK → exercises(id) ON DELETE CASCADE |
-| sort_order | smallint | NOT NULL | 0 | Порядок в рутине |
+| sort_order | smallint | NOT NULL | 0 | Порядок в рутине (1..N) |
+| reps | smallint | NOT NULL | 1 | Сколько раз бесшовно проиграть атом подряд. Реальная длительность = `exercises.duration_seconds × reps` |
+| overlay_text | text | NULL | — | Подсказка-оверлей для плеера: "вдох-выдох", "по 1 повтору в каждую сторону" |
+| rest_seconds | smallint | NOT NULL | 0 | Пауза в секундах после этого упражнения перед следующим |
 | created_at | timestamptz | NOT NULL | now() | |
 
 **Constraints:**
 - `UNIQUE (routine_id, sort_order)`
+- `CHECK (reps > 0 AND reps <= 20)` — защита от опечаток (20 повторов × 21 сек = ~7 мин одного атома, потолок здравого смысла)
+- `CHECK (rest_seconds >= 0 AND rest_seconds <= 30)`
 
 **Индексы:**
-- `idx_routine_exercises_routine ON (routine_id)`
+- `idx_routine_exercises_routine ON (routine_id, sort_order)`
 
 **RLS:** Включена. Публичное чтение.
+
+**Замечание для плеера:** длительность всей рутины = `Σ (exercises.duration_seconds × reps + rest_seconds)`. Можно либо считать на клиенте при загрузке `routine_items`, либо хранить агрегат в `routines.duration_seconds` (триггер пересчёта при изменении состава). Для MVP — считаем на клиенте.
 
 ---
 
