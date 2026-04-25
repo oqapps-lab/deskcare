@@ -13,31 +13,34 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function SignInScreen() {
   const insets = useSafeAreaInsets();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
+  const { signIn: doSignIn, loading, error } = useAuth();
 
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
   };
-  const signIn = () => {
+  const signIn = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.replace('/main/home');
+    const r = await doSignIn(email, password);
+    if (r.ok) router.replace('/main/home');
   };
   const signUp = () => {
     Haptics.selectionAsync();
     router.replace('/auth/sign-up');
   };
   const apple = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    router.replace('/main/home');
+    // Apple/Google OAuth wired in Stage 6.5 — for now show a friendly stub.
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
   };
 
-  const canSubmit = email.length > 3 && password.length >= 6;
+  const canSubmit = email.length > 3 && password.length >= 6 && !loading;
 
   return (
     <AtmosphericBackground>
@@ -103,9 +106,17 @@ export default function SignInScreen() {
 
           <View style={{ height: spacing.xl }} />
 
-          <PillCTA variant="primary" size="lg" breath={canSubmit} disabled={!canSubmit} onPress={signIn}>
+          <PillCTA
+            variant="primary"
+            size="lg"
+            breath={canSubmit}
+            disabled={!canSubmit}
+            loading={loading}
+            onPress={signIn}
+          >
             Sign in
           </PillCTA>
+          {error && <Text style={styles.authError}>{error}</Text>}
 
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
@@ -246,5 +257,11 @@ const styles = StyleSheet.create({
   switchAccent: {
     color: colors.primaryMid,
     fontFamily: typeScale.title.fontFamily,
+  },
+  authError: {
+    ...typeScale.bodySm,
+    color: colors.error,
+    textAlign: 'center',
+    marginTop: spacing.md,
   },
 });

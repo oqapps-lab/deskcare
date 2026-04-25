@@ -14,6 +14,7 @@ import {
   ToggleSwitch,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function SignUpScreen() {
   const insets = useSafeAreaInsets();
@@ -21,14 +22,16 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [marketing, setMarketing] = useState(true);
+  const { signUp: doSignUp, loading, error } = useAuth();
 
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
   };
-  const create = () => {
+  const create = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.replace('/main/home');
+    const r = await doSignUp(email, password);
+    if (r.ok) router.replace('/onboarding/welcome');
   };
   const signIn = () => {
     Haptics.selectionAsync();
@@ -36,7 +39,7 @@ export default function SignUpScreen() {
   };
 
   const mismatch = confirm.length > 0 && confirm !== password;
-  const canSubmit = email.length > 3 && password.length >= 6 && confirm === password;
+  const canSubmit = email.length > 3 && password.length >= 6 && confirm === password && !loading;
 
   return (
     <AtmosphericBackground>
@@ -112,9 +115,17 @@ export default function SignUpScreen() {
 
           <View style={{ height: spacing.xl }} />
 
-          <PillCTA variant="primary" size="lg" breath={canSubmit} disabled={!canSubmit} onPress={create}>
+          <PillCTA
+            variant="primary"
+            size="lg"
+            breath={canSubmit}
+            disabled={!canSubmit}
+            loading={loading}
+            onPress={create}
+          >
             Create account
           </PillCTA>
+          {error && <Text style={styles.authError}>{error}</Text>}
 
           <Text style={styles.legal}>
             By continuing you accept the <Text style={styles.legalAccent}>Terms</Text> and{' '}
@@ -210,5 +221,11 @@ const styles = StyleSheet.create({
   switchAccent: {
     color: colors.primaryMid,
     fontFamily: typeScale.title.fontFamily,
+  },
+  authError: {
+    ...typeScale.bodySm,
+    color: colors.error,
+    textAlign: 'center',
+    marginTop: spacing.md,
   },
 });

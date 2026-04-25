@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
 import { useAppFonts } from '../hooks/useAppFonts';
 import { colors } from '../constants/tokens';
+import { useSession } from '../lib/store/session';
 
 export default function RootLayout() {
   const fontsLoaded = useAppFonts();
+  const initSession = useSession((s) => s.init);
+  const hasHydrated = useSession((s) => s.hasHydrated);
 
-  if (!fontsLoaded) {
+  useEffect(() => {
+    initSession();
+  }, [initSession]);
+
+  if (!fontsLoaded || !hasHydrated) {
     return <View style={{ flex: 1, backgroundColor: colors.canvas }} />;
   }
 

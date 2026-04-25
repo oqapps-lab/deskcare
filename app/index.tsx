@@ -12,6 +12,7 @@ import Animated, {
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Path, Stop } from 'react-native-svg';
 import { AtmosphericBackground } from '../components/ui/AtmosphericBackground';
 import { colors, spacing, typeScale } from '../constants/tokens';
+import { useSession } from '../lib/store/session';
 
 /**
  * Splash screen — animated brand mark → auto-routes to the onboarding flow
@@ -19,6 +20,7 @@ import { colors, spacing, typeScale } from '../constants/tokens';
  */
 export default function Splash() {
   const reduceMotion = useReducedMotion();
+  const session = useSession((s) => s.session);
   const logoScale = useSharedValue(0.8);
   const logoOpacity = useSharedValue(0);
   const haloOpacity = useSharedValue(0);
@@ -36,10 +38,12 @@ export default function Splash() {
     taglineOpacity.value = withDelay(850, withTiming(1, { duration: 500 }));
 
     const t = setTimeout(() => {
-      router.replace('/onboarding/welcome');
+      // Auth-aware redirect: signed-in users skip onboarding intro and land on home;
+      // signed-out users see the welcome flow.
+      router.replace(session ? '/main/home' : '/onboarding/welcome');
     }, reduceMotion ? 900 : 1900);
     return () => clearTimeout(t);
-  }, [reduceMotion, logoScale, logoOpacity, haloOpacity, wordOpacity, wordY, taglineOpacity]);
+  }, [reduceMotion, session, logoScale, logoOpacity, haloOpacity, wordOpacity, wordY, taglineOpacity]);
 
   const logoStyle = useAnimatedStyle(() => ({
     opacity: logoOpacity.value,

@@ -17,6 +17,7 @@ import {
 import type { GlyphName } from '../../components/ui';
 import type { HaloTone } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useSession } from '../../lib/store/session';
 
 interface SwitchRowDef {
   key: string;
@@ -66,12 +67,19 @@ export default function SettingsScreen() {
   const toggle = (k: string) => {
     setValues((v) => ({ ...v, [k]: !v[k] }));
   };
+  const supabaseSignOut = useSession((s) => s.signOut);
+
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
   };
-  const nav = (r: NavRowDef) => {
+  const nav = async (r: NavRowDef) => {
     Haptics.selectionAsync();
+    if (r.key === 'signout') {
+      await supabaseSignOut();
+      router.replace('/auth/sign-in');
+      return;
+    }
     if (r.route) router.push(r.route as never);
   };
 

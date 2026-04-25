@@ -1,5 +1,5 @@
-import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path } from 'react-native-svg';
@@ -15,76 +15,60 @@ import {
   VideoPlaceholder,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { supabase } from '../../lib/supabase';
+import type { Exercise } from '../../lib/types/db';
 
-const EXERCISES: Record<
-  string,
-  { name: string; meta: string; pose: 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch'; desc: string }
-> = {
-  'chin-tuck': {
-    name: 'Chin Tuck',
-    meta: '2 MIN · NECK · GENTLE',
-    pose: 'neck-roll',
-    desc: 'Pulls the head back into alignment. Releases the sub-occipital muscles that tighten from forward-screen posture.',
-  },
-  'upper-trap': {
-    name: 'Upper Trap Stretch',
-    meta: '2 MIN · NECK · GENTLE',
-    pose: 'neck-roll',
-    desc: 'A gentle side-bend with the opposite arm anchored. Lengthens the upper trapezius — the muscle that holds your shrug.',
-  },
-  'eye-figure-8': {
-    name: 'Eye Figure-8',
-    meta: '30 SEC · EYES · MEDITATIVE',
-    pose: 'eye-rest',
-    desc: 'Track an imaginary figure-8 with your eyes. Re-teaches the smooth-pursuit muscles that lock when staring at a monitor.',
-  },
-  'cat-cow': {
-    name: 'Seated Cat-Cow',
-    meta: '3 MIN · BACK · GENTLE',
-    pose: 'back-arch',
-    desc: 'From a seated posture, inhale-arch and exhale-round. Mobilizes every vertebra of your thoracic spine without leaving the chair.',
-  },
-  'wrist-flex': {
-    name: 'Wrist Flex & Extend',
-    meta: '2 MIN · WRISTS · GENTLE',
-    pose: 'wrist-stretch',
-    desc: 'Slow wrist flexion and extension with one arm at a time. Keeps the carpal tunnel from tightening around the median nerve.',
-  },
-  'thoracic-open': {
-    name: 'Thoracic Opener',
-    meta: '3 MIN · BACK · MODERATE',
-    pose: 'back-arch',
-    desc: 'A tabletop reach that rotates the mid-back. Relieves the rounded-shoulder slump that grows through the day.',
-  },
-  'palming': {
-    name: 'Palming Reset',
-    meta: '30 SEC · EYES · CALMING',
-    pose: 'eye-rest',
-    desc: 'Cup your palms over closed eyes. A 30-second blackout that gives the retina its first real break of the day.',
-  },
-  'levator': {
-    name: 'Levator Scapulae Release',
-    meta: '5 MIN · NECK · MODERATE',
-    pose: 'neck-roll',
-    desc: 'A deeper release for the muscle that connects neck to shoulder blade. Best when neck pain has been daily for weeks.',
-  },
-  'median-glide': {
-    name: 'Median Nerve Glide',
-    meta: '2 MIN · WRISTS · MODERATE',
-    pose: 'wrist-stretch',
-    desc: 'A small arm-sweep that slides the median nerve through the carpal tunnel. Essential in carpal-tunnel care.',
-  },
+const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch' => {
+  if (!code) return 'neck-roll';
+  if (code.startsWith('N')) return 'neck-roll';
+  if (code.startsWith('B') || code.startsWith('S') || code.startsWith('F')) return 'back-arch';
+  if (code.startsWith('W')) return 'wrist-stretch';
+  if (code.startsWith('E')) return 'eye-rest';
+  return 'neck-roll';
 };
 
-const TARGETS = 'Deep neck flexors, sub-occipitals';
-const AVOID = 'Recent neck injury or whiplash';
-const MODIFY = 'Sit with back fully supported; stop if dizzy.';
+const formatDuration = (s: number): string => (s < 60 ? `${s} SEC` : `${Math.round(s / 60)} MIN`);
+const difficultyLabel = (d: 1 | 2 | 3): string => (d === 1 ? 'GENTLE' : d === 2 ? 'MODERATE' : 'ADVANCED');
+
+const useExercise = (slug: string | undefined) => {
+  const [exercise, setExercise] = useState<Exercise | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    supabase
+      .from('exercises')
+      .select(
+        'id, code, slug, title, title_en, description, video_url, thumbnail_url, duration_seconds, reps_inside_atom, difficulty, exercise_type, is_premium, cautions, modifications',
+      )
+      .eq('slug', slug)
+      .single()
+      .then(({ data, error: e }) => {
+        if (cancelled) return;
+        if (e) setError(e.message);
+        else setExercise(data as Exercise);
+        setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  return { exercise, loading, error };
+};
 
 export default function ExerciseDetailScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ exerciseId?: string; locked?: string }>();
-  const exercise = EXERCISES[(params.exerciseId as string) ?? 'chin-tuck'] ?? EXERCISES['chin-tuck'];
-  const locked = params.locked === '1';
+  const { exercise, loading, error } = useExercise(params.exerciseId as string | undefined);
+  const locked = params.locked === '1' || !!exercise?.is_premium;
 
   const back = () => {
     Haptics.selectionAsync();
@@ -114,51 +98,91 @@ export default function ExerciseDetailScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={[styles.thumbWrap, locked && styles.thumbLocked]}>
-          <VideoPlaceholder pose={exercise.pose} width={320} height={240} showPlay={!locked} />
-          {locked && (
-            <View style={styles.lockOverlay} pointerEvents="none">
-              <View style={styles.lockChip}>
-                <Svg width={18} height={18} viewBox="0 0 18 18">
-                  <Path d="M5 9 L13 9 L13 14 L5 14 Z M7 9 L7 6 Q7 3 9 3 Q11 3 11 6 L11 9" stroke={colors.primaryMid} strokeWidth="1.6" fill="none" strokeLinecap="round" />
-                </Svg>
-                <Text style={styles.lockChipText}>Premium</Text>
-              </View>
+        {loading && !exercise ? (
+          <View style={styles.statusWrap}>
+            <ActivityIndicator color={colors.primaryMid} />
+          </View>
+        ) : error || !exercise ? (
+          <View style={styles.statusWrap}>
+            <Text style={styles.statusError}>
+              {error ? `Could not load exercise: ${error}` : 'Exercise not found.'}
+            </Text>
+          </View>
+        ) : (
+          <>
+            <View style={[styles.thumbWrap, locked && styles.thumbLocked]}>
+              <VideoPlaceholder
+                pose={poseFor(exercise.code)}
+                width={320}
+                height={240}
+                showPlay={!locked}
+              />
+              {locked && (
+                <View style={styles.lockOverlay} pointerEvents="none">
+                  <View style={styles.lockChip}>
+                    <Svg width={18} height={18} viewBox="0 0 18 18">
+                      <Path d="M5 9 L13 9 L13 14 L5 14 Z M7 9 L7 6 Q7 3 9 3 Q11 3 11 6 L11 9" stroke={colors.primaryMid} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+                    </Svg>
+                    <Text style={styles.lockChipText}>Premium</Text>
+                  </View>
+                </View>
+              )}
             </View>
-          )}
-        </View>
 
-        <Text style={[styles.name, locked && styles.nameLocked]}>{exercise.name}</Text>
-        <Text style={styles.meta}>{exercise.meta}</Text>
+            <Text style={[styles.name, locked && styles.nameLocked]}>{exercise.title}</Text>
+            <Text style={styles.meta}>
+              {exercise.code} · {formatDuration(exercise.duration_seconds)} · {exercise.exercise_type.toUpperCase()} · {difficultyLabel(exercise.difficulty)}
+            </Text>
 
-        <Text style={styles.desc}>{exercise.desc}</Text>
+            {exercise.description && <Text style={styles.desc}>{exercise.description}</Text>}
 
-        <View style={styles.sections}>
-          <View style={styles.section}>
-            <Eyebrow>TARGETS</Eyebrow>
-            <Text style={styles.sectionBody}>{TARGETS}</Text>
-          </View>
-          <View style={styles.sectionDivider} />
-          <View style={styles.section}>
-            <Eyebrow>AVOID IF</Eyebrow>
-            <Text style={styles.sectionBody}>{AVOID}</Text>
-          </View>
-          <View style={styles.sectionDivider} />
-          <View style={styles.section}>
-            <Eyebrow>MODIFY</Eyebrow>
-            <Text style={styles.sectionBody}>{MODIFY}</Text>
-          </View>
-        </View>
-
-        {!locked && (
-          <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
-            <View style={styles.tipRow}>
-              <Text style={styles.tipTitle}>Coming soon</Text>
-              <Text style={styles.tipBody}>
-                Real video shoots are in production — once they land you'll see the guided video right here.
-              </Text>
+            <View style={styles.sections}>
+              {exercise.reps_inside_atom && (
+                <>
+                  <View style={styles.section}>
+                    <Eyebrow>REPETITIONS PER ATOM</Eyebrow>
+                    <Text style={styles.sectionBody}>{exercise.reps_inside_atom}</Text>
+                  </View>
+                  <View style={styles.sectionDivider} />
+                </>
+              )}
+              {exercise.cautions && (
+                <>
+                  <View style={styles.section}>
+                    <Eyebrow>CAUTIONS</Eyebrow>
+                    <Text style={styles.sectionBody}>{exercise.cautions}</Text>
+                  </View>
+                  <View style={styles.sectionDivider} />
+                </>
+              )}
+              {exercise.modifications && (
+                <>
+                  <View style={styles.section}>
+                    <Eyebrow>MODIFY</Eyebrow>
+                    <Text style={styles.sectionBody}>{exercise.modifications}</Text>
+                  </View>
+                  <View style={styles.sectionDivider} />
+                </>
+              )}
+              {exercise.title_en && (
+                <View style={styles.section}>
+                  <Eyebrow>ENGLISH NAME</Eyebrow>
+                  <Text style={styles.sectionBody}>{exercise.title_en}</Text>
+                </View>
+              )}
             </View>
-          </GlassCard>
+
+            {!exercise.video_url && (
+              <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
+                <View style={styles.tipRow}>
+                  <Text style={styles.tipTitle}>Coming soon</Text>
+                  <Text style={styles.tipBody}>
+                    Real video shoots are in production — once they land you'll see the guided video right here.
+                  </Text>
+                </View>
+              </GlassCard>
+            )}
+          </>
         )}
       </ScrollView>
 
@@ -207,6 +231,15 @@ export default function ExerciseDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  statusWrap: {
+    alignItems: 'center',
+    paddingVertical: spacing.huge,
+  },
+  statusError: {
+    ...typeScale.bodySm,
+    color: colors.error,
+    textAlign: 'center',
+  },
   thumbWrap: {
     alignItems: 'center',
     marginBottom: spacing.lg,
