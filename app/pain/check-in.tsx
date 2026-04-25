@@ -26,6 +26,19 @@ import { SeveritySlider } from '../../components/ui/SeveritySlider';
 import type { GlyphName } from '../../components/ui/Glyph';
 import type { HaloTone } from '../../components/ui/IconHalo';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
+import { supabase } from '../../lib/supabase';
+import { useUserId } from '../../lib/store/session';
+
+// Map UI PainZone (selected on screen) → DB body_zones.slug.
+// We don't have separate "shoulder" / "chest" slugs in DB — fold them into 'back'.
+const painZoneToDbSlug: Record<string, string> = {
+  neck: 'neck',
+  leftShoulder: 'back',
+  rightShoulder: 'back',
+  chest: 'back',
+  abdomen: 'back',
+  lowerBack: 'back',
+};
 
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
@@ -114,8 +127,42 @@ export default function PainCheckInScreen() {
     setSelectedZones(next);
   };
 
-  const save = () => {
+  const userId = useUserId();
+
+  const save = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+
+    // Best-effort write — only signed-in users have RLS access to pain_entries.
+    // Anonymous + design-review demos still flow forward to /sync.
+    if (userId && selectedZones.size > 0) {
+      const slugs = Array.from(
+        new Set(
+          Array.from(selectedZones)
+            .map((z) => painZoneToDbSlug[z as string])
+            .filter(Boolean),
+        ),
+      );
+      if (slugs.length > 0) {
+        const painLevel = Math.max(1, Math.min(10, Math.round(severityPct * 10)));
+        const { data: zones } = await supabase
+          .from('body_zones')
+          .select('id, slug')
+          .in('slug', slugs);
+
+        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD local-ish (UTC date)
+        const rows = (zones ?? []).map((z: { id: string; slug: string }) => ({
+          user_id: userId,
+          body_zone_id: z.id,
+          pain_level: painLevel,
+          recorded_date: today,
+        }));
+        if (rows.length > 0) {
+          await supabase
+            .from('pain_entries')
+            .upsert(rows, { onConflict: 'user_id,body_zone_id,recorded_date' });
+        }
+      }
+    }
     router.push('/sync');
   };
 

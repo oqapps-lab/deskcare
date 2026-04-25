@@ -20,6 +20,67 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { supabase } from '../../lib/supabase';
+import { useUserId } from '../../lib/store/session';
+
+/**
+ * On signed-in completion: insert a sessions row + nudge the streaks counter.
+ * Both writes are best-effort — RLS allows owner-only, anonymous fallthrough
+ * just renders the celebration without persistence (design-review mode).
+ *
+ * Demo session metadata: 2:15 routine, 3 moves, type 'routine'. The mounted-once
+ * ref keeps StrictMode / re-renders from double-writing.
+ */
+const logCompletedSession = async (
+  userId: string,
+  durationSeconds: number,
+  movesTotal: number,
+) => {
+  const startedAt = new Date(Date.now() - durationSeconds * 1000).toISOString();
+  const completedAt = new Date().toISOString();
+  await supabase.from('sessions').insert({
+    user_id: userId,
+    session_type: 'routine',
+    started_at: startedAt,
+    completed_at: completedAt,
+    duration_seconds: durationSeconds,
+    exercises_total: movesTotal,
+    exercises_completed: movesTotal,
+    exercises_skipped: 0,
+  });
+
+  // Nudge streak: read-modify-write (no atomic increment yet — Stage 7 will add a trigger).
+  const today = new Date().toISOString().slice(0, 10);
+  const { data: existing } = await supabase
+    .from('streaks')
+    .select('current_streak, longest_streak, last_activity_date, total_sessions, total_minutes')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (existing) {
+    const last = existing.last_activity_date as string | null;
+    const minutes = Math.round(durationSeconds / 60);
+    let newStreak = existing.current_streak;
+    if (!last) {
+      newStreak = 1;
+    } else if (last === today) {
+      // already counted today — no streak bump
+    } else {
+      const yesterday = new Date(Date.now() - 86_400_000).toISOString().slice(0, 10);
+      newStreak = last === yesterday ? existing.current_streak + 1 : 1;
+    }
+    await supabase
+      .from('streaks')
+      .update({
+        current_streak: newStreak,
+        longest_streak: Math.max(existing.longest_streak ?? 0, newStreak),
+        last_activity_date: today,
+        total_sessions: (existing.total_sessions ?? 0) + 1,
+        total_minutes: (existing.total_minutes ?? 0) + minutes,
+      })
+      .eq('user_id', userId);
+  }
+};
 
 const STATS = [
   { value: '2:15', label: 'TIME' },
@@ -30,6 +91,17 @@ const STATS = [
 export default function SessionCompleteScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
+  const userId = useUserId();
+  const writtenRef = React.useRef(false);
+
+  useEffect(() => {
+    if (!userId || writtenRef.current) return;
+    writtenRef.current = true;
+    // Demo metadata: 2:15 = 135s, 3 moves. Stage 7 will compute from actual session.
+    logCompletedSession(userId, 135, 3).catch(() => {
+      // Best-effort; silent on RLS / network.
+    });
+  }, [userId]);
 
   const burst = useSharedValue(0.9);
   const contentOpacity = useSharedValue(0);
