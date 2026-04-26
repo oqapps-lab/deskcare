@@ -22,6 +22,7 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { requestNotificationPermissions } from '../../lib/notifications';
 
 export default function PushPrimerScreen() {
   const insets = useSafeAreaInsets();
@@ -40,8 +41,16 @@ export default function PushPrimerScreen() {
 
   const bellStyle = useAnimatedStyle(() => ({ transform: [{ scale: pulse.value }] }));
 
-  const enable = () => {
+  const enable = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    // Request OS-level permission. iOS shows the system prompt only on the
+    // first call; subsequent calls return the cached answer.
+    try {
+      await requestNotificationPermissions();
+    } catch {
+      // expo-notifications can throw on a fresh simulator before the daemon
+      // has spun up — we silently continue so the flow isn't blocked.
+    }
     if (router.canGoBack()) router.back();
     else router.replace('/main/home');
   };

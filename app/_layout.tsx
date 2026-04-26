@@ -6,6 +6,11 @@ import { View } from 'react-native';
 import { useAppFonts } from '../hooks/useAppFonts';
 import { colors } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
+import { configureForegroundBehavior } from '../lib/notifications';
+
+// Configure how foreground notifications are presented. Must run at module
+// scope so it happens before any notification fires.
+configureForegroundBehavior();
 
 export default function RootLayout() {
   const fontsLoaded = useAppFonts();

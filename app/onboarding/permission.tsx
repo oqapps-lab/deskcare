@@ -19,6 +19,7 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { PillCTA } from '../../components/ui/PillCTA';
 import { Eyebrow } from '../../components/ui/Eyebrow';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { requestNotificationPermissions } from '../../lib/notifications';
 
 /**
  * Permission Prompt — the app's first interactive screen after splash.
@@ -62,8 +63,14 @@ export default function PermissionPromptScreen() {
   }));
   const ctaStyle = useAnimatedStyle(() => ({ opacity: ctaOpacity.value }));
 
-  const enable = () => {
+  const enable = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    try {
+      await requestNotificationPermissions();
+    } catch {
+      // simulator without daemon — soft-fail, the settings screen has
+      // a manual fallback path.
+    }
     router.push('/settings/notifications');
   };
   const later = () => {
