@@ -46,7 +46,7 @@ _Last updated: 2026-04-26_
 - **Push notifications** — `reminder_schedules` таблица готова. Stage 7: `expo-notifications` + локальный scheduler.
 - **Apple/Google OAuth** — кнопки на Sign In показывают warning haptic, OAuth не подключен. Stage 7.
 - **Programs/eye dynamic** — пока hardcoded UI работает. Routines (R18, R19) уже в БД, можно подключить аналогично Sciatica.
-- **Atomic streak update** — сейчас read-modify-write (race возможен при двух одновременных сессиях). Stage 7: SECURITY DEFINER fn или Postgres trigger.
+- ~~**Atomic streak update**~~ — закрыто 26 апреля 2026. `public.log_completed_session(...)` SECURITY DEFINER RPC заменяет client-side read-modify-write. Гонок больше нет; смотри [`docs/05-database/MIGRATIONS.md` § 007](./docs/05-database/MIGRATIONS.md#007_log_completed_sessionsql-stage-7-prep).
 - **Cold-start hydration regression test** — `_layout.tsx` уже ждёт `hasHydrated` перед рендером Stack. Тест с пустым AsyncStorage не прогонял.
 
 ## iOS Simulator
