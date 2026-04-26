@@ -4,24 +4,17 @@
     "slug": "deskcare",
     "version": "0.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "deskcare",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.gazetastreet.deskcare"
     },
     "android": {
-      "package": "com.gazetastreet.deskcare",
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+      "package": "com.gazetastreet.deskcare"
     },
     "plugins": [
-      "expo-router",
-      "expo-haptics"
+      "expo-router"
     ],
     "experiments": {
       "typedRoutes": true
