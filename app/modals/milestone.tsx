@@ -11,7 +11,14 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Circle, Defs, Path, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
+import Svg, {
+  Circle,
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  Path,
+  RadialGradient as SvgRadialGradient,
+  Stop,
+} from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -71,19 +78,19 @@ export default function MilestoneScreen() {
       <BgPattern variant="dots" opacity={0.05} tone="coral" />
 
       <View style={[styles.root, { paddingTop: insets.top + spacing.huge, paddingBottom: insets.bottom + spacing.xxxl }]}>
+        {/* Soft warm halo + bold gradient number — no flat coral disk. The
+            number sits inside an elegant aura instead of being stamped onto
+            a kindergarten badge. */}
         <Animated.View style={[styles.medalWrap, medalStyle]}>
-          <Svg width={200} height={200} viewBox="0 0 200 200">
+          <Svg width={220} height={220} viewBox="0 0 220 220">
             <Defs>
               <SvgRadialGradient id="ms-burst" cx="50%" cy="50%" r="50%">
-                <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="0.65" />
-                <Stop offset="0.7" stopColor={colors.primaryMid} stopOpacity="0.22" />
+                <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="0.95" />
+                <Stop offset="0.45" stopColor={colors.primaryMid} stopOpacity="0.45" />
                 <Stop offset="1" stopColor={colors.primary} stopOpacity="0" />
               </SvgRadialGradient>
             </Defs>
-            <Circle cx="100" cy="100" r="96" fill="url(#ms-burst)" />
-            <Circle cx="100" cy="100" r="56" fill={colors.primaryMid} />
-            <Circle cx="100" cy="100" r="42" fill={colors.primary} opacity={0.35} />
-            <Text></Text>
+            <Circle cx="110" cy="110" r="104" fill="url(#ms-burst)" />
           </Svg>
           <View style={styles.numberOverlay} pointerEvents="none">
             <Text style={styles.bigNumber}>7</Text>
@@ -139,8 +146,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   medalWrap: {
-    width: 200,
-    height: 200,
+    width: 220,
+    height: 220,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -150,17 +157,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bigNumber: {
-    fontSize: 64,
-    lineHeight: 68,
-    color: colors.white,
+    fontSize: 88,
+    lineHeight: 92,
+    color: colors.primaryDeep,
     fontFamily: typeScale.display.fontFamily,
-    letterSpacing: -1.4,
+    letterSpacing: -2,
   },
   daysLabel: {
-    ...typeScale.labelSm,
-    color: colors.white,
+    ...typeScale.label,
+    color: colors.primaryDeep,
     textTransform: 'uppercase',
-    opacity: 0.92,
+    letterSpacing: 3,
+    marginTop: 2,
   },
   title: {
     ...typeScale.headline,

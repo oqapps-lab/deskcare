@@ -63,17 +63,21 @@ export const BodyPainMap: React.FC<Props> = ({
         preserveAspectRatio="xMidYMid meet"
       >
         <Defs>
+          {/* Light warm peach background — matches the cream-coral mood of
+              the rest of the app instead of fighting it with a dark editorial
+              panel. */}
           <SvgLinearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
-            <Stop offset="0" stopColor={colors.ink} stopOpacity="1" />
-            <Stop offset="1" stopColor={colors.inkDeep} stopOpacity="1" />
+            <Stop offset="0" stopColor={colors.primarySoft} stopOpacity="0.7" />
+            <Stop offset="1" stopColor={colors.primaryLight} stopOpacity="0.55" />
           </SvgLinearGradient>
           <SvgRadialGradient id="painDot" cx="50%" cy="50%" r="50%">
-            <Stop offset="0%" stopColor={colors.primaryMid} stopOpacity="1" />
-            <Stop offset="55%" stopColor={colors.primaryMid} stopOpacity="0.45" />
+            <Stop offset="0%" stopColor={colors.primary} stopOpacity="1" />
+            <Stop offset="55%" stopColor={colors.primaryMid} stopOpacity="0.55" />
             <Stop offset="100%" stopColor={colors.primaryMid} stopOpacity="0" />
           </SvgRadialGradient>
         </Defs>
-        {/* rounded background pane (dark) to echo Stitch's dramatic silhouette */}
+        {/* Soft warm pane — same family as the surrounding cards. Pain dots
+            sit on top with a slightly bolder coral so they still pop. */}
         <Rect x="0" y="0" width="240" height="320" rx="28" fill="url(#bg)" />
 
         {/* head */}
@@ -82,14 +86,14 @@ export const BodyPainMap: React.FC<Props> = ({
           cy="50"
           r="28"
           fill="none"
-          stroke="rgba(255,255,255,0.10)"
+          stroke="rgba(123,52,28,0.28)"
           strokeWidth="1.5"
         />
         {/* neck */}
         <Path
           d="M108 78 Q108 90 115 96 H125 Q132 90 132 78"
           fill="none"
-          stroke="rgba(255,255,255,0.10)"
+          stroke="rgba(123,52,28,0.28)"
           strokeWidth="1.5"
         />
         {/* torso outline */}
@@ -98,21 +102,21 @@ export const BodyPainMap: React.FC<Props> = ({
              L190 155 Q192 200 186 245 Q178 280 165 290 L120 300 L75 290
              Q62 280 54 245 Q48 200 50 155 Z"
           fill="none"
-          stroke="rgba(255,255,255,0.12)"
+          stroke="rgba(123,52,28,0.32)"
           strokeWidth="1.5"
         />
         {/* chest reference line */}
         <Path
           d="M92 140 Q120 155 148 140"
           fill="none"
-          stroke="rgba(255,255,255,0.06)"
+          stroke="rgba(123,52,28,0.16)"
           strokeWidth="1"
         />
         {/* abdominal midline */}
         <Path
           d="M120 140 L120 260"
           fill="none"
-          stroke="rgba(255,255,255,0.05)"
+          stroke="rgba(123,52,28,0.14)"
           strokeWidth="1"
         />
 

@@ -69,7 +69,7 @@ export default function PushPrimerScreen() {
             <Circle cx="100" cy="100" r="96" fill="url(#pp-aura)" />
           </Svg>
           <Animated.View style={bellStyle}>
-            <IconHalo icon="bell" size="xl" tone="coral" variant="gradient" glow />
+            <IconHalo icon="bell" size="xl" tone="coral" variant="aura" glow />
           </Animated.View>
         </View>
 

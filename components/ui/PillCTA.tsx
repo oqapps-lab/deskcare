@@ -166,14 +166,69 @@ export const PillCTA: React.FC<Props> = ({
 
   const width = variant === 'iconOnly' ? s.height : undefined;
 
-  // PRIMARY — gradient
+  // PRIMARY — gradient (or muted-tint when disabled, so it doesn't look like a
+  // dim-but-tappable coral pill).
   if (variant === 'primary' || variant === 'iconOnly') {
+    if (disabled) {
+      return (
+        <AnimatedPressable
+          onPress={handlePress}
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          disabled
+          accessibilityRole="button"
+          accessibilityState={{ disabled: true }}
+          accessibilityLabel={accessibilityLabel || children}
+          style={[
+            animStyle,
+            styles.pillBase,
+            {
+              height: s.height,
+              width,
+              paddingHorizontal: variant === 'iconOnly' ? 0 : s.padX,
+              borderRadius: radii.pill,
+              backgroundColor: colors.surfaceLow,
+              borderWidth: 1,
+              borderColor: 'rgba(232,123,78,0.18)',
+            },
+            style,
+          ]}
+        >
+          {/* Disabled state: flat warm-cream pill, hairline coral border, dim
+              ink label. No gradient, no glow — clearly inactive. */}
+          {variant === 'iconOnly'
+            ? icon && <Glyph name={icon} size={s.iconSize} color={colors.inkSubtle} />
+            : (
+              <View style={styles.rowContent}>
+                {icon && (
+                  <>
+                    <Glyph name={icon} size={s.iconSize} color={colors.inkSubtle} />
+                    {children && <View style={{ width: spacing.sm }} />}
+                  </>
+                )}
+                {children && (
+                  <Text
+                    style={[
+                      styles.label,
+                      { color: colors.inkSubtle, fontSize: s.textSize },
+                    ]}
+                    numberOfLines={1}
+                  >
+                    {children}
+                  </Text>
+                )}
+              </View>
+            )}
+        </AnimatedPressable>
+      );
+    }
+
     return (
       <AnimatedPressable
         onPress={handlePress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
-        disabled={disabled || loading}
+        disabled={loading}
         accessibilityRole="button"
         accessibilityLabel={accessibilityLabel || children}
         style={[
@@ -184,7 +239,6 @@ export const PillCTA: React.FC<Props> = ({
             height: s.height,
             width,
             paddingHorizontal: variant === 'iconOnly' ? 0 : s.padX,
-            opacity: disabled ? 0.5 : 1,
             borderRadius: radii.pill,
           },
           style,

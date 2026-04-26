@@ -174,16 +174,33 @@ export default function QuizZoneScreen() {
   );
 }
 
-/* ---- Inline body-part SVG icons, 40x40 ---- */
+/* ---- Inline body-part SVG icons, 28x28
+ *
+ * Polished pass: consistent 2.0–2.4 stroke weights, rounded caps, no stray
+ * dots. Each icon reads as a clean pictogram instead of a hand-drawn sketch.
+ */
 
 function NeckIcon() {
   return (
     <View style={iconStyles.chip}>
       <Svg width={28} height={28} viewBox="0 0 28 28">
-        <Path d="M14 3 C17.5 3 19 6 19 9 C19 11 18 12 18 14 L18 18" stroke={colors.primaryMid} strokeWidth="2.4" strokeLinecap="round" fill="none" />
-        <Path d="M14 3 C10.5 3 9 6 9 9 C9 11 10 12 10 14 L10 18" stroke={colors.primaryMid} strokeWidth="2.4" strokeLinecap="round" fill="none" />
-        <Path d="M7 22 Q14 20 21 22" stroke={colors.primaryMid} strokeWidth="2.2" strokeLinecap="round" fill="none" />
-        <Circle cx="14" cy="6" r="2" fill={colors.primaryMid} />
+        {/* head */}
+        <Circle cx="14" cy="8" r="4.5" stroke={colors.primaryMid} strokeWidth="2" fill="none" />
+        {/* neck */}
+        <Path
+          d="M12 13 L12 16 M16 13 L16 16"
+          stroke={colors.primaryMid}
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        {/* shoulders */}
+        <Path
+          d="M5 22 Q14 17 23 22"
+          stroke={colors.primaryMid}
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          fill="none"
+        />
       </Svg>
     </View>
   );
@@ -193,9 +210,18 @@ function BackIcon() {
   return (
     <View style={iconStyles.chip}>
       <Svg width={28} height={28} viewBox="0 0 28 28">
-        <Path d="M10 4 L10 14 Q10 20 14 22 Q18 20 18 14 L18 4" stroke={colors.primaryMid} strokeWidth="2.2" strokeLinecap="round" fill="none" />
-        <Path d="M10 10 L18 10 M10 16 L18 16" stroke={colors.primaryLight} strokeWidth="1.4" strokeLinecap="round" />
-        <Circle cx="14" cy="13" r="1.5" fill={colors.primaryMid} />
+        {/* gentle S-curve spine */}
+        <Path
+          d="M14 3 Q10 8 14 13 Q18 18 14 23"
+          stroke={colors.primaryMid}
+          strokeWidth="2.4"
+          strokeLinecap="round"
+          fill="none"
+        />
+        {/* vertebra accents */}
+        <Circle cx="14" cy="6" r="1.6" fill={colors.primaryMid} />
+        <Circle cx="14" cy="14" r="1.6" fill={colors.primaryMid} />
+        <Circle cx="14" cy="22" r="1.6" fill={colors.primaryMid} />
       </Svg>
     </View>
   );
@@ -205,8 +231,24 @@ function EyesIcon() {
   return (
     <View style={iconStyles.chip}>
       <Svg width={28} height={28} viewBox="0 0 28 28">
-        <Path d="M4 14 Q14 5 24 14 Q14 23 4 14 Z" stroke={colors.tertiaryMid} strokeWidth="2.2" fill="none" />
-        <Circle cx="14" cy="14" r="3.4" fill={colors.tertiaryMid} />
+        {/* eye lens */}
+        <Path
+          d="M3 14 Q14 6 25 14 Q14 22 3 14 Z"
+          stroke={colors.tertiaryMid}
+          strokeWidth="2.2"
+          fill="none"
+        />
+        {/* iris ring (not solid disc — matches Eye Session polish) */}
+        <Circle
+          cx="14"
+          cy="14"
+          r="3.4"
+          stroke={colors.tertiaryMid}
+          strokeWidth="1.8"
+          fill="none"
+        />
+        {/* pupil dot */}
+        <Circle cx="14" cy="14" r="1.2" fill={colors.tertiaryMid} />
       </Svg>
     </View>
   );
@@ -216,9 +258,29 @@ function WristIcon() {
   return (
     <View style={iconStyles.chip}>
       <Svg width={28} height={28} viewBox="0 0 28 28">
-        <Path d="M8 20 Q6 14 10 9 L14 5" stroke={colors.mintMid} strokeWidth="2.2" strokeLinecap="round" fill="none" />
-        <Path d="M16 22 L20 22 L22 18 L22 12" stroke={colors.mintMid} strokeWidth="2.2" strokeLinecap="round" fill="none" />
-        <Path d="M12 14 Q16 10 20 12" stroke={colors.mintMid} strokeWidth="1.8" strokeLinecap="round" fill="none" />
+        {/* forearm */}
+        <Path
+          d="M3 14 L11 14"
+          stroke={colors.mintMid}
+          strokeWidth="2.4"
+          strokeLinecap="round"
+        />
+        {/* wrist joint */}
+        <Circle
+          cx="12"
+          cy="14"
+          r="2.6"
+          stroke={colors.mintMid}
+          strokeWidth="2"
+          fill="none"
+        />
+        {/* 3 fingers */}
+        <Path
+          d="M16 14 L23 14 M17 10 L22 10 M17 18 L22 18"
+          stroke={colors.mintMid}
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
       </Svg>
     </View>
   );

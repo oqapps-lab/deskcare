@@ -10,7 +10,14 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg, {
+  Circle,
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  Path,
+  RadialGradient as SvgRadialGradient,
+  Stop,
+} from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -53,11 +60,30 @@ export default function ForceUpdateScreen() {
 
       <View style={[styles.root, { paddingTop: insets.top + spacing.huge, paddingBottom: insets.bottom + spacing.xxxl }]}>
         <Animated.View style={[styles.iconWrap, iconStyle]}>
-          <Svg width={120} height={120} viewBox="0 0 120 120">
-            <Circle cx="60" cy="60" r="56" fill={colors.primarySoft} />
-            {/* Up-arrow circle */}
-            <Circle cx="60" cy="60" r="40" fill={colors.primaryMid} />
-            <Path d="M60 44 L60 78 M44 60 L60 44 L76 60" stroke={colors.white} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          {/* Soft warm radial glow + bold gradient up-arrow — matches the
+              `aura` aesthetic across all hero stamps so nothing reads like
+              a pasted-on coral disk. */}
+          <Svg width={160} height={160} viewBox="0 0 160 160">
+            <Defs>
+              <SvgRadialGradient id="fu-glow" cx="50%" cy="50%" r="50%">
+                <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="0.85" />
+                <Stop offset="0.45" stopColor={colors.primaryMid} stopOpacity="0.4" />
+                <Stop offset="1" stopColor={colors.primary} stopOpacity="0" />
+              </SvgRadialGradient>
+              <SvgLinearGradient id="fu-arrow" x1="0" y1="0" x2="0" y2="1">
+                <Stop offset="0" stopColor={colors.primaryDeep} stopOpacity="1" />
+                <Stop offset="1" stopColor={colors.primaryMid} stopOpacity="1" />
+              </SvgLinearGradient>
+            </Defs>
+            <Circle cx="80" cy="80" r="72" fill="url(#fu-glow)" />
+            <Path
+              d="M80 56 L80 110 M58 78 L80 56 L102 78"
+              stroke="url(#fu-arrow)"
+              strokeWidth="9"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
           </Svg>
         </Animated.View>
 

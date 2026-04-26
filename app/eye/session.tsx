@@ -15,6 +15,7 @@ import Svg, {
   Circle,
   Defs,
   LinearGradient as SvgLinearGradient,
+  RadialGradient as SvgRadialGradient,
   Stop,
 } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -155,26 +156,26 @@ export default function EyeSessionScreen() {
             />
           </Svg>
 
-          {/* Animated breathing eye in center */}
+          {/* Animated breathing eye — softened: warm body, gradient iris with
+              less aggressive contrast, single soft highlight (no cartoony pair). */}
           <Animated.View style={[styles.eyeCenter, eyeStyle]}>
             <Svg width={160} height={160} viewBox="0 0 160 160">
               <Defs>
                 <SvgLinearGradient id="eyeBody" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="1" />
-                  <Stop offset="1" stopColor={colors.primaryMid} stopOpacity="1" />
+                  <Stop offset="0" stopColor={colors.primarySoft} stopOpacity="1" />
+                  <Stop offset="1" stopColor={colors.primaryLight} stopOpacity="1" />
                 </SvgLinearGradient>
-                <SvgLinearGradient id="eyeIris" x1="0" y1="0" x2="0" y2="1">
-                  <Stop offset="0" stopColor={colors.primary} stopOpacity="1" />
-                  <Stop offset="1" stopColor={colors.primaryDeep} stopOpacity="1" />
-                </SvgLinearGradient>
+                <SvgRadialGradient id="eyeIris" cx="50%" cy="42%" r="50%">
+                  <Stop offset="0" stopColor={colors.primaryMid} stopOpacity="1" />
+                  <Stop offset="1" stopColor={colors.primary} stopOpacity="1" />
+                </SvgRadialGradient>
               </Defs>
-              {/* Eye silhouette */}
+              {/* Eye silhouette — soft warm peach */}
               <Circle cx="80" cy="80" r="58" fill="url(#eyeBody)" />
-              {/* Iris */}
-              <Circle cx="80" cy="80" r="32" fill="url(#eyeIris)" />
-              {/* Pupil highlight */}
-              <Circle cx="72" cy="72" r="6" fill={colors.white} opacity={0.8} />
-              <Circle cx="94" cy="90" r="3" fill={colors.white} opacity={0.5} />
+              {/* Iris — radial gradient for natural depth */}
+              <Circle cx="80" cy="80" r="28" fill="url(#eyeIris)" />
+              {/* Single subtle highlight at top-left for life */}
+              <Circle cx="72" cy="72" r="5" fill={colors.white} opacity={0.55} />
             </Svg>
           </Animated.View>
 

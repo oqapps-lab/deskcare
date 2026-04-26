@@ -88,7 +88,7 @@ export default function PermissionPromptScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Animated.View style={[styles.haloBlock, haloStyle]}>
-          <IconHalo icon="bell" size="xl" tone="coral" glow variant="gradient" />
+          <IconHalo icon="bell" size="xl" tone="coral" glow variant="aura" />
         </Animated.View>
 
         <Animated.View style={[styles.head, headStyle]}>

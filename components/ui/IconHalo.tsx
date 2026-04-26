@@ -16,7 +16,7 @@ import { Glyph, GlyphName } from './Glyph';
 
 export type HaloTone = 'coral' | 'peach' | 'lavender' | 'mint';
 export type HaloSize = 'sm' | 'md' | 'lg' | 'xl';
-export type HaloVariant = 'gradient' | 'tinted' | 'glass';
+export type HaloVariant = 'gradient' | 'tinted' | 'glass' | 'aura';
 
 interface Props {
   icon: GlyphName | React.ReactNode;
@@ -49,6 +49,14 @@ const TONE_MID_MAP: Record<HaloTone, string> = {
   mint: colors.mintMid,
 };
 
+// Tone-deep color for `aura` variant icon stroke — bolder than tone-mid.
+const TONE_DEEP_MAP: Record<HaloTone, string> = {
+  coral: colors.primaryDeep,
+  peach: colors.primary,
+  lavender: colors.tertiary,
+  mint: colors.mintMid,
+};
+
 // Solid fill base used for tinted variant (~20% alpha)
 const TINTED_FILL_MAP: Record<HaloTone, string> = {
   coral: 'rgba(232,123,78,0.20)',
@@ -70,6 +78,9 @@ const GLASS_TINT_MAP: Record<HaloTone, string> = {
  *  - `gradient`: 3-stop diagonal gradient + top-left inner highlight (white icon).
  *  - `tinted`:   solid tone at 20% alpha over surface (tone-mid icon).
  *  - `glass`:    BlurView + tone-tinted overlay (tone-mid icon).
+ *  - `aura`:     no disc body — soft warm radial glow + bold tone-deep icon. Used
+ *                for hero "stamps" (Permission bell, Milestone "7", Force-Update
+ *                arrow) so they read as elegant marks, not pasted-on disks.
  *  - `glow`:     outer breathing halo ring (2.4s loop; fades-only on reduce motion).
  *
  * Sizes: sm=36, md=52, lg=72, xl=96. Border-radius = size/2.
@@ -107,7 +118,11 @@ export const IconHalo: React.FC<Props> = ({
   const haloOffset = (haloSize - px) / 2;
 
   const iconColor =
-    variant === 'gradient' ? colors.white : TONE_MID_MAP[tone];
+    variant === 'gradient'
+      ? colors.white
+      : variant === 'aura'
+        ? TONE_DEEP_MAP[tone]
+        : TONE_MID_MAP[tone];
 
   // Render icon — accept GlyphName string or a ReactNode
   const iconNode =
@@ -157,7 +172,9 @@ export const IconHalo: React.FC<Props> = ({
         </Animated.View>
       )}
 
-      {/* Disc body */}
+      {/* Disc body — `aura` variant skips the disc entirely; only the halo
+          + the icon are drawn, so it reads as a soft warm mark instead of a
+          stamped-on coral disk. */}
       <View
         style={[
           styles.disc,
@@ -166,7 +183,9 @@ export const IconHalo: React.FC<Props> = ({
             height: px,
             borderRadius: radius,
             backgroundColor:
-              variant === 'tinted' ? TINTED_FILL_MAP[tone] : 'transparent',
+              variant === 'tinted'
+                ? TINTED_FILL_MAP[tone]
+                : 'transparent',
           },
         ]}
       >
@@ -215,18 +234,21 @@ export const IconHalo: React.FC<Props> = ({
           </View>
         )}
 
-        {/* Inner highlight top-left (all variants) */}
-        <View
-          pointerEvents="none"
-          style={[
-            styles.innerHighlight,
-            {
-              width: px,
-              height: px,
-              borderRadius: radius,
-            },
-          ]}
-        />
+        {/* Inner highlight top-left — for variants that have a disc body.
+            `aura` has no disc, so suppress this highlight too. */}
+        {variant !== 'aura' && (
+          <View
+            pointerEvents="none"
+            style={[
+              styles.innerHighlight,
+              {
+                width: px,
+                height: px,
+                borderRadius: radius,
+              },
+            ]}
+          />
+        )}
 
         {/* Icon */}
         <View style={styles.iconLayer}>{iconNode}</View>
