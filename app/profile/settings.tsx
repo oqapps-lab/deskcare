@@ -45,7 +45,7 @@ const REMINDERS: ReadonlyArray<SwitchRowDef> = [
 const ACCOUNT: ReadonlyArray<NavRowDef> = [
   { key: 'sub',     icon: 'crown',    tone: 'coral',    title: 'Subscription',    sub: 'Trial · 4 days remaining', route: '/onboarding/paywall', badge: 'TRIAL' },
   { key: 'profile', icon: 'settings', tone: 'lavender', title: 'Profile details', sub: 'Name, age, pain zones',     route: '/onboarding/quiz/zone' },
-  { key: 'restore', icon: 'refresh',  tone: 'mint',     title: 'Restore purchase', sub: 'Re-sync your plan from Apple', route: '/onboarding/paywall' },
+  { key: 'restore', icon: 'refresh',  tone: 'mint',     title: 'Restore purchase', sub: 'Re-sync from App Store or Play', route: '/onboarding/paywall' },
 ];
 
 const PRIVACY: ReadonlyArray<NavRowDef> = [

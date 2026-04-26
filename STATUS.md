@@ -6,6 +6,7 @@ _Last updated: 2026-04-26_
 
 **Stage 5 Design — закрыт** (41 экран, 25 примитивов, 22 QA-бага закрыты).
 **Stage 6 — Trail A закрыт, инжиниринг сделан в основном**: Supabase подключен, auth работает, контент динамический, write-paths работают для всех ключевых пользовательских сценариев. Видео — placeholder'ы (Russell снимает). Adapty — Stage 7.
+**QA Pass 3 (26 апреля) — закрыто 19 из 21 actionable** (3 BLOCKER + 9 HIGH + 7 MED). Висит только H3 (description_en — нужны переводы Russell) и M6 (premium chip унификация — design call). Отчёты: `/tmp/deskcare-qa-pass-3-report.md` + `/tmp/deskcare-qa-pass-3b-addendum.md`.
 
 ## Что подключено к БД
 
