@@ -26,6 +26,7 @@ import {
   Eyebrow,
   GlassCard,
   NavHeader,
+  PillCTA,
   VideoPlaceholder,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
@@ -98,6 +99,13 @@ export default function EyeProgramScreen() {
   const openExercise = (id: string) => {
     Haptics.selectionAsync();
     router.push({ pathname: `/library/${id}` as never, params: {} } as never);
+  };
+  const startRoutine = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    router.push({
+      pathname: '/exercise/preview' as never,
+      params: { routine: 'eye-full-3min' },
+    } as never);
   };
 
   const ringStyle = useAnimatedStyle(() => ({ transform: [{ scale: ringPulse.value }] }));
@@ -183,8 +191,14 @@ export default function EyeProgramScreen() {
           </GlassCard>
         </View>
 
+        <View style={styles.routineCtaWrap}>
+          <PillCTA variant="primary" size="lg" icon="play" iconBg onPress={startRoutine}>
+            Start 3-min eye routine
+          </PillCTA>
+        </View>
+
         <Eyebrow>
-          {exercises ? `${exercises.length} GENTLE EXERCISES` : 'GENTLE EXERCISES'}
+          {exercises ? `BROWSE ${exercises.length} EXERCISES` : 'BROWSE EXERCISES'}
         </Eyebrow>
         <View style={styles.list}>
           {exLoading && !exercises ? (
@@ -291,6 +305,10 @@ const styles = StyleSheet.create({
     color: colors.primaryMid,
   },
   ruleWrap: {
+    marginBottom: spacing.xl,
+  },
+  routineCtaWrap: {
+    alignItems: 'center',
     marginBottom: spacing.xl,
   },
   ruleTitle: {
