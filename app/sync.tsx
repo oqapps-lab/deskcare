@@ -16,11 +16,12 @@ import { AtmosphericBackground } from '../components/ui/AtmosphericBackground';
 import { PulseRings } from '../components/ui/PulseRings';
 import { Eyebrow } from '../components/ui/Eyebrow';
 import { colors, spacing, typeScale } from '../constants/tokens';
+import { supabase } from '../lib/supabase';
 
 /**
- * Loading / sync screen. Shown briefly between Pain Check-in and the next step.
- * Auto-advances after ~2.2s to the no-connection state (demo flow) — simulates
- * a real sync that occasionally fails and offers offline mode.
+ * Loading / sync screen. Shown briefly between Pain Check-in and home so
+ * pending writes have time to flush. Probes connectivity with a tiny query;
+ * on success → /main/home, on failure → /errors/no-connection.
  */
 export default function SyncScreen() {
   const insets = useSafeAreaInsets();
@@ -42,10 +43,32 @@ export default function SyncScreen() {
       );
     }
 
-    const t = setTimeout(() => {
-      router.replace('/errors/no-connection');
-    }, reduceMotion ? 1400 : 2400);
-    return () => clearTimeout(t);
+    let cancelled = false;
+    const minDuration = reduceMotion ? 600 : 1200;
+    const probeStart = Date.now();
+    const probe = supabase
+      .from('body_zones')
+      .select('id', { head: true, count: 'exact' })
+      .limit(1);
+    Promise.race([
+      probe,
+      // 8s ceiling — anything beyond this is effectively offline.
+      new Promise<{ error: { message: string } }>((resolve) =>
+        setTimeout(() => resolve({ error: { message: 'timeout' } }), 8000),
+      ),
+    ]).then((res) => {
+      if (cancelled) return;
+      const elapsed = Date.now() - probeStart;
+      const wait = Math.max(0, minDuration - elapsed);
+      setTimeout(() => {
+        if (cancelled) return;
+        const ok = !('error' in res) || !res.error;
+        router.replace(ok ? '/main/home' : '/errors/no-connection');
+      }, wait);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [contentOpacity, contentY, auraScale, reduceMotion]);
 
   const contentStyle = useAnimatedStyle(() => ({
