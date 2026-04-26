@@ -26,8 +26,55 @@ import { Glyph } from '../../components/ui/Glyph';
 import type { GlyphName } from '../../components/ui/Glyph';
 import type { HaloTone } from '../../components/ui/IconHalo';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { supabase } from '../../lib/supabase';
+import { useUserId } from '../../lib/store/session';
+import {
+  cancelAllScheduledReminders,
+  scheduleDailyReminder,
+} from '../../lib/notifications';
 
 const TIMES = ['09:00', '12:00', '15:00', '18:00'];
+
+/**
+ * Apply the user's chip+toggle picks to the OS notification center.
+ * Strategy: cancel everything currently scheduled (we can't tell ours from
+ * other apps' anyway because the API only returns ours), then re-schedule
+ * a single daily nudge at the picked stretch time, plus an eye-break nudge
+ * three hours later if the toggle is on. Sound flag controls 'default' vs
+ * silent payload (handled at the OS level via the sound prop on the
+ * scheduled notification — undefined = silent).
+ */
+async function applyReminderSchedule(
+  stretchTime: string,
+  eyeTimer: boolean,
+  sound: boolean,
+) {
+  await cancelAllScheduledReminders();
+
+  const [hStr, mStr] = stretchTime.split(':');
+  const hour = parseInt(hStr, 10);
+  const minute = parseInt(mStr, 10);
+
+  await scheduleDailyReminder(
+    hour,
+    minute,
+    sound
+      ? 'A short release for your shoulders.'
+      : 'Time to stretch.',
+    'DeskCare',
+  );
+
+  if (eyeTimer) {
+    // 3-hour offset so the two nudges don't pile up at the same instant.
+    const eyeHour = (hour + 3) % 24;
+    await scheduleDailyReminder(
+      eyeHour,
+      minute,
+      'Look 20 ft away for 20 seconds.',
+      'Eye break',
+    );
+  }
+}
 
 /**
  * Notification & reminder settings. Flow entry: after Permission Prompt.
@@ -36,10 +83,93 @@ const TIMES = ['09:00', '12:00', '15:00', '18:00'];
 export default function NotificationSettingsScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
+  const userId = useUserId();
 
   const [activeTime, setActiveTime] = useState('15:00');
   const [eyeTimer, setEyeTimer] = useState(true);
   const [sound, setSound] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
+
+  // On mount: load current reminder rows + audio_enabled. If no rows exist
+  // yet (fresh user), keep the defaults so the screen still renders.
+  useEffect(() => {
+    if (!userId) {
+      setHydrated(true);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      const [rs, us] = await Promise.all([
+        supabase
+          .from('reminder_schedules')
+          .select('reminder_type, start_time, is_active')
+          .eq('user_id', userId),
+        supabase.from('user_settings').select('audio_enabled').eq('user_id', userId).maybeSingle(),
+      ]);
+      if (cancelled) return;
+
+      const stretch = (rs.data ?? []).find((r) => r.reminder_type === 'stretch');
+      if (stretch?.start_time) {
+        // start_time arrives as "HH:MM:SS" — collapse to "HH:MM" for chip match.
+        const trimmed = String(stretch.start_time).slice(0, 5);
+        if (TIMES.includes(trimmed)) setActiveTime(trimmed);
+      }
+      const eye = (rs.data ?? []).find((r) => r.reminder_type === 'eye_break');
+      setEyeTimer(eye ? !!eye.is_active : true);
+
+      if (us.data && typeof us.data.audio_enabled === 'boolean') {
+        setSound(us.data.audio_enabled);
+      }
+      setHydrated(true);
+    })().catch(() => setHydrated(true));
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  // Persist the row whenever a pick changes, debounced via the trailing
+  // ref so rapid taps don't queue many writes.
+  const persistTimer = React.useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    if (!userId || !hydrated) return;
+    if (persistTimer.current) clearTimeout(persistTimer.current);
+    persistTimer.current = setTimeout(async () => {
+      const [hStr, mStr] = activeTime.split(':');
+      const startTime = `${hStr.padStart(2, '0')}:${mStr.padStart(2, '0')}:00`;
+      // Stretch row: upsert with picked time.
+      await supabase.from('reminder_schedules').upsert(
+        {
+          user_id: userId,
+          reminder_type: 'stretch',
+          start_time: startTime,
+          end_time: '18:00:00',
+          interval_minutes: 60,
+          is_active: true,
+        },
+        { onConflict: 'user_id,reminder_type' },
+      );
+      // Eye-break row: upsert with toggle state.
+      await supabase.from('reminder_schedules').upsert(
+        {
+          user_id: userId,
+          reminder_type: 'eye_break',
+          start_time: '09:00:00',
+          end_time: '18:00:00',
+          interval_minutes: 20,
+          is_active: eyeTimer,
+        },
+        { onConflict: 'user_id,reminder_type' },
+      );
+      // Sound flag lives in user_settings.audio_enabled.
+      await supabase
+        .from('user_settings')
+        .update({ audio_enabled: sound })
+        .eq('user_id', userId);
+    }, 250);
+    return () => {
+      if (persistTimer.current) clearTimeout(persistTimer.current);
+    };
+  }, [userId, hydrated, activeTime, eyeTimer, sound]);
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(14);
@@ -67,8 +197,16 @@ export default function NotificationSettingsScreen() {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
   };
-  const continueFlow = () => {
+  const continueFlow = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    // Reflect the current picks to the OS notification center. Best-effort:
+    // if scheduling fails (e.g. permission was just denied), the DB still
+    // holds the user's preferences for the next attempt.
+    try {
+      await applyReminderSchedule(activeTime, eyeTimer, sound);
+    } catch {
+      // soft-fail; user can re-toggle from this screen later
+    }
     router.push('/onboarding/paywall');
   };
 

@@ -88,3 +88,21 @@ export interface Streak {
   total_sessions: number;
   total_minutes: number;
 }
+
+export type ReminderType = 'stretch' | 'eye_break' | 'pain_check';
+export type ReminderTone = 'neutral' | 'gentle' | 'silent';
+
+export interface ReminderSchedule {
+  id: string;
+  user_id: string;
+  reminder_type: ReminderType;
+  /** "HH:MM:SS" local-time string */
+  start_time: string;
+  /** "HH:MM:SS" local-time string */
+  end_time: string;
+  interval_minutes: number;
+  /** ISO weekdays 1-7 (Mon=1) */
+  days_of_week: number[];
+  tone: ReminderTone;
+  is_active: boolean;
+}

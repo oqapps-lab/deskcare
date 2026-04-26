@@ -43,7 +43,7 @@ _Last updated: 2026-04-26_
 
 - **Реальные видео** — все exercises имеют `video_url=null`. `<VideoPlaceholder>` рендерится. Когда Russell сдаст 64 видео в Storage bucket `exercise-videos/<slug>/video.mp4` — `UPDATE exercises SET video_url=...` и плеер автоматически подхватит.
 - **Adapty billing** — Stage 7. Webhook → `deskcare_subscriptions`. Сейчас все юзеры `status=free, is_active=false`. Premium gate работает по `exercise.is_premium` флагу из контента.
-- **Push notifications** — `reminder_schedules` таблица готова. Stage 7: `expo-notifications` + локальный scheduler.
+- ~~**Push notifications**~~ — закрыто 26 апреля 2026. `expo-notifications@~55.0.20` поставлен; `lib/notifications.ts` оборачивает permission flow + `scheduleDailyReminder`. Settings screen загружает/сохраняет `reminder_schedules` row + `user_settings.audio_enabled`, на «Continue» применяет расписание через `cancelAllScheduledReminders` → `scheduleDailyReminder`. На SDK 55 это локальные нотификации (Expo Go не отдаёт push token); FCM/APNS push token отложен до dev build.
 - **Apple/Google OAuth** — кнопки на Sign In показывают warning haptic, OAuth не подключен. Stage 7.
 - ~~**Programs/eye dynamic**~~ — закрыто 26 апреля 2026. `useExercises('eyes')` рендерит все 8 атомов с реальными slug'ами; CTA "Start 3-min eye routine" пушит на `/exercise/preview?routine=eye-full-3min`. Заодно прошёл i18n-проход: title_en теперь primary в Library, Eye Program, Routine Preview, Routine Player.
 - ~~**Atomic streak update**~~ — закрыто 26 апреля 2026. `public.log_completed_session(...)` SECURITY DEFINER RPC заменяет client-side read-modify-write. Гонок больше нет; смотри [`docs/05-database/MIGRATIONS.md` § 007](./docs/05-database/MIGRATIONS.md#007_log_completed_sessionsql-stage-7-prep).

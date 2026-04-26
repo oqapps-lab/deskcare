@@ -959,6 +959,19 @@ grant execute on function public.log_completed_session(text, integer, integer, i
 
 ---
 
+## 008_reminder_schedules_unique_user_type.sql (Stage 7 prep)
+
+`app/settings/notifications.tsx` использует `upsert(..., { onConflict:
+'user_id,reminder_type' })` для одной строки на тип напоминания на юзера.
+Без unique constraint upsert падал.
+
+```sql
+alter table public.reminder_schedules
+  add constraint reminder_schedules_user_type_uq unique (user_id, reminder_type);
+```
+
+---
+
 ## Источники
 
 - [DATABASE-SCHEMA.md](./DATABASE-SCHEMA.md) — структура таблиц
