@@ -38,6 +38,22 @@ export default function QuizWorkScreen() {
   const reduceMotion = useReducedMotion();
   const [choice, setChoice] = useState<Work | null>(null);
   const setWork = useOnboarding((s) => s.setWork);
+  const painZones = useOnboarding((s) => s.pain_zones);
+
+  // Pick a zone-specific stat phrase for the social-proof card. Falls back
+  // to a generic "desk-related discomfort" when the user hasn't picked a
+  // primary zone (or chose "everything").
+  const primaryZone = painZones?.[0];
+  const zoneNoun =
+    primaryZone === 'neck'
+      ? 'neck pain'
+      : primaryZone === 'back'
+        ? 'lower-back pain'
+        : primaryZone === 'eyes'
+          ? 'eye strain'
+          : primaryZone === 'wrists'
+            ? 'wrist tension'
+            : 'desk-related discomfort';
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(16);
@@ -84,7 +100,7 @@ export default function QuizWorkScreen() {
           <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
             <Text style={styles.statNumber}>87%</Text>
             <Text style={styles.statCopy}>
-              of desk workers with neck pain{'\n'}
+              of desk workers with {zoneNoun}{'\n'}
               report relief within 14 days.
             </Text>
           </GlassCard>

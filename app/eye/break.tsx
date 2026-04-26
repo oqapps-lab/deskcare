@@ -198,6 +198,6 @@ const styles = StyleSheet.create({
   },
   ghostLink: {
     ...typeScale.title,
-    color: colors.primaryMid,
+    color: colors.primaryDeep,
   },
 });

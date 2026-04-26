@@ -154,7 +154,7 @@ export default function LibraryScreen() {
                         <VideoPlaceholder pose={poseFor(e.code)} compact />
                         <View style={styles.rowText}>
                           <View style={styles.rowTitleRow}>
-                            <Text style={styles.rowName} numberOfLines={1}>
+                            <Text style={styles.rowName} numberOfLines={2}>
                               {e.title_en ?? e.title}
                             </Text>
                             {e.is_premium && <KeyGlyph />}

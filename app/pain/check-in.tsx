@@ -178,7 +178,7 @@ export default function PainCheckInScreen() {
         <ScrollView
           contentContainerStyle={{
             paddingTop: spacing.sm,
-            paddingBottom: insets.bottom + 180,
+            paddingBottom: insets.bottom + 240,
             paddingHorizontal: spacing.xxl,
           }}
           showsVerticalScrollIndicator={false}

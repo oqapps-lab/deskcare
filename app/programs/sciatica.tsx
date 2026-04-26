@@ -133,7 +133,7 @@ export default function SciaticaProgramScreen() {
       <ScrollView
         contentContainerStyle={{
           paddingTop: spacing.md,
-          paddingBottom: insets.bottom + 160,
+          paddingBottom: insets.bottom + 220,
           paddingHorizontal: spacing.xxl,
         }}
         showsVerticalScrollIndicator={false}

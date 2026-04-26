@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   },
   skip: {
     ...typeScale.title,
-    color: colors.primaryMid,
+    color: colors.primaryDeep,
     textAlign: 'center',
   },
 });

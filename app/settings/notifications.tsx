@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
@@ -84,6 +84,10 @@ export default function NotificationSettingsScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
   const userId = useUserId();
+  const params = useLocalSearchParams<{ from?: string }>();
+  // Entry context — onboarding flow advances to paywall, settings flow
+  // returns to the previous screen with a Save label.
+  const fromSettings = params.from === 'settings';
 
   const [activeTime, setActiveTime] = useState('15:00');
   const [eyeTimer, setEyeTimer] = useState(true);
@@ -207,7 +211,12 @@ export default function NotificationSettingsScreen() {
     } catch {
       // soft-fail; user can re-toggle from this screen later
     }
-    router.push('/onboarding/paywall');
+    if (fromSettings) {
+      if (router.canGoBack()) router.back();
+      else router.replace('/main/profile');
+    } else {
+      router.push('/onboarding/paywall');
+    }
   };
 
   return (
@@ -316,7 +325,7 @@ export default function NotificationSettingsScreen() {
             breath
             onPress={continueFlow}
           >
-            Continue
+            {fromSettings ? 'Save' : 'Continue'}
           </PillCTA>
         </Animated.View>
       </Animated.View>

@@ -42,6 +42,14 @@ export default function RootLayout() {
           <Stack.Screen name="pain/check-in" options={{ animation: 'slide_from_bottom' }} />
           <Stack.Screen name="sync" options={{ animation: 'fade' }} />
           <Stack.Screen name="errors/no-connection" options={{ animation: 'fade' }} />
+          {/* Modal screens — iOS sheet presentation gives swipe-to-dismiss,
+              backdrop tap, and the rounded top corners users expect. */}
+          <Stack.Screen name="modals/push-primer" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="modals/milestone" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="modals/share" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="modals/streak-freeze" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="modals/mini-paywall" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="modals/rate-app" options={{ presentation: 'modal' }} />
         </Stack>
       </SafeAreaProvider>
     </GestureHandlerRootView>

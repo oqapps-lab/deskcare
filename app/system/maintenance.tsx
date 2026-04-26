@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   statusLink: {
     ...typeScale.bodySm,
-    color: colors.primaryMid,
+    color: colors.primaryDeep,
     marginTop: spacing.md,
   },
 });
