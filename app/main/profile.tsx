@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -16,6 +16,9 @@ import {
 import type { GlyphName } from '../../components/ui';
 import type { HaloTone } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useHomeSnapshot } from '../../hooks/useUserData';
+import { supabase } from '../../lib/supabase';
+import { useUserId } from '../../lib/store/session';
 
 interface RowDef {
   key: string;
@@ -27,20 +30,157 @@ interface RowDef {
   badge?: string;
 }
 
-const ROWS: ReadonlyArray<RowDef> = [
-  { key: 'progress', icon: 'check',    tone: 'coral',    title: 'Progress',     sub: '14 sessions · 6-day streak', route: '/profile/progress' },
-  { key: 'pain',     icon: 'infinity', tone: 'peach',    title: 'Pain history', sub: 'Daily ratings since April 8', route: '/profile/pain-history' },
-  { key: 'settings', icon: 'settings', tone: 'lavender', title: 'Settings',     sub: 'Reminders, account, privacy', route: '/profile/settings' },
-  { key: 'sub',      icon: 'crown',    tone: 'coral',    title: 'Subscription', sub: 'Trial · 4 days remaining',    route: '/onboarding/paywall', badge: 'TRIAL' },
-];
+interface SubInfo {
+  status: string;
+  plan: string;
+  trial_end: string | null;
+  current_period_end: string | null;
+}
+
+const formatRowSub = (
+  key: string,
+  snap: ReturnType<typeof useHomeSnapshot>,
+  sub: SubInfo | null,
+  earliestPainDate: string | null,
+): string => {
+  const sessions = snap.streak?.total_sessions ?? 0;
+  const streakDays = snap.streak?.current_streak ?? 0;
+  if (key === 'progress') {
+    if (sessions === 0) return 'Your first session is waiting';
+    return `${sessions} session${sessions === 1 ? '' : 's'} · ${streakDays}-day streak`;
+  }
+  if (key === 'pain') {
+    if (!earliestPainDate) return 'No ratings yet — start any time';
+    const d = new Date(earliestPainDate);
+    return `Daily ratings since ${d.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    })}`;
+  }
+  if (key === 'sub') {
+    if (!sub) return 'Free · all zones via shorts';
+    if (sub.status === 'trialing' && sub.trial_end) {
+      const days = Math.max(
+        0,
+        Math.ceil(
+          (new Date(sub.trial_end).getTime() - Date.now()) / (24 * 3600 * 1000),
+        ),
+      );
+      return `Trial · ${days} day${days === 1 ? '' : 's'} remaining`;
+    }
+    if (sub.status === 'active') return `${sub.plan.replace('_', ' ')} · billed automatically`;
+    if (sub.status === 'expired' || sub.status === 'cancelled') return 'Plan ended — reactivate any time';
+    return 'Free · all zones via shorts';
+  }
+  return '';
+};
+
+const rowBadgeFor = (status: string | undefined): string | undefined => {
+  if (status === 'trialing') return 'TRIAL';
+  if (status === 'active') return 'PRO';
+  return undefined;
+};
+
+const tierBadgeFor = (status: string | undefined, isPremium: boolean): string | null => {
+  if (status === 'trialing') return 'TRIAL';
+  if (isPremium) return 'PRO';
+  return null;
+};
+
+const headerSubFor = (snap: ReturnType<typeof useHomeSnapshot>): string => {
+  const days = snap.streak?.current_streak ?? 0;
+  const zones = snap.onboardingData.pain_zones ?? [];
+  const focusLabel =
+    zones.length === 0
+      ? 'Building habits'
+      : zones.length === 1
+        ? `${capitalize(zones[0])} focus`
+        : `${capitalize(zones[0])} & ${capitalize(zones[1])} focus`;
+  return days === 0 ? focusLabel : `Day ${days} · ${focusLabel}`;
+};
+
+const capitalize = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : s);
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
+  const snap = useHomeSnapshot();
+  const userId = useUserId();
+  const [sub, setSub] = useState<SubInfo | null>(null);
+  const [earliestPain, setEarliestPain] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    Promise.all([
+      supabase
+        .from('deskcare_subscriptions')
+        .select('status, plan, trial_end, current_period_end')
+        .eq('user_id', userId)
+        .maybeSingle(),
+      supabase
+        .from('pain_entries')
+        .select('created_at')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: true })
+        .limit(1)
+        .maybeSingle(),
+    ]).then(([subRes, painRes]) => {
+      if (cancelled) return;
+      if (subRes.data) setSub(subRes.data as SubInfo);
+      if (painRes.data?.created_at) setEarliestPain(painRes.data.created_at as string);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  const ROWS: ReadonlyArray<RowDef> = [
+    {
+      key: 'progress',
+      icon: 'check',
+      tone: 'coral',
+      title: 'Progress',
+      sub: formatRowSub('progress', snap, sub, earliestPain),
+      route: '/profile/progress',
+    },
+    {
+      key: 'pain',
+      icon: 'infinity',
+      tone: 'peach',
+      title: 'Pain history',
+      sub: formatRowSub('pain', snap, sub, earliestPain),
+      route: '/profile/pain-history',
+    },
+    {
+      key: 'settings',
+      icon: 'settings',
+      tone: 'lavender',
+      title: 'Settings',
+      sub: 'Reminders, account, privacy',
+      route: '/profile/settings',
+    },
+    {
+      key: 'sub',
+      icon: 'crown',
+      tone: 'coral',
+      title: 'Subscription',
+      sub: formatRowSub('sub', snap, sub, earliestPain),
+      route: '/onboarding/paywall',
+      badge: rowBadgeFor(sub?.status),
+    },
+  ];
 
   const open = (r: RowDef) => {
     Haptics.selectionAsync();
     if (r.route) router.push(r.route as never);
   };
+
+  const displayName = snap.profile?.display_name ?? 'Friend';
+  const initial = (displayName[0] ?? 'F').toUpperCase();
+  const tierBadge = tierBadgeFor(sub?.status, snap.isPremium);
+  const sessionsValue = String(snap.streak?.total_sessions ?? 0);
+  const streakValue = String(snap.streak?.current_streak ?? 0);
+  const minutesValue = String(snap.streak?.total_minutes ?? 0);
 
   return (
     <AtmosphericBackground>
@@ -57,25 +197,27 @@ export default function ProfileScreen() {
       >
         <View style={styles.headerRow}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarLetter}>M</Text>
+            <Text style={styles.avatarLetter}>{initial}</Text>
           </View>
           <View style={{ flex: 1, minWidth: 0 }}>
-            <Text style={styles.greeting}>Marina</Text>
-            <Text style={styles.sub}>Day 6 · Neck & Back focus</Text>
+            <Text style={styles.greeting}>{displayName}</Text>
+            <Text style={styles.sub}>{headerSubFor(snap)}</Text>
           </View>
-          <View style={styles.tierBadge}>
-            <Text style={styles.tierBadgeText}>TRIAL</Text>
-          </View>
+          {tierBadge && (
+            <View style={styles.tierBadge}>
+              <Text style={styles.tierBadgeText}>{tierBadge}</Text>
+            </View>
+          )}
         </View>
 
         <View style={styles.statsWrap}>
           <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
             <View style={styles.statsRow}>
-              <StatCol value="14" label="SESSIONS" />
+              <StatCol value={sessionsValue} label="SESSIONS" />
               <StatDivider />
-              <StatCol value="6" label="DAY STREAK" />
+              <StatCol value={streakValue} label="DAY STREAK" />
               <StatDivider />
-              <StatCol value="38" label="MINUTES" />
+              <StatCol value={minutesValue} label="MINUTES" />
             </View>
           </GlassCard>
         </View>

@@ -34,27 +34,39 @@ const difficultyLabel = (d: 1 | 2 | 3): string => (d === 1 ? 'GENTLE' : d === 2 
 const useExercise = (slug: string | undefined) => {
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!slug) {
       setLoading(false);
+      setNotFound(true);
       return;
     }
     let cancelled = false;
     setLoading(true);
     setError(null);
+    setNotFound(false);
     supabase
       .from('exercises')
       .select(
         'id, code, slug, title, title_en, description, video_url, thumbnail_url, duration_seconds, reps_inside_atom, difficulty, exercise_type, is_premium, cautions, modifications',
       )
       .eq('slug', slug)
-      .single()
+      .maybeSingle()
       .then(({ data, error: e }) => {
         if (cancelled) return;
-        if (e) setError(e.message);
-        else setExercise(data as Exercise);
+        if (e) {
+          // PGRST116 is "no rows" — distinct from a real error. With
+          // .maybeSingle() the PGRST will return data:null instead, but
+          // keep this branch for defensiveness against legacy clients.
+          if (e.code === 'PGRST116') setNotFound(true);
+          else setError(e.message);
+        } else if (!data) {
+          setNotFound(true);
+        } else {
+          setExercise(data as Exercise);
+        }
         setLoading(false);
       });
     return () => {
@@ -62,13 +74,13 @@ const useExercise = (slug: string | undefined) => {
     };
   }, [slug]);
 
-  return { exercise, loading, error };
+  return { exercise, loading, notFound, error };
 };
 
 export default function ExerciseDetailScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ exerciseId?: string; locked?: string }>();
-  const { exercise, loading, error } = useExercise(params.exerciseId as string | undefined);
+  const { exercise, loading, notFound, error } = useExercise(params.exerciseId as string | undefined);
   const locked = params.locked === '1' || !!exercise?.is_premium;
 
   const back = () => {
@@ -103,11 +115,29 @@ export default function ExerciseDetailScreen() {
           <View style={styles.statusWrap}>
             <ActivityIndicator color={colors.primaryMid} />
           </View>
+        ) : notFound ? (
+          <View style={styles.statusWrap}>
+            <Eyebrow variant="accent">NOT FOUND</Eyebrow>
+            <Text style={styles.notFoundTitle}>This move isn't{'\n'}in our library.</Text>
+            <Text style={styles.notFoundSub}>
+              The link may be outdated or the exercise was removed.
+            </Text>
+            <View style={{ height: spacing.lg }} />
+            <PillCTA variant="primary" size="md" onPress={back}>
+              Back
+            </PillCTA>
+          </View>
         ) : error || !exercise ? (
           <View style={styles.statusWrap}>
-            <Text style={styles.statusError}>
-              {error ? `Could not load exercise: ${error}` : 'Exercise not found.'}
+            <Eyebrow variant="accent">SOMETHING WENT WRONG</Eyebrow>
+            <Text style={styles.notFoundTitle}>Couldn't load{'\n'}this exercise.</Text>
+            <Text style={styles.notFoundSub}>
+              Check your connection and try again.
             </Text>
+            <View style={{ height: spacing.lg }} />
+            <PillCTA variant="primary" size="md" onPress={back}>
+              Back
+            </PillCTA>
           </View>
         ) : (
           <>
@@ -241,6 +271,18 @@ const styles = StyleSheet.create({
     ...typeScale.bodySm,
     color: colors.error,
     textAlign: 'center',
+  },
+  notFoundTitle: {
+    ...typeScale.headline,
+    color: colors.ink,
+    textAlign: 'center',
+    marginTop: spacing.md,
+  },
+  notFoundSub: {
+    ...typeScale.body,
+    color: colors.inkMuted,
+    textAlign: 'center',
+    marginTop: spacing.sm,
   },
   thumbWrap: {
     alignItems: 'center',
