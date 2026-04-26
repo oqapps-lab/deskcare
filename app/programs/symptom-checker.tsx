@@ -14,6 +14,8 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
+import { supabase } from '../../lib/supabase';
+import { useUserId } from '../../lib/store/session';
 
 const SYMPTOMS = [
   { id: 'shooting',   label: 'Sharp shooting down my leg',   redFlag: false },
@@ -40,12 +42,51 @@ export default function SymptomCheckerScreen() {
     setSelected(next);
   };
 
+  const userId = useUserId();
+
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
   };
-  const adapt = () => {
+  const adapt = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+
+    // Best-effort persist symptom check-in into user_program_progress.
+    // Anon users skip the write; both still continue to active sciatica view.
+    if (userId && selected.size > 0) {
+      const { data: program } = await supabase
+        .from('programs')
+        .select('id')
+        .eq('slug', 'sciatica')
+        .maybeSingle();
+      if (program?.id) {
+        const { data: phase } = await supabase
+          .from('program_phases')
+          .select('id')
+          .eq('program_id', program.id)
+          .eq('phase_type', 'gentle')
+          .maybeSingle();
+        const symptoms = Array.from(selected);
+        const hasRedFlag = symptoms.includes('numb');
+        await supabase
+          .from('user_program_progress')
+          .upsert(
+            {
+              user_id: userId,
+              program_id: program.id,
+              current_phase_id: phase?.id ?? null,
+              status: hasRedFlag ? 'paused' : 'active',
+              last_symptom_check: {
+                date: new Date().toISOString(),
+                symptoms,
+                red_flag: hasRedFlag,
+              },
+              last_session_at: new Date().toISOString(),
+            },
+            { onConflict: 'user_id,program_id' },
+          );
+      }
+    }
     router.replace('/programs/sciatica?active=1');
   };
 

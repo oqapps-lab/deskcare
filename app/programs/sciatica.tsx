@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -16,34 +16,16 @@ import {
   ProgressBar,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { supabase } from '../../lib/supabase';
+import { useUserId } from '../../lib/store/session';
+import type { Routine } from '../../lib/types/db';
 
-const PHASE_1 = {
-  title: 'Phase 1 · Acute',
-  subtitle: 'Gentle · Days 1–7',
-  exercises: [
-    { name: 'Pelvic Tilt',         dur: '2 MIN' },
-    { name: 'Cat-Cow (gentle)',    dur: '3 MIN' },
-    { name: 'Knee-to-Chest',       dur: '2 MIN' },
-    { name: 'Piriformis Release',  dur: '3 MIN' },
-    { name: 'Hip Opener (supine)', dur: '2 MIN' },
-    { name: 'Supine Breathing',    dur: '2 MIN' },
-  ],
-};
-
-const PHASE_2 = {
-  title: 'Phase 2 · Rebuild',
-  subtitle: 'Progressive · Days 8–21',
-  exercises: [
-    { name: 'Bird Dog', dur: '3 MIN' },
-    { name: 'Bridge',   dur: '3 MIN' },
-    { name: 'Side-lying Clamshell', dur: '2 MIN' },
-    { name: 'Dead-bug',  dur: '3 MIN' },
-    { name: 'Thoracic Rotation', dur: '2 MIN' },
-    { name: 'Walking Pattern Drill', dur: '5 MIN' },
-    { name: 'Hamstring Glide', dur: '3 MIN' },
-    { name: 'Balance · Single-leg', dur: '3 MIN' },
-  ],
-};
+interface PhaseRoutines {
+  title: string;
+  subtitle: string;
+  /** Slugs of routines that belong to this phase (filtered from the sciatica body_zone). */
+  routines: Routine[];
+}
 
 const INSIDE = [
   'Symptom check-in that adapts the program',
@@ -52,10 +34,70 @@ const INSIDE = [
   'Weekly progress summary',
 ];
 
+const formatMin = (s: number) => `${Math.round(s / 60)} MIN`;
+
 export default function SciaticaProgramScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ active?: string }>();
-  const active = params.active === '1';
+  const userId = useUserId();
+  const [acutePhase, setAcutePhase] = useState<PhaseRoutines>({
+    title: 'Phase 1 · Acute',
+    subtitle: 'Gentle · Days 1–7',
+    routines: [],
+  });
+  const [maintPhase, setMaintPhase] = useState<PhaseRoutines>({
+    title: 'Phase 2 · Maintenance',
+    subtitle: 'Progressive · Days 8–21',
+    routines: [],
+  });
+  const [progressActive, setProgressActive] = useState<boolean | null>(null);
+  const [, setLoading] = useState(true);
+
+  // Fetch sciatica zone routines (R14-R17) split into acute / maintenance by slug prefix.
+  // Plus user's program progress to drive `active` state when signed in.
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      const { data: zone } = await supabase
+        .from('body_zones')
+        .select('id')
+        .eq('slug', 'sciatica')
+        .maybeSingle();
+      if (!zone?.id) return;
+      const { data: routines } = await supabase
+        .from('routines')
+        .select('id, slug, title, description, body_zone_id, duration_seconds, is_premium, routine_type, sort_order')
+        .eq('body_zone_id', zone.id)
+        .order('sort_order');
+      if (cancelled) return;
+      const list = (routines as Routine[] | null) ?? [];
+      setAcutePhase((p) => ({ ...p, routines: list.filter((r) => r.slug.startsWith('sciatica-acute-')) }));
+      setMaintPhase((p) => ({ ...p, routines: list.filter((r) => r.slug.startsWith('sciatica-maint-')) }));
+
+      if (userId) {
+        const { data: progress } = await supabase
+          .from('user_program_progress')
+          .select('status, program_id, programs:programs!inner(slug)')
+          .eq('user_id', userId)
+          .filter('programs.slug', 'eq', 'sciatica')
+          .maybeSingle();
+        if (cancelled) return;
+        setProgressActive(progress?.status === 'active');
+      } else {
+        setProgressActive(null);
+      }
+    };
+    run().finally(() => {
+      if (!cancelled) setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  // Active state: explicit ?active=1 param wins (legacy / design preview).
+  // Otherwise use user_program_progress when signed in.
+  const active = params.active === '1' || progressActive === true;
 
   const back = () => {
     Haptics.selectionAsync();
@@ -67,7 +109,13 @@ export default function SciaticaProgramScreen() {
   };
   const todaysSession = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.push('/exercise/preview');
+    // Pick today's first acute routine (gentle 3-min) as the day's session.
+    const todays = acutePhase.routines[0]?.slug;
+    router.push(
+      todays
+        ? ({ pathname: '/exercise/preview', params: { routine: todays } } as never)
+        : '/exercise/preview',
+    );
   };
   const openCheckIn = () => {
     Haptics.selectionAsync();
@@ -127,15 +175,15 @@ export default function SciaticaProgramScreen() {
         </Pressable>
 
         <PhaseCard
-          phase={PHASE_1}
-          meta="DAYS 1–7 · 6 EXERCISES · 3 MIN / DAY"
+          phase={acutePhase}
+          meta={`DAYS 1–7 · ${acutePhase.routines.length} ROUTINES · ~3 MIN / DAY`}
           active={active}
           locked={!active}
         />
 
         <PhaseCard
-          phase={PHASE_2}
-          meta="DAYS 8–21 · 8 EXERCISES · 5 MIN / DAY"
+          phase={maintPhase}
+          meta={`DAYS 8–21 · ${maintPhase.routines.length} ROUTINES · ~5 MIN / DAY`}
           active={false}
           locked={!active}
           lockedCopy={active ? 'Unlocks on day 8' : undefined}
@@ -177,7 +225,7 @@ export default function SciaticaProgramScreen() {
 }
 
 const PhaseCard: React.FC<{
-  phase: typeof PHASE_1;
+  phase: PhaseRoutines;
   meta: string;
   active: boolean;
   locked: boolean;
@@ -203,13 +251,16 @@ const PhaseCard: React.FC<{
 
       {active ? (
         <View style={styles.exercisesList}>
-          {phase.exercises.map((e, i) => (
-            <View key={e.name} style={styles.exerciseRow}>
-              <View style={[styles.exerciseDot, i < 2 && styles.exerciseDotDone]} />
-              <Text style={[styles.exerciseName, i < 2 && styles.exerciseDone]}>{e.name}</Text>
-              <Text style={styles.exerciseDur}>{e.dur}</Text>
+          {phase.routines.map((r, i) => (
+            <View key={r.id} style={styles.exerciseRow}>
+              <View style={[styles.exerciseDot, i < 1 && styles.exerciseDotDone]} />
+              <Text style={[styles.exerciseName, i < 1 && styles.exerciseDone]}>{r.title}</Text>
+              <Text style={styles.exerciseDur}>{formatMin(r.duration_seconds)}</Text>
             </View>
           ))}
+          {phase.routines.length === 0 && (
+            <Text style={styles.lockedCopy}>Routines load momentarily…</Text>
+          )}
         </View>
       ) : lockedCopy ? (
         <Text style={styles.lockedCopy}>{lockedCopy}</Text>
