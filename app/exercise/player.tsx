@@ -148,7 +148,7 @@ export default function ExercisePlayerScreen() {
       <View style={[styles.root, { paddingBottom: insets.bottom + spacing.xl }]}>
         <View style={styles.topCluster}>
           <Eyebrow>{`STEP ${stepIdx + 1} OF ${items.length}`}</Eyebrow>
-          <Text style={styles.stepName}>{step.exercise?.title ?? step.exercise?.code ?? '—'}</Text>
+          <Text style={styles.stepName}>{step.exercise?.title_en ?? step.exercise?.title ?? step.exercise?.code ?? '—'}</Text>
           <Text style={styles.stepMeta}>
             {step.exercise?.code} · {step.exercise?.duration_seconds}s × {step.reps}
           </Text>

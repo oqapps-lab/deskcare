@@ -26,10 +26,10 @@ import {
   Eyebrow,
   GlassCard,
   NavHeader,
-  PillCTA,
   VideoPlaceholder,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useExercises } from '../../hooks/useContent';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -38,19 +38,19 @@ const RING_RADIUS = 100;
 const RING_STROKE = 8;
 const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
-const EXERCISES = [
-  { id: 'palming',     name: 'Palming Reset',        dur: '30 SEC', pose: 'eye-rest' as const },
-  { id: 'figure-8',    name: 'Eye Figure-8',         dur: '30 SEC', pose: 'eye-rest' as const },
-  { id: 'focus-shift', name: 'Near-Far Focus Shift', dur: '45 SEC', pose: 'eye-rest' as const },
-  { id: 'blink',       name: 'Slow Blink',           dur: '30 SEC', pose: 'eye-rest' as const },
-  { id: 'rotations',   name: 'Eye Rotations',        dur: '45 SEC', pose: 'eye-rest' as const },
-];
+const formatDuration = (seconds: number): string => {
+  if (seconds < 60) return `${seconds} SEC`;
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return s === 0 ? `${m} MIN` : `${m}:${s.toString().padStart(2, '0')} MIN`;
+};
 
 export default function EyeProgramScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
   const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(true);
+  const { exercises, loading: exLoading } = useExercises('eyes');
 
   const progress = useSharedValue(0);
   const ringPulse = useSharedValue(1);
@@ -183,32 +183,51 @@ export default function EyeProgramScreen() {
           </GlassCard>
         </View>
 
-        <Eyebrow>5 GENTLE EXERCISES</Eyebrow>
+        <Eyebrow>
+          {exercises ? `${exercises.length} GENTLE EXERCISES` : 'GENTLE EXERCISES'}
+        </Eyebrow>
         <View style={styles.list}>
-          {EXERCISES.map((e) => (
-            <Pressable
-              key={e.id}
-              onPress={() => openExercise(e.id)}
-              accessibilityRole="button"
-              accessibilityLabel={`${e.name} · ${e.dur}`}
-              style={({ pressed }) => [pressed && styles.pressed]}
-            >
-              <View style={styles.exerciseWrap}>
-                <GlassCard tint="cream" radius="xl" padding={spacing.md}>
-                  <View style={styles.exerciseRow}>
-                    <VideoPlaceholder pose={e.pose} compact />
-                    <View style={styles.exerciseText}>
-                      <Text style={styles.exerciseName}>{e.name}</Text>
-                      <Text style={styles.exerciseMeta}>{e.dur} · EYES</Text>
+          {exLoading && !exercises ? (
+            <View style={styles.exerciseWrap}>
+              <GlassCard tint="cream" radius="xl" padding={spacing.md}>
+                <Text style={styles.exerciseMeta}>Loading…</Text>
+              </GlassCard>
+            </View>
+          ) : (
+            (exercises ?? []).map((e) => (
+              <Pressable
+                key={e.id}
+                onPress={() => openExercise(e.slug)}
+                accessibilityRole="button"
+                accessibilityLabel={`${e.title_en ?? e.title} · ${formatDuration(e.duration_seconds)}`}
+                style={({ pressed }) => [pressed && styles.pressed]}
+              >
+                <View style={styles.exerciseWrap}>
+                  <GlassCard tint="cream" radius="xl" padding={spacing.md}>
+                    <View style={styles.exerciseRow}>
+                      <VideoPlaceholder pose="eye-rest" compact />
+                      <View style={styles.exerciseText}>
+                        <Text style={styles.exerciseName}>{e.title_en ?? e.title}</Text>
+                        <Text style={styles.exerciseMeta}>
+                          {formatDuration(e.duration_seconds)} · EYES
+                        </Text>
+                      </View>
+                      <Svg width={14} height={14} viewBox="0 0 14 14">
+                        <Path
+                          d="M5 3 L9 7 L5 11"
+                          stroke={colors.inkSubtle}
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          fill="none"
+                        />
+                      </Svg>
                     </View>
-                    <Svg width={14} height={14} viewBox="0 0 14 14">
-                      <Path d="M5 3 L9 7 L5 11" stroke={colors.inkSubtle} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                    </Svg>
-                  </View>
-                </GlassCard>
-              </View>
-            </Pressable>
-          ))}
+                  </GlassCard>
+                </View>
+              </Pressable>
+            ))
+          )}
         </View>
       </ScrollView>
     </AtmosphericBackground>

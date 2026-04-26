@@ -98,7 +98,7 @@ export default function RoutinePreviewScreen() {
                   </View>
                   <VideoPlaceholder pose={poseFor(it.exercise?.code)} compact />
                   <View style={styles.rowText}>
-                    <Text style={styles.rowName}>{it.exercise?.title ?? it.exercise?.code}</Text>
+                    <Text style={styles.rowName}>{it.exercise?.title_en ?? it.exercise?.title ?? it.exercise?.code}</Text>
                     <Text style={styles.rowMeta}>
                       {it.exercise?.code} · {it.reps}× ({(it.exercise?.duration_seconds ?? 0) * it.reps}s)
                     </Text>
