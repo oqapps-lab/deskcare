@@ -45,7 +45,7 @@ _Last updated: 2026-04-26_
 - **Adapty billing** — Stage 7. Webhook → `deskcare_subscriptions`. Сейчас все юзеры `status=free, is_active=false`. Premium gate работает по `exercise.is_premium` флагу из контента.
 - **Push notifications** — `reminder_schedules` таблица готова. Stage 7: `expo-notifications` + локальный scheduler.
 - **Apple/Google OAuth** — кнопки на Sign In показывают warning haptic, OAuth не подключен. Stage 7.
-- **Programs/eye dynamic** — пока hardcoded UI работает. Routines (R18, R19) уже в БД, можно подключить аналогично Sciatica.
+- ~~**Programs/eye dynamic**~~ — закрыто 26 апреля 2026. `useExercises('eyes')` рендерит все 8 атомов с реальными slug'ами; CTA "Start 3-min eye routine" пушит на `/exercise/preview?routine=eye-full-3min`. Заодно прошёл i18n-проход: title_en теперь primary в Library, Eye Program, Routine Preview, Routine Player.
 - ~~**Atomic streak update**~~ — закрыто 26 апреля 2026. `public.log_completed_session(...)` SECURITY DEFINER RPC заменяет client-side read-modify-write. Гонок больше нет; смотри [`docs/05-database/MIGRATIONS.md` § 007](./docs/05-database/MIGRATIONS.md#007_log_completed_sessionsql-stage-7-prep).
 - **Cold-start hydration regression test** — `_layout.tsx` уже ждёт `hasHydrated` перед рендером Stack. Тест с пустым AsyncStorage не прогонял.
 
