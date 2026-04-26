@@ -213,7 +213,7 @@ export default function EyeProgramScreen() {
                 key={e.id}
                 onPress={() => openExercise(e.slug)}
                 accessibilityRole="button"
-                accessibilityLabel={`${e.title_en ?? e.title} · ${formatDuration(e.duration_seconds)}`}
+                accessibilityLabel={`${e.title} · ${formatDuration(e.duration_seconds)}`}
                 style={({ pressed }) => [pressed && styles.pressed]}
               >
                 <View style={styles.exerciseWrap}>
@@ -221,7 +221,7 @@ export default function EyeProgramScreen() {
                     <View style={styles.exerciseRow}>
                       <VideoPlaceholder pose="eye-rest" compact />
                       <View style={styles.exerciseText}>
-                        <Text style={styles.exerciseName}>{e.title_en ?? e.title}</Text>
+                        <Text style={styles.exerciseName}>{e.title}</Text>
                         <Text style={styles.exerciseMeta}>
                           {formatDuration(e.duration_seconds)} · EYES
                         </Text>

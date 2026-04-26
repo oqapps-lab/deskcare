@@ -160,7 +160,7 @@ export default function ExerciseDetailScreen() {
               )}
             </View>
 
-            <Text style={[styles.name, locked && styles.nameLocked]}>{exercise.title_en ?? exercise.title}</Text>
+            <Text style={[styles.name, locked && styles.nameLocked]}>{exercise.title}</Text>
             <Text style={styles.meta}>
               {exercise.code} · {formatDuration(exercise.duration_seconds)} · {exercise.exercise_type.toUpperCase()} · {difficultyLabel(exercise.difficulty)}
             </Text>
@@ -194,12 +194,6 @@ export default function ExerciseDetailScreen() {
                   </View>
                   <View style={styles.sectionDivider} />
                 </>
-              )}
-              {exercise.title_en && exercise.title && exercise.title_en !== exercise.title && (
-                <View style={styles.section}>
-                  <Eyebrow>ORIGINAL NAME</Eyebrow>
-                  <Text style={styles.sectionBody}>{exercise.title}</Text>
-                </View>
               )}
             </View>
 

@@ -145,7 +145,7 @@ export default function LibraryScreen() {
                   key={e.id}
                   onPress={() => open(e.slug, !!e.is_premium)}
                   accessibilityRole="button"
-                  accessibilityLabel={`${e.title_en ?? e.title}, ${formatDuration(e.duration_seconds)}, ${e.code}${e.is_premium ? ', premium' : ''}`}
+                  accessibilityLabel={`${e.title}, ${formatDuration(e.duration_seconds)}, ${e.code}${e.is_premium ? ', premium' : ''}`}
                   style={({ pressed }) => [pressed && styles.pressed]}
                 >
                   <View style={styles.rowWrap}>
@@ -155,7 +155,7 @@ export default function LibraryScreen() {
                         <View style={styles.rowText}>
                           <View style={styles.rowTitleRow}>
                             <Text style={styles.rowName} numberOfLines={2}>
-                              {e.title_en ?? e.title}
+                              {e.title}
                             </Text>
                             {e.is_premium && <KeyGlyph />}
                           </View>
