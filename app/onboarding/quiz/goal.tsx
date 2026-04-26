@@ -27,6 +27,7 @@ import {
 import type { GlyphName } from '../../../components/ui';
 import type { HaloTone } from '../../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../../constants/tokens';
+import { useOnboarding, type DeskHours } from '../../../lib/store/onboarding';
 
 type Goal = 'stop' | 'prevent' | 'energy';
 
@@ -47,6 +48,8 @@ export default function QuizGoalScreen() {
   const reduceMotion = useReducedMotion();
   const [goal, setGoal] = useState<Goal | null>(null);
   const [hours, setHours] = useState<string | null>(null);
+  const setGoalStore = useOnboarding((s) => s.setGoal);
+  const setHoursStore = useOnboarding((s) => s.setHours);
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(16);
@@ -71,6 +74,8 @@ export default function QuizGoalScreen() {
   const ready = () => {
     if (!goal || !hours) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    setGoalStore(goal);
+    setHoursStore(hours as DeskHours);
     router.push('/onboarding/labor-illusion');
   };
 

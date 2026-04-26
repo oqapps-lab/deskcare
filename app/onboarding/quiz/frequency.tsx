@@ -25,6 +25,7 @@ import {
 import type { GlyphName } from '../../../components/ui';
 import type { HaloTone } from '../../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../../constants/tokens';
+import { useOnboarding } from '../../../lib/store/onboarding';
 
 type Frequency = 'sometimes' | 'weekly' | 'daily';
 
@@ -44,6 +45,7 @@ export default function QuizFrequencyScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
   const [choice, setChoice] = useState<Frequency | null>(null);
+  const setFrequency = useOnboarding((s) => s.setFrequency);
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(16);
@@ -68,6 +70,7 @@ export default function QuizFrequencyScreen() {
   const next = () => {
     if (!choice) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setFrequency(choice);
     router.push('/onboarding/quiz/work');
   };
 

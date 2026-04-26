@@ -24,6 +24,7 @@ import {
   QuizTile,
 } from '../../../components/ui';
 import { colors, spacing, typeScale } from '../../../constants/tokens';
+import { useOnboarding } from '../../../lib/store/onboarding';
 
 type Zone = 'neck' | 'back' | 'eyes' | 'wrists';
 
@@ -45,6 +46,7 @@ export default function QuizZoneScreen() {
   const reduceMotion = useReducedMotion();
   const [selected, setSelected] = useState<Set<Zone>>(new Set());
   const [everything, setEverything] = useState(false);
+  const setZones = useOnboarding((s) => s.setZones);
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(16);
@@ -82,10 +84,12 @@ export default function QuizZoneScreen() {
   const next = () => {
     if (selected.size === 0 && !everything) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setZones(everything ? ['neck', 'back', 'eyes', 'wrists'] : Array.from(selected));
     router.push('/onboarding/quiz/frequency');
   };
   const skip = () => {
     Haptics.selectionAsync();
+    setZones([]);
     router.push('/onboarding/quiz/frequency');
   };
 

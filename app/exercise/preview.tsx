@@ -1,8 +1,7 @@
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -15,17 +14,27 @@ import {
   VideoPlaceholder,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useRoutineWithItems } from '../../hooks/useContent';
 
-const EXERCISES = [
-  { name: 'Chin Tuck',          dur: '2 MIN',  pose: 'neck-roll' as const },
-  { name: 'Upper Trap Stretch', dur: '2 MIN',  pose: 'neck-roll' as const },
-  { name: 'Levator Release',    dur: '1 MIN',  pose: 'neck-roll' as const },
-];
+const DEFAULT_ROUTINE = 'neck-quick-2min';
+
+const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch' => {
+  if (!code) return 'neck-roll';
+  if (code.startsWith('N')) return 'neck-roll';
+  if (code.startsWith('B') || code.startsWith('S') || code.startsWith('F')) return 'back-arch';
+  if (code.startsWith('W')) return 'wrist-stretch';
+  if (code.startsWith('E')) return 'eye-rest';
+  return 'neck-roll';
+};
 
 export default function RoutinePreviewScreen() {
   const insets = useSafeAreaInsets();
-  const total = EXERCISES.reduce((acc, e) => acc + parseInt(e.dur, 10) * (e.dur.includes('SEC') ? 1 : 60), 0);
-  const totalMin = Math.round(total / 60);
+  const params = useLocalSearchParams<{ routine?: string }>();
+  const routineSlug = (params.routine as string) || DEFAULT_ROUTINE;
+  const { routine, items, loading, error } = useRoutineWithItems(routineSlug);
+
+  const totalSec = routine?.duration_seconds ?? 0;
+  const totalMin = Math.max(1, Math.round(totalSec / 60));
 
   const back = () => {
     Haptics.selectionAsync();
@@ -33,7 +42,7 @@ export default function RoutinePreviewScreen() {
   };
   const begin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.push('/exercise/player');
+    router.push({ pathname: '/exercise/player', params: { routine: routineSlug } } as never);
   };
 
   return (
@@ -51,50 +60,74 @@ export default function RoutinePreviewScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <Eyebrow variant="accent">TODAY'S ROUTINE</Eyebrow>
-        <Text style={styles.title}>Neck Unwind</Text>
-        <Text style={styles.sub}>Three gentle moves that release the sub-occipitals.</Text>
+        {loading && !routine ? (
+          <View style={styles.statusWrap}>
+            <ActivityIndicator color={colors.primaryMid} />
+          </View>
+        ) : error || !routine ? (
+          <View style={styles.statusWrap}>
+            <Text style={styles.statusError}>
+              {error ? `Could not load routine: ${error}` : 'Routine not found.'}
+            </Text>
+          </View>
+        ) : (
+          <>
+            <Eyebrow variant="accent">TODAY'S ROUTINE</Eyebrow>
+            <Text style={styles.title}>{routine.title}</Text>
+            {routine.description && <Text style={styles.sub}>{routine.description}</Text>}
 
-        <View style={styles.heroWrap}>
-          <VideoPlaceholder pose="neck-roll" width={320} height={200} />
-        </View>
-
-        <View style={styles.statsRow}>
-          <StatCol value={`${totalMin}`} unit="MIN" />
-          <Sep />
-          <StatCol value={`${EXERCISES.length}`} unit="MOVES" />
-          <Sep />
-          <StatCol value="NECK" unit="FOCUS" />
-        </View>
-
-        <Eyebrow>WHAT YOU'LL DO</Eyebrow>
-        <View style={styles.list}>
-          {EXERCISES.map((e, i) => (
-            <View key={e.name} style={styles.row}>
-              <View style={styles.stepIndex}>
-                <Text style={styles.stepIndexText}>{i + 1}</Text>
-              </View>
-              <VideoPlaceholder pose={e.pose} compact />
-              <View style={styles.rowText}>
-                <Text style={styles.rowName}>{e.name}</Text>
-                <Text style={styles.rowMeta}>{e.dur}</Text>
-              </View>
+            <View style={styles.heroWrap}>
+              <VideoPlaceholder pose={poseFor(items[0]?.exercise?.code)} width={320} height={200} />
             </View>
-          ))}
-        </View>
 
-        <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
-          <Text style={styles.tipTitle}>Before you start</Text>
-          <Text style={styles.tipBody}>
-            Soften your shoulders. Breathe slowly through the nose. Stop at the
-            first hint of sharp pain.
-          </Text>
-        </GlassCard>
+            <View style={styles.statsRow}>
+              <StatCol value={`${totalMin}`} unit="MIN" />
+              <Sep />
+              <StatCol value={`${items.length}`} unit="MOVES" />
+              <Sep />
+              <StatCol value={routine.routine_type.replace('_', ' ').toUpperCase()} unit="TYPE" />
+            </View>
+
+            <Eyebrow>WHAT YOU'LL DO</Eyebrow>
+            <View style={styles.list}>
+              {items.map((it, i) => (
+                <View key={it.id} style={styles.row}>
+                  <View style={styles.stepIndex}>
+                    <Text style={styles.stepIndexText}>{i + 1}</Text>
+                  </View>
+                  <VideoPlaceholder pose={poseFor(it.exercise?.code)} compact />
+                  <View style={styles.rowText}>
+                    <Text style={styles.rowName}>{it.exercise?.title ?? it.exercise?.code}</Text>
+                    <Text style={styles.rowMeta}>
+                      {it.exercise?.code} · {it.reps}× ({(it.exercise?.duration_seconds ?? 0) * it.reps}s)
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
+              <Text style={styles.tipTitle}>Before you start</Text>
+              <Text style={styles.tipBody}>
+                Soften your shoulders. Breathe slowly through the nose. Stop at the
+                first hint of sharp pain.
+              </Text>
+            </GlassCard>
+          </>
+        )}
       </ScrollView>
 
       <View style={[styles.ctaFloating, { paddingBottom: insets.bottom + spacing.md }]} pointerEvents="box-none">
-        <PillCTA variant="primary" size="lg" icon="play" iconBg breath onPress={begin}>
-          Begin · {totalMin} min
+        <PillCTA
+          variant="primary"
+          size="lg"
+          icon="play"
+          iconBg
+          breath={!loading && !!routine}
+          disabled={loading || !routine}
+          onPress={begin}
+        >
+          {routine ? `Begin · ${totalMin} min` : 'Loading…'}
         </PillCTA>
       </View>
     </AtmosphericBackground>
@@ -111,6 +144,15 @@ const StatCol: React.FC<{ value: string; unit: string }> = ({ value, unit }) => 
 const Sep = () => <View style={styles.sep} />;
 
 const styles = StyleSheet.create({
+  statusWrap: {
+    alignItems: 'center',
+    paddingVertical: spacing.huge,
+  },
+  statusError: {
+    ...typeScale.bodySm,
+    color: colors.error,
+    textAlign: 'center',
+  },
   title: {
     ...typeScale.headline,
     color: colors.ink,

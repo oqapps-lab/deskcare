@@ -24,6 +24,8 @@ import {
 import type { GlyphName } from '../../components/ui';
 import type { HaloTone } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useOnboarding } from '../../lib/store/onboarding';
+import { useUserId } from '../../lib/store/session';
 
 const ROUTINES: ReadonlyArray<{
   name: string;
@@ -82,12 +84,19 @@ export default function PlanScreen() {
   }));
   const ctaStyle = useAnimatedStyle(() => ({ opacity: ctaOpacity.value }));
 
+  const userId = useUserId();
+  const saveOnboarding = useOnboarding((s) => s.saveToSupabase);
+  const resetOnboarding = useOnboarding((s) => s.reset);
+
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
   };
-  const cont = () => {
+  const cont = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    // Best-effort persist quiz answers; anon users no-op via the store helper.
+    await saveOnboarding(userId);
+    resetOnboarding();
     router.push('/onboarding/permission');
   };
 

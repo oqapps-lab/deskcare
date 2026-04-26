@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import Svg, { Circle, Path, Rect } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -13,34 +12,134 @@ import {
   NavHeader,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { supabase } from '../../lib/supabase';
+import { useUserId } from '../../lib/store/session';
+import type { Streak } from '../../lib/types/db';
 
-const WEEK = [
-  { day: 'Mon', min: 3.5 },
-  { day: 'Tue', min: 2 },
-  { day: 'Wed', min: 4 },
-  { day: 'Thu', min: 2.5 },
-  { day: 'Fri', min: 5 },
-  { day: 'Sat', min: 1.5 },
-  { day: 'Sun', min: 3 },
+const WEEK_MOCK = [
+  { day: 'Mon', min: 3.5 }, { day: 'Tue', min: 2 }, { day: 'Wed', min: 4 },
+  { day: 'Thu', min: 2.5 }, { day: 'Fri', min: 5 }, { day: 'Sat', min: 1.5 }, { day: 'Sun', min: 3 },
 ];
 
-const HISTORY = [
-  { date: 'Today',      routine: 'Neck Unwind',          dur: '2:15', zone: 'Neck' },
-  { date: 'Yesterday',  routine: 'Eye Reset',            dur: '0:30', zone: 'Eyes' },
-  { date: 'Apr 19',     routine: 'Lower Back Release',   dur: '3:05', zone: 'Back' },
-  { date: 'Apr 18',     routine: 'Neck Unwind',          dur: '2:10', zone: 'Neck' },
-  { date: 'Apr 17',     routine: 'Wrist Flex & Extend',  dur: '2:00', zone: 'Wrists' },
+const HISTORY_MOCK = [
+  { date: 'Today',     routine: 'Neck Unwind',         dur: '2:15', zone: 'Neck' },
+  { date: 'Yesterday', routine: 'Eye Reset',           dur: '0:30', zone: 'Eyes' },
+  { date: 'Apr 19',    routine: 'Lower Back Release',  dur: '3:05', zone: 'Back' },
+  { date: 'Apr 18',    routine: 'Neck Unwind',         dur: '2:10', zone: 'Neck' },
+  { date: 'Apr 17',    routine: 'Wrist Flex & Extend', dur: '2:00', zone: 'Wrists' },
 ];
+
+interface SessionRow {
+  id: string;
+  started_at: string;
+  duration_seconds: number;
+  routine_id: string | null;
+  body_zone_id: string | null;
+}
+
+const formatDur = (s: number): string => {
+  const m = Math.floor(s / 60);
+  const sec = String(s % 60).padStart(2, '0');
+  return `${m}:${sec}`;
+};
+
+const formatDateLabel = (iso: string): string => {
+  const d = new Date(iso);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const dDay = new Date(d);
+  dDay.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((today.getTime() - dDay.getTime()) / 86_400_000);
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+};
+
+const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 export default function ProgressScreen() {
   const insets = useSafeAreaInsets();
+  const userId = useUserId();
+  const [streak, setStreak] = useState<Streak | null>(null);
+  const [sessions, setSessions] = useState<SessionRow[] | null>(null);
+  const [loading, setLoading] = useState(!!userId);
+
+  useEffect(() => {
+    if (!userId) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setLoading(true);
+    Promise.all([
+      supabase
+        .from('streaks')
+        .select('user_id, current_streak, longest_streak, last_activity_date, total_sessions, total_minutes')
+        .eq('user_id', userId)
+        .maybeSingle(),
+      supabase
+        .from('sessions')
+        .select('id, started_at, duration_seconds, routine_id, body_zone_id')
+        .eq('user_id', userId)
+        .order('started_at', { ascending: false })
+        .limit(20),
+    ]).then(([s, list]) => {
+      if (cancelled) return;
+      setStreak((s.data as Streak) ?? null);
+      setSessions((list.data as SessionRow[]) ?? []);
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  // Build the weekly chart from real sessions when available; fallback to mock.
+  const weekChart = useMemo(() => {
+    if (!sessions) return WEEK_MOCK;
+    // Last 7 days, oldest first.
+    const buckets = new Map<string, number>();
+    const now = new Date();
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(now);
+      d.setDate(now.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      buckets.set(key, 0);
+    }
+    sessions.forEach((s) => {
+      const key = s.started_at.slice(0, 10);
+      if (buckets.has(key)) {
+        buckets.set(key, (buckets.get(key) ?? 0) + s.duration_seconds / 60);
+      }
+    });
+    const entries: { day: string; min: number }[] = [];
+    for (const [iso, min] of buckets.entries()) {
+      const date = new Date(iso);
+      entries.push({ day: DAY_LABELS[date.getDay()], min: Math.round(min * 10) / 10 });
+    }
+    return entries;
+  }, [sessions]);
+
+  const recentList = useMemo(() => {
+    if (!sessions || sessions.length === 0) return HISTORY_MOCK;
+    return sessions.slice(0, 5).map((s) => ({
+      date: formatDateLabel(s.started_at),
+      routine: 'Routine',
+      dur: formatDur(s.duration_seconds),
+      zone: '—',
+    }));
+  }, [sessions]);
 
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
   };
 
-  const maxMin = Math.max(...WEEK.map((d) => d.min));
+  const maxMin = Math.max(1, ...weekChart.map((d) => d.min));
+  const totalSessions = streak?.total_sessions ?? 14;
+  const currentStreak = streak?.current_streak ?? 6;
+  const todayDayIdx = new Date().getDay(); // 0=Sun..6=Sat → index for week dot
+  const dotIdx = (todayDayIdx + 6) % 7; // map to Mon-first row index
 
   return (
     <AtmosphericBackground>
@@ -61,12 +160,12 @@ export default function ProgressScreen() {
           <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
             <View style={styles.topStatsRow}>
               <View style={styles.topStatCol}>
-                <Text style={styles.bigNumber}>14</Text>
+                <Text style={styles.bigNumber}>{totalSessions}</Text>
                 <Text style={styles.bigLabel}>SESSIONS</Text>
               </View>
               <View style={styles.sep} />
               <View style={styles.topStatCol}>
-                <Text style={styles.bigNumber}>6</Text>
+                <Text style={styles.bigNumber}>{currentStreak}</Text>
                 <Text style={styles.bigLabel}>DAY STREAK</Text>
               </View>
             </View>
@@ -76,8 +175,8 @@ export default function ProgressScreen() {
                   key={i}
                   style={[
                     styles.weekDot,
-                    i < 5 && styles.weekDotDone,
-                    i === 5 && styles.weekDotToday,
+                    i < dotIdx && styles.weekDotDone,
+                    i === dotIdx && styles.weekDotToday,
                   ]}
                 />
               ))}
@@ -89,7 +188,7 @@ export default function ProgressScreen() {
         <View style={styles.chartWrap}>
           <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
             <View style={styles.chartRow}>
-              {WEEK.map((d) => {
+              {weekChart.map((d) => {
                 const height = Math.max(6, (d.min / maxMin) * 100);
                 const done = d.min > 0;
                 return (
@@ -114,7 +213,7 @@ export default function ProgressScreen() {
 
         <Eyebrow>RECENT SESSIONS</Eyebrow>
         <View style={styles.history}>
-          {HISTORY.map((h, i) => (
+          {recentList.map((h, i) => (
             <React.Fragment key={i}>
               <View style={styles.historyRow}>
                 <View style={styles.historyDot} />
@@ -124,7 +223,7 @@ export default function ProgressScreen() {
                 </View>
                 <Text style={styles.historyDur}>{h.dur}</Text>
               </View>
-              {i < HISTORY.length - 1 && <View style={styles.historyDivider} />}
+              {i < recentList.length - 1 && <View style={styles.historyDivider} />}
             </React.Fragment>
           ))}
         </View>

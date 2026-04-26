@@ -17,6 +17,7 @@ import {
 } from '../../components/ui';
 import type { HaloTone } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
+import { useHomeSnapshot } from '../../hooks/useUserData';
 
 type HomeState = 'first' | 'active' | 'premium' | 'reengage';
 
@@ -76,14 +77,58 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ state?: HomeState }>();
   const rawState = (params.state as HomeState) || 'active';
-  const state: HomeState = ['first', 'active', 'premium', 'reengage'].includes(rawState)
-    ? rawState
-    : 'active';
-  const cfg = STATE_CONFIG[state];
+  const explicitState: HomeState | null =
+    rawState && ['first', 'active', 'premium', 'reengage'].includes(rawState as HomeState)
+      ? (rawState as HomeState)
+      : null;
+
+  // Live data from Supabase (signed-in users). When `?state=` is set, mock
+  // wins so we can still preview every variant for design review.
+  const snap = useHomeSnapshot();
+  const liveAvailable = !!snap.profile && !explicitState;
+
+  // Pick which state's tone/copy template to use:
+  //  - explicit ?state param wins for demos.
+  //  - signed-in user with streak ≥ 1 → 'active' (or 'premium' if subscribed).
+  //  - signed-in user with streak = 0 / never stretched → 'first'.
+  //  - signed-out / no profile → fall back to legacy default 'active'.
+  const inferredState: HomeState = liveAvailable
+    ? snap.isPremium
+      ? 'premium'
+      : (snap.streak?.current_streak ?? 0) === 0
+        ? 'first'
+        : 'active'
+    : explicitState ?? 'active';
+
+  const baseCfg = STATE_CONFIG[inferredState];
+  const cfg = liveAvailable
+    ? {
+        ...baseCfg,
+        greeting: snap.profile?.display_name
+          ? `Welcome back, ${snap.profile.display_name}.`
+          : (snap.streak?.current_streak ?? 0) === 0
+            ? 'Good afternoon.'
+            : 'Welcome back.',
+        streakValue: String(snap.streak?.current_streak ?? 0),
+        streakSubLine:
+          (snap.streak?.current_streak ?? 0) === 0
+            ? 'Your first stretch is waiting'
+            : `Day ${snap.streak?.current_streak} of your DeskCare habit`,
+        routineName: snap.recommendedRoutine?.title ?? baseCfg.routineName,
+        routineHint: snap.recommendedRoutine
+          ? `${Math.round(snap.recommendedRoutine.duration_seconds / 60)} MIN · for your ${snap.onboardingData.pain_zones?.[0] ?? 'neck'}`
+          : baseCfg.routineHint,
+      }
+    : baseCfg;
+  const state = inferredState;
 
   const beginRoutine = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.push('/exercise/preview');
+    if (snap.recommendedRoutine?.slug) {
+      router.push({ pathname: '/exercise/preview', params: { routine: snap.recommendedRoutine.slug } } as never);
+    } else {
+      router.push('/exercise/preview');
+    }
   };
   const openEyeBreak = () => {
     Haptics.selectionAsync();

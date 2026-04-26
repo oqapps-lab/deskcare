@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
   useAnimatedProps,
-  useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
@@ -27,56 +26,72 @@ import {
   ProgressDots,
   VideoPlaceholder,
 } from '../../components/ui';
-import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
+import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useRoutineWithItems } from '../../hooks/useContent';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
-
-const STEPS = [
-  { name: 'Chin Tuck',          dur: 45, pose: 'neck-roll' as const },
-  { name: 'Upper Trap Stretch', dur: 60, pose: 'neck-roll' as const },
-  { name: 'Levator Release',    dur: 30, pose: 'neck-roll' as const },
-];
 
 const RING_RADIUS = 140;
 const RING_STROKE = 10;
 const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
+const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch' => {
+  if (!code) return 'neck-roll';
+  if (code.startsWith('N')) return 'neck-roll';
+  if (code.startsWith('B') || code.startsWith('S') || code.startsWith('F')) return 'back-arch';
+  if (code.startsWith('W')) return 'wrist-stretch';
+  if (code.startsWith('E')) return 'eye-rest';
+  return 'neck-roll';
+};
+
 export default function ExercisePlayerScreen() {
   const insets = useSafeAreaInsets();
+  const params = useLocalSearchParams<{ routine?: string }>();
+  const routineSlug = (params.routine as string) || 'neck-quick-2min';
+  const { items, loading } = useRoutineWithItems(routineSlug);
+
   const [stepIdx, setStepIdx] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [paused, setPaused] = useState(false);
-  const step = STEPS[stepIdx];
+
+  const step = items[stepIdx];
+  // Per Russell's atom×reps spec: real item duration = atom.duration_seconds × reps.
+  const stepDur = step ? (step.exercise?.duration_seconds ?? 5) * step.reps : 1;
 
   const progress = useSharedValue(0);
 
+  // Tick when items loaded + not paused.
   useEffect(() => {
-    if (paused) return;
+    if (!step || paused) return;
     const id = setInterval(() => {
       setElapsed((e) => {
-        if (e + 1 >= step.dur) {
+        if (e + 1 >= stepDur) {
           clearInterval(id);
-          if (stepIdx < STEPS.length - 1) {
+          if (stepIdx < items.length - 1) {
             Haptics.selectionAsync();
             setStepIdx((s) => s + 1);
             return 0;
           }
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           setTimeout(() => router.replace('/exercise/complete'), 400);
-          return step.dur;
+          return stepDur;
         }
         return e + 1;
       });
     }, 1000);
     return () => clearInterval(id);
-  }, [paused, step.dur, stepIdx]);
+  }, [paused, stepDur, stepIdx, items.length, step]);
 
   useEffect(() => {
-    progress.value = withTiming(elapsed / step.dur, {
+    if (!step) {
+      progress.value = 0;
+      return;
+    }
+    progress.value = withTiming(elapsed / stepDur, {
       duration: 900,
       easing: Easing.linear,
     });
-  }, [elapsed, progress, step.dur]);
+  }, [elapsed, progress, stepDur, step]);
 
   const ringProps = useAnimatedProps(() => ({
     strokeDashoffset: CIRCUMFERENCE * (1 - progress.value),
@@ -95,7 +110,7 @@ export default function ExercisePlayerScreen() {
   };
   const next = () => {
     Haptics.selectionAsync();
-    if (stepIdx < STEPS.length - 1) {
+    if (stepIdx < items.length - 1) {
       setStepIdx((s) => s + 1);
       setElapsed(0);
     } else {
@@ -108,9 +123,20 @@ export default function ExercisePlayerScreen() {
     setPaused((p) => !p);
   };
 
-  const remaining = step.dur - elapsed;
+  const remaining = Math.max(0, stepDur - elapsed);
   const mm = String(Math.floor(remaining / 60)).padStart(2, '0');
   const ss = String(remaining % 60).padStart(2, '0');
+
+  if (loading || !step) {
+    return (
+      <AtmosphericBackground>
+        <NavHeader onBack={close} rightIcon="close-x" onRightPress={close} />
+        <View style={[styles.root, { paddingBottom: insets.bottom + spacing.xl, justifyContent: 'center' }]}>
+          <ActivityIndicator color={colors.primaryMid} />
+        </View>
+      </AtmosphericBackground>
+    );
+  }
 
   return (
     <AtmosphericBackground>
@@ -121,10 +147,13 @@ export default function ExercisePlayerScreen() {
 
       <View style={[styles.root, { paddingBottom: insets.bottom + spacing.xl }]}>
         <View style={styles.topCluster}>
-          <Eyebrow>{`STEP ${stepIdx + 1} OF ${STEPS.length}`}</Eyebrow>
-          <Text style={styles.stepName}>{step.name}</Text>
+          <Eyebrow>{`STEP ${stepIdx + 1} OF ${items.length}`}</Eyebrow>
+          <Text style={styles.stepName}>{step.exercise?.title ?? step.exercise?.code ?? '—'}</Text>
+          <Text style={styles.stepMeta}>
+            {step.exercise?.code} · {step.exercise?.duration_seconds}s × {step.reps}
+          </Text>
           <View style={styles.dotsRow}>
-            <ProgressDots count={STEPS.length} active={stepIdx} />
+            <ProgressDots count={Math.min(items.length, 7)} active={Math.min(stepIdx, 6)} />
           </View>
         </View>
 
@@ -159,9 +188,18 @@ export default function ExercisePlayerScreen() {
             />
           </Svg>
           <View style={styles.ringCenter}>
-            <VideoPlaceholder pose={step.pose} width={220} height={220} showPlay={false} />
+            <VideoPlaceholder
+              pose={poseFor(step.exercise?.code)}
+              width={220}
+              height={220}
+              showPlay={false}
+            />
           </View>
         </View>
+
+        {step.overlay_text && (
+          <Text style={styles.overlayText}>{step.overlay_text}</Text>
+        )}
 
         <View style={styles.timerCluster}>
           <Text style={styles.timer}>{`${mm}:${ss}`}</Text>
@@ -217,6 +255,19 @@ const styles = StyleSheet.create({
     ...typeScale.headlineSm,
     color: colors.ink,
     textAlign: 'center',
+  },
+  stepMeta: {
+    ...typeScale.labelSm,
+    color: colors.inkSubtle,
+    textTransform: 'uppercase',
+    marginTop: 2,
+  },
+  overlayText: {
+    ...typeScale.body,
+    color: colors.inkMuted,
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    paddingHorizontal: spacing.lg,
   },
   dotsRow: {
     marginTop: spacing.sm,

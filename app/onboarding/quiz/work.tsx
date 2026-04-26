@@ -23,6 +23,7 @@ import {
   ProgressBar,
 } from '../../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../../constants/tokens';
+import { useOnboarding } from '../../../lib/store/onboarding';
 
 type Work = 'home' | 'office' | 'hybrid';
 
@@ -36,6 +37,7 @@ export default function QuizWorkScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
   const [choice, setChoice] = useState<Work | null>(null);
+  const setWork = useOnboarding((s) => s.setWork);
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(16);
@@ -60,6 +62,7 @@ export default function QuizWorkScreen() {
   const next = () => {
     if (!choice) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    setWork(choice);
     router.push('/onboarding/quiz/goal');
   };
 

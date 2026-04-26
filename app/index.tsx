@@ -13,6 +13,7 @@ import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Path, Stop } fr
 import { AtmosphericBackground } from '../components/ui/AtmosphericBackground';
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
+import { supabase } from '../lib/supabase';
 
 /**
  * Splash screen — animated brand mark → auto-routes to the onboarding flow
@@ -37,12 +38,29 @@ export default function Splash() {
     wordY.value = withDelay(500, withTiming(0, { duration: 600, easing: Easing.out(Easing.cubic) }));
     taglineOpacity.value = withDelay(850, withTiming(1, { duration: 500 }));
 
-    const t = setTimeout(() => {
-      // Auth-aware redirect: signed-in users skip onboarding intro and land on home;
-      // signed-out users see the welcome flow.
-      router.replace(session ? '/main/home' : '/onboarding/welcome');
+    let cancelled = false;
+    const t = setTimeout(async () => {
+      if (cancelled) return;
+      if (!session) {
+        router.replace('/onboarding/welcome');
+        return;
+      }
+      // Signed-in: check if quiz/onboarding is done. Onboarded users go straight
+      // to home; otherwise drop into the welcome → quiz flow so we can capture
+      // pain zones / goal / hours.
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', session.user.id)
+        .maybeSingle();
+      if (cancelled) return;
+      const onboarded = !error && !!data?.onboarding_completed;
+      router.replace(onboarded ? '/main/home' : '/onboarding/welcome');
     }, reduceMotion ? 900 : 1900);
-    return () => clearTimeout(t);
+    return () => {
+      cancelled = true;
+      clearTimeout(t);
+    };
   }, [reduceMotion, session, logoScale, logoOpacity, haloOpacity, wordOpacity, wordY, taglineOpacity]);
 
   const logoStyle = useAnimatedStyle(() => ({
