@@ -16,25 +16,26 @@ import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
 import type { Streak } from '../../lib/types/db';
 
-const WEEK_MOCK = [
-  { day: 'Mon', min: 3.5 }, { day: 'Tue', min: 2 }, { day: 'Wed', min: 4 },
-  { day: 'Thu', min: 2.5 }, { day: 'Fri', min: 5 }, { day: 'Sat', min: 1.5 }, { day: 'Sun', min: 3 },
-];
-
-const HISTORY_MOCK = [
-  { date: 'Today',     routine: 'Neck Unwind',         dur: '2:15', zone: 'Neck' },
-  { date: 'Yesterday', routine: 'Eye Reset',           dur: '0:30', zone: 'Eyes' },
-  { date: 'Apr 19',    routine: 'Lower Back Release',  dur: '3:05', zone: 'Back' },
-  { date: 'Apr 18',    routine: 'Neck Unwind',         dur: '2:10', zone: 'Neck' },
-  { date: 'Apr 17',    routine: 'Wrist Flex & Extend', dur: '2:00', zone: 'Wrists' },
-];
+// Empty week — 7 zero bars with the right day labels. Used when the user
+// hasn't logged a session yet so the chart still renders structurally.
+const buildEmptyWeek = (): { day: string; min: number }[] => {
+  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const now = new Date();
+  const out: { day: string; min: number }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(now.getDate() - i);
+    out.push({ day: labels[d.getDay()], min: 0 });
+  }
+  return out;
+};
 
 interface SessionRow {
   id: string;
   started_at: string;
   duration_seconds: number;
-  routine_id: string | null;
-  body_zone_id: string | null;
+  routine: { title: string } | null;
+  body_zone: { name: string } | null;
 }
 
 const formatDur = (s: number): string => {
@@ -79,7 +80,10 @@ export default function ProgressScreen() {
         .maybeSingle(),
       supabase
         .from('sessions')
-        .select('id, started_at, duration_seconds, routine_id, body_zone_id')
+        .select(
+          'id, started_at, duration_seconds, ' +
+            'routine:routines ( title ), body_zone:body_zones ( name )',
+        )
         .eq('user_id', userId)
         .order('started_at', { ascending: false })
         .limit(20),
@@ -94,10 +98,10 @@ export default function ProgressScreen() {
     };
   }, [userId]);
 
-  // Build the weekly chart from real sessions when available; fallback to mock.
+  // Build the weekly chart from real sessions when available; empty bars
+  // (zero-min placeholder) when there are none yet.
   const weekChart = useMemo(() => {
-    if (!sessions) return WEEK_MOCK;
-    // Last 7 days, oldest first.
+    if (!sessions || sessions.length === 0) return buildEmptyWeek();
     const buckets = new Map<string, number>();
     const now = new Date();
     for (let i = 6; i >= 0; i--) {
@@ -121,12 +125,12 @@ export default function ProgressScreen() {
   }, [sessions]);
 
   const recentList = useMemo(() => {
-    if (!sessions || sessions.length === 0) return HISTORY_MOCK;
+    if (!sessions || sessions.length === 0) return [];
     return sessions.slice(0, 5).map((s) => ({
       date: formatDateLabel(s.started_at),
-      routine: 'Routine',
+      routine: s.routine?.title ?? 'Quick session',
       dur: formatDur(s.duration_seconds),
-      zone: '—',
+      zone: s.body_zone?.name ?? '—',
     }));
   }, [sessions]);
 
@@ -136,8 +140,8 @@ export default function ProgressScreen() {
   };
 
   const maxMin = Math.max(1, ...weekChart.map((d) => d.min));
-  const totalSessions = streak?.total_sessions ?? 14;
-  const currentStreak = streak?.current_streak ?? 6;
+  const totalSessions = streak?.total_sessions ?? 0;
+  const currentStreak = streak?.current_streak ?? 0;
   const todayDayIdx = new Date().getDay(); // 0=Sun..6=Sat → index for week dot
   const dotIdx = (todayDayIdx + 6) % 7; // map to Mon-first row index
 
@@ -213,19 +217,28 @@ export default function ProgressScreen() {
 
         <Eyebrow>RECENT SESSIONS</Eyebrow>
         <View style={styles.history}>
-          {recentList.map((h, i) => (
-            <React.Fragment key={i}>
-              <View style={styles.historyRow}>
-                <View style={styles.historyDot} />
-                <View style={styles.historyText}>
-                  <Text style={styles.historyRoutine}>{h.routine}</Text>
-                  <Text style={styles.historyMeta}>{h.date} · {h.zone}</Text>
+          {recentList.length === 0 ? (
+            <View style={styles.historyEmpty}>
+              <Text style={styles.historyEmptyTitle}>No sessions yet.</Text>
+              <Text style={styles.historyEmptyBody}>
+                Finish a routine and it'll show up here, oldest releases at the bottom.
+              </Text>
+            </View>
+          ) : (
+            recentList.map((h, i) => (
+              <React.Fragment key={i}>
+                <View style={styles.historyRow}>
+                  <View style={styles.historyDot} />
+                  <View style={styles.historyText}>
+                    <Text style={styles.historyRoutine}>{h.routine}</Text>
+                    <Text style={styles.historyMeta}>{h.date} · {h.zone}</Text>
+                  </View>
+                  <Text style={styles.historyDur}>{h.dur}</Text>
                 </View>
-                <Text style={styles.historyDur}>{h.dur}</Text>
-              </View>
-              {i < recentList.length - 1 && <View style={styles.historyDivider} />}
-            </React.Fragment>
-          ))}
+                {i < recentList.length - 1 && <View style={styles.historyDivider} />}
+              </React.Fragment>
+            ))
+          )}
         </View>
       </ScrollView>
     </AtmosphericBackground>
@@ -322,6 +335,21 @@ const styles = StyleSheet.create({
   },
   history: {
     marginTop: spacing.md,
+  },
+  historyEmpty: {
+    paddingVertical: spacing.xl,
+    alignItems: 'center',
+  },
+  historyEmptyTitle: {
+    ...typeScale.titleLg,
+    color: colors.ink,
+  },
+  historyEmptyBody: {
+    ...typeScale.bodySm,
+    color: colors.inkMuted,
+    textAlign: 'center',
+    marginTop: spacing.sm,
+    maxWidth: 280,
   },
   historyRow: {
     flexDirection: 'row',
