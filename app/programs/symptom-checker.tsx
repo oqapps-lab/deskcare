@@ -9,6 +9,7 @@ import {
   BgPattern,
   DecorativeArc,
   Eyebrow,
+  FloatingScrim,
   GlassCard,
   NavHeader,
   PillCTA,
@@ -163,6 +164,7 @@ export default function SymptomCheckerScreen() {
       </ScrollView>
 
       <View style={[styles.ctaFloating, { paddingBottom: insets.bottom + spacing.md }]} pointerEvents="box-none">
+        <FloatingScrim />
         <PillCTA
           variant="primary"
           size="lg"
@@ -261,8 +263,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: spacing.xxl,
-    paddingTop: spacing.xxxl,
+    paddingTop: spacing.huge,
     alignItems: 'center',
-    backgroundColor: 'rgba(251,249,245,0.95)',
   },
 });

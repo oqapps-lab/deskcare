@@ -11,7 +11,14 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Circle, Defs, Path, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
+import Svg, {
+  Circle,
+  Defs,
+  LinearGradient as SvgLinearGradient,
+  Path,
+  RadialGradient as SvgRadialGradient,
+  Stop,
+} from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -169,16 +176,48 @@ export default function SessionCompleteScreen() {
             </Svg>
           </Animated.View>
 
+          {/* Modern "success" mark: no flat coral disk. Warm radial glow drifts
+              behind a bold gradient tick — feels like a soft "yes" exhaled,
+              not a kindergarten badge stamp. */}
           <Animated.View style={[styles.checkWrap, checkStyle]}>
-            <Svg width={120} height={120} viewBox="0 0 120 120">
+            <Svg width={160} height={160} viewBox="0 0 160 160">
               <Defs>
-                <SvgRadialGradient id="sc-check" cx="50%" cy="50%" r="50%">
-                  <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="1" />
-                  <Stop offset="1" stopColor={colors.primary} stopOpacity="1" />
+                <SvgRadialGradient id="sc-check-glow" cx="50%" cy="50%" r="50%">
+                  <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="0.95" />
+                  <Stop offset="0.45" stopColor={colors.primaryMid} stopOpacity="0.45" />
+                  <Stop offset="1" stopColor={colors.primary} stopOpacity="0" />
                 </SvgRadialGradient>
+                <SvgLinearGradient id="sc-tick" x1="0" y1="0" x2="1" y2="1">
+                  <Stop offset="0" stopColor={colors.primaryDeep} stopOpacity="1" />
+                  <Stop offset="0.55" stopColor={colors.primary} stopOpacity="1" />
+                  <Stop offset="1" stopColor={colors.primaryMid} stopOpacity="1" />
+                </SvgLinearGradient>
+                {/* Subtle highlight along the top of the tick — gives it dimension. */}
+                <SvgLinearGradient id="sc-tick-shine" x1="0.5" y1="0" x2="0.5" y2="1">
+                  <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.45" />
+                  <Stop offset="0.6" stopColor="#FFFFFF" stopOpacity="0" />
+                </SvgLinearGradient>
               </Defs>
-              <Circle cx="60" cy="60" r="56" fill="url(#sc-check)" />
-              <Path d="M40 60 L54 74 L82 44" stroke={colors.white} strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              {/* Soft warm halo behind the tick — no hard circle. */}
+              <Circle cx="80" cy="80" r="72" fill="url(#sc-check-glow)" />
+              {/* Tick — drawn twice: thicker gradient stroke for the body, thin
+                  white-alpha stroke for the inner highlight. */}
+              <Path
+                d="M48 84 L70 104 L114 56"
+                stroke="url(#sc-tick)"
+                strokeWidth="11"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
+              <Path
+                d="M48 84 L70 104 L114 56"
+                stroke="url(#sc-tick-shine)"
+                strokeWidth="3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                fill="none"
+              />
             </Svg>
           </Animated.View>
         </View>

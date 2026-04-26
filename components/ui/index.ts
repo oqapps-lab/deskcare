@@ -7,6 +7,7 @@ export { BulletRow } from './BulletRow';
 export { ClayIllustration } from './ClayIllustration';
 export { DecorativeArc, type ArcPosition, type ArcTone } from './DecorativeArc';
 export { Eyebrow } from './Eyebrow';
+export { FloatingScrim } from './FloatingScrim';
 export { GlassCard } from './GlassCard';
 export { GlassIconChip } from './GlassIconChip';
 export { Glyph, type GlyphName } from './Glyph';

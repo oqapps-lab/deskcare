@@ -9,6 +9,7 @@ import {
   BgPattern,
   DecorativeArc,
   Eyebrow,
+  FloatingScrim,
   GlassCard,
   IconHalo,
   NavHeader,
@@ -205,6 +206,7 @@ export default function SciaticaProgramScreen() {
       </ScrollView>
 
       <View style={[styles.ctaFloating, { paddingBottom: insets.bottom + spacing.md }]} pointerEvents="box-none">
+        <FloatingScrim />
         {active ? (
           <PillCTA variant="primary" size="lg" icon="play" iconBg breath onPress={todaysSession}>
             Begin today's session · 3 min
@@ -232,7 +234,11 @@ const PhaseCard: React.FC<{
   lockedCopy?: string;
 }> = ({ phase, meta, active, locked, lockedCopy }) => (
   <View style={styles.phaseWrap}>
-    <GlassCard tint={active ? 'peach' : 'cream'} radius="xl" padding={spacing.xl} innerGradient={active}>
+    {/* Both phases get a peach base so they read as members of the same family.
+        Active gets full innerGradient (warm), inactive gets the lighter peach
+        without the inner glow so it still reads as "next up, not unlocked yet"
+        without crashing into a stark cream rectangle. */}
+    <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient={active} decorativeCorner={active}>
       <View style={styles.phaseHead}>
         <View style={{ flex: 1, minWidth: 0 }}>
           <Text style={styles.phaseTitle}>{phase.title}</Text>
@@ -308,7 +314,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   phaseWrap: {
-    marginTop: spacing.lg,
+    marginTop: spacing.xl,
   },
   phaseHead: {
     flexDirection: 'row',
@@ -409,10 +415,9 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     paddingHorizontal: spacing.xxl,
-    paddingTop: spacing.xxxl,
+    paddingTop: spacing.huge,
     paddingBottom: spacing.md,
     alignItems: 'center',
-    backgroundColor: 'rgba(251,249,245,0.95)',
   },
   learnMore: {
     ...typeScale.bodySm,
