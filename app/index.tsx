@@ -9,9 +9,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { PillCTA, Text, Divider } from '@/components/primitives';
 import { Colors, Spacing } from '@/constants/tokens';
 
-// Person stretching at a desk / wellness at work
+// Yoga stretching — elegant, warm light
 const HERO =
-  'https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=900&q=85&auto=format&fit=crop';
+  'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=900&q=85&auto=format&fit=crop';
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -29,37 +29,52 @@ export default function WelcomeScreen() {
         transition={600}
       />
 
-      {/* Long cinematic fade — barely visible top, very dark bottom */}
+      {/* Cinematic gradient overlay */}
       <LinearGradient
         colors={[
-          'rgba(8,14,16,0.05)',
-          'rgba(8,14,16,0.35)',
-          'rgba(8,14,16,0.82)',
-          'rgba(8,14,16,0.97)',
+          'rgba(8,14,16,0.0)',
+          'rgba(8,14,16,0.30)',
+          'rgba(8,14,16,0.78)',
+          'rgba(8,14,16,0.96)',
         ]}
-        locations={[0, 0.45, 0.72, 1]}
+        locations={[0.2, 0.48, 0.75, 1]}
         style={StyleSheet.absoluteFillObject}
       />
 
-      {/* Brand */}
+      {/* Brand mark */}
       <View style={[styles.brand, { paddingTop: insets.top + Spacing.lg }]}>
-        <Text variant="caption" upper color="rgba(255,255,255,0.45)" style={styles.brandText}>
+        <Text
+          variant="caption"
+          upper
+          color="rgba(255,255,255,0.5)"
+          style={styles.brandText}
+        >
           DeskCare
         </Text>
       </View>
 
-      {/* Bottom block */}
+      {/* Bottom content */}
       <View style={[
         styles.bottom,
         { paddingBottom: Math.max(insets.bottom, Spacing.xl) + Spacing.lg },
       ]}>
-        <Text variant="h1" color={Colors.onPrimary} style={styles.headline}>
+
+        {/* Serif display headline */}
+        <Text
+          style={styles.headline}
+          color={Colors.onPrimary}
+        >
           2 минуты в день —{'\n'}шея перестанет болеть
         </Text>
 
         <Divider size="md" />
 
-        <Text variant="body" color="rgba(255,255,255,0.52)" style={styles.sub}>
+        {/* Subtitle — brighter, slightly larger */}
+        <Text
+          variant="body"
+          color="rgba(255,255,255,0.72)"
+          style={styles.sub}
+        >
           Микро-растяжки прямо за рабочим столом.{'\n'}
           Без коврика. Без переодевания.
         </Text>
@@ -80,9 +95,9 @@ export default function WelcomeScreen() {
           accessibilityRole="link"
           style={styles.signIn}
         >
-          <Text variant="bodyMd" color="rgba(255,255,255,0.38)">
+          <Text variant="bodyMd" color="rgba(255,255,255,0.42)">
             Уже есть аккаунт?{'  '}
-            <Text variant="bodyMd" color="rgba(255,255,255,0.72)">Войти</Text>
+            <Text variant="bodyMd" color="rgba(255,255,255,0.80)">Войти</Text>
           </Text>
         </Pressable>
       </View>
@@ -91,15 +106,29 @@ export default function WelcomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  root:    { flex: 1, backgroundColor: '#080e10' },
-  brand:   { position: 'absolute', top: 0, left: Spacing.xl, zIndex: 10 },
+  root:  { flex: 1, backgroundColor: '#080e10' },
+  brand: { position: 'absolute', top: 0, left: Spacing.xl, zIndex: 10 },
   brandText: { letterSpacing: 4 },
-  bottom:  {
+
+  bottom: {
     position: 'absolute',
     bottom: 0, left: 0, right: 0,
     paddingHorizontal: Spacing.xl,
   },
-  headline: { lineHeight: 40, letterSpacing: -0.4 },
-  sub:      { lineHeight: 24 },
-  signIn:   { alignSelf: 'center', paddingVertical: Spacing.sm },
+
+  // Cormorant Garamond — elegant serif headline
+  headline: {
+    fontFamily: 'CormorantGaramond-SemiBold',
+    fontSize: 38,
+    lineHeight: 48,
+    letterSpacing: 0.2,
+    color: Colors.onPrimary,
+  },
+
+  sub: {
+    fontSize: 16,
+    lineHeight: 25,
+  },
+
+  signIn: { alignSelf: 'center', paddingVertical: Spacing.sm },
 });
