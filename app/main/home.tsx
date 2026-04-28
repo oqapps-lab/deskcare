@@ -1,10 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import Svg, { Circle, Path } from 'react-native-svg';
+import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -15,6 +15,7 @@ import {
   IconHalo,
   PillCTA,
   PremiumLock,
+  StreakArc,
   TabBar,
   VideoPlaceholder,
 } from '../../components/ui';
@@ -142,11 +143,6 @@ export default function HomeScreen() {
     router.push('/pain/check-in');
   };
 
-  const weekDots = useMemo(() => {
-    const filled = Math.min(7, Math.max(0, parseInt(cfg.streakValue, 10) || 0));
-    return Array.from({ length: 7 }, (_, i) => (i < filled ? 'filled' : i === filled ? 'today' : 'empty'));
-  }, [cfg.streakValue]);
-
   return (
     <AtmosphericBackground>
       <BgPattern variant="dots" opacity={0.05} tone="coral" />
@@ -170,28 +166,17 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Streak medallion / pool */}
+        {/* Streak hero — 280° SVG arc with breathing ember at the leading
+            edge. Replaces the prior "big number + 7 dots" widget. */}
         <View style={styles.streakWrap}>
-          <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
-            <View style={styles.streakRow}>
-              <View style={styles.streakNumCol}>
-                <Text style={styles.streakNum}>{cfg.streakValue}</Text>
+          <GlassCard tint="cream" radius="xl" padding={spacing.xl}>
+            <View style={styles.streakHero}>
+              <StreakArc value={parseInt(cfg.streakValue, 10) || 0} total={14} />
+              <View style={styles.streakMeta}>
                 <Eyebrow>DAY STREAK</Eyebrow>
-              </View>
-              <View style={styles.weekDotsCol}>
-                {weekDots.map((s, i) => (
-                  <View
-                    key={i}
-                    style={[
-                      styles.weekDot,
-                      s === 'filled' && styles.weekDotFilled,
-                      s === 'today' && styles.weekDotToday,
-                    ]}
-                  />
-                ))}
+                <Text style={styles.streakSub}>{cfg.streakSubLine}</Text>
               </View>
             </View>
-            <Text style={styles.streakSub}>{cfg.streakSubLine}</Text>
           </GlassCard>
         </View>
 
@@ -394,48 +379,19 @@ const styles = StyleSheet.create({
   streakWrap: {
     marginBottom: spacing.xl,
   },
-  streakRow: {
+  streakHero: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.lg,
+    gap: spacing.md,
   },
-  streakNumCol: {
-    alignItems: 'flex-start',
-  },
-  streakNum: {
-    fontSize: 56,
-    lineHeight: 60,
-    letterSpacing: -1.2,
-    fontFamily: typeScale.display.fontFamily,
-    color: colors.primary,
-    marginBottom: spacing.xs,
-  },
-  weekDotsCol: {
+  streakMeta: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  weekDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: colors.primarySoft,
-    borderWidth: 1,
-    borderColor: 'rgba(232,123,78,0.22)',
-  },
-  weekDotFilled: {
-    backgroundColor: colors.primaryMid,
-    borderColor: colors.primaryMid,
-  },
-  weekDotToday: {
-    backgroundColor: colors.primaryDeep,
-    borderColor: colors.primaryDeep,
-    transform: [{ scale: 1.15 }],
+    minWidth: 0,
+    gap: spacing.xs,
   },
   streakSub: {
-    ...typeScale.bodySm,
+    ...typeScale.body,
     color: colors.inkMuted,
-    marginTop: spacing.md,
   },
   forYouRow: {
     marginBottom: spacing.sm,

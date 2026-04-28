@@ -22,6 +22,7 @@ export { ProgressBar } from './ProgressBar';
 export { ProgressDots } from './ProgressDots';
 export { QuizTile } from './QuizTile';
 export { SizeCircleRow, type SizeCircleOption } from './SizeCircleRow';
+export { StreakArc } from './StreakArc';
 export { PulseRings } from './PulseRings';
 export { Screen } from './Screen';
 export { SettingsRow } from './SettingsRow';
