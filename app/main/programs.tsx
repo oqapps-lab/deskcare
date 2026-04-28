@@ -1,5 +1,7 @@
 import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path } from 'react-native-svg';
@@ -99,12 +101,7 @@ export default function ProgramsScreen() {
                 </View>
                 <Text style={styles.blurb}>{p.blurb}</Text>
                 <View style={styles.cardCta}>
-                  <View style={styles.ctaPill}>
-                    <Text style={styles.ctaText}>Open program</Text>
-                    <Svg width={14} height={14} viewBox="0 0 14 14">
-                      <Path d="M5 3 L9 7 L5 11" stroke={colors.white} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                    </Svg>
-                  </View>
+                  <OpenProgramPill />
                 </View>
               </GlassCard>
             </Pressable>
@@ -118,6 +115,57 @@ export default function ProgramsScreen() {
 }
 
 const FreeDot = () => <View style={styles.freeDot} />;
+
+/**
+ * Matte coral-glass mini pill used as the visual "Open program" affordance
+ * on each program card. Non-interactive — the whole card is the tap target.
+ * Same matte-glass language as PillCTA primary (BlurView + coral tint +
+ * sheen + hairline) but sized down to fit inside a card.
+ */
+const OpenProgramPill: React.FC = () => (
+  <View style={styles.ctaPillOuter}>
+    {Platform.OS === 'ios' ? (
+      <BlurView intensity={30} tint="light" style={styles.ctaPillBlur}>
+        <View style={[StyleSheet.absoluteFill, styles.ctaPillFill]} pointerEvents="none" />
+        <LinearGradient
+          pointerEvents="none"
+          colors={[
+            'rgba(255,255,255,0.10)',
+            'rgba(0,0,0,0)',
+            'rgba(0,0,0,0.08)',
+          ] as const}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </BlurView>
+    ) : (
+      <View style={[StyleSheet.absoluteFill, styles.ctaPillFillAndroid]} pointerEvents="none" />
+    )}
+    <LinearGradient
+      pointerEvents="none"
+      colors={['rgba(255,255,255,0.30)', 'rgba(255,255,255,0)'] as const}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+      style={styles.ctaPillSheen}
+    />
+    <View style={styles.ctaPillBorder} pointerEvents="none" />
+    <View style={styles.ctaPillContent}>
+      <Text style={styles.ctaText}>Open program</Text>
+      <Svg width={14} height={14} viewBox="0 0 14 14">
+        <Path
+          d="M5 3 L9 7 L5 11"
+          stroke={colors.white}
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+      </Svg>
+    </View>
+  </View>
+);
 
 const styles = StyleSheet.create({
   title: {
@@ -173,15 +221,40 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: spacing.md,
   },
-  ctaPill: {
+  ctaPillOuter: {
+    borderRadius: 999,
+    overflow: 'hidden',
+    ...shadows.chip,
+  },
+  ctaPillBlur: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
+  ctaPillFill: {
+    backgroundColor: 'rgba(232,123,78,0.78)',
+  },
+  ctaPillFillAndroid: {
+    backgroundColor: 'rgba(232,123,78,0.92)',
+  },
+  ctaPillSheen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+  },
+  ctaPillBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.45)',
+  },
+  ctaPillContent: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: 999,
-    backgroundColor: colors.primaryMid,
-    ...shadows.chip,
+    paddingVertical: spacing.sm + 2,
   },
   ctaText: {
     ...typeScale.title,
