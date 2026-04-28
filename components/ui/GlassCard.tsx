@@ -21,13 +21,27 @@ interface Props {
   decorativeCorner?: boolean;
 }
 
-// Solid inner wash color applied over BlurView / base.
+// Solid inner wash color applied over BlurView / base. The cream/neutral
+// fills sit higher on opacity (~0.62) so cards still read as matte glass
+// over the saturated coral atmospheric backdrop. Coloured tints (peach/coral)
+// stay slightly translucent so they pick up some atmosphere through the blur.
 const TINT_FILL: Record<Tint, string> = {
-  cream: colors.glassFill,
-  peach: 'rgba(255,219,206,0.55)',
-  lavender: 'rgba(234,221,255,0.45)',
-  mint: 'rgba(200,225,210,0.48)',
-  coral: 'rgba(255,197,170,0.42)',
+  cream: 'rgba(253,251,247,0.66)',
+  peach: 'rgba(255,225,210,0.62)',
+  lavender: 'rgba(234,221,255,0.55)',
+  mint: 'rgba(208,231,217,0.58)',
+  coral: 'rgba(255,197,170,0.52)',
+};
+
+// Tone-matched hairline border colour. Pulls the card edge against the
+// atmospheric backdrop so peach/coral cards no longer disappear into the
+// warm orb wash.
+const TINT_BORDER: Record<Tint, string> = {
+  cream: 'rgba(255,255,255,0.55)',
+  peach: 'rgba(232,123,78,0.22)',
+  lavender: 'rgba(155,142,180,0.28)',
+  mint: 'rgba(155,196,174,0.30)',
+  coral: 'rgba(232,123,78,0.32)',
 };
 
 // Diagonal wash gradient (tone-matched) for the innerGradient prop.
@@ -126,7 +140,7 @@ export const GlassCard: React.FC<Props> = ({
     return (
       <View style={[{ borderRadius: r }, shadowStyle, style]}>
         <BlurView
-          intensity={55}
+          intensity={75}
           tint="light"
           style={[styles.blur, { borderRadius: r, padding }]}
         >
@@ -146,13 +160,14 @@ export const GlassCard: React.FC<Props> = ({
             style={[styles.innerHighlight, { borderRadius: r }]}
             pointerEvents="none"
           />
-          {/* Crisp edge — hairline coral-tinted border defines the card
-              against the soft atmospheric backdrop without looking boxy. */}
+          {/* Crisp edge — tone-matched hairline border defines the card
+              against the soft atmospheric backdrop. Critical for peach/coral
+              tints which otherwise vanish into the warm orb wash. */}
           <View
             pointerEvents="none"
             style={[
               styles.hairline,
-              { borderRadius: r },
+              { borderRadius: r, borderColor: TINT_BORDER[tint] },
             ]}
           />
           <View style={styles.content}>{children}</View>
@@ -189,7 +204,7 @@ export const GlassCard: React.FC<Props> = ({
       />
       <View
         pointerEvents="none"
-        style={[styles.hairline, { borderRadius: r }]}
+        style={[styles.hairline, { borderRadius: r, borderColor: TINT_BORDER[tint] }]}
       />
       <View style={styles.content}>{children}</View>
     </View>
@@ -213,7 +228,6 @@ const styles = StyleSheet.create({
   hairline: {
     ...StyleSheet.absoluteFillObject,
     borderWidth: StyleSheet.hairlineWidth,
-    borderColor: 'rgba(255,255,255,0.55)',
   },
   content: {
     width: '100%',

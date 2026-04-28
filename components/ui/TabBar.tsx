@@ -1,6 +1,7 @@
 import React from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,23 +36,50 @@ export const TabBar: React.FC<Props> = ({ current }) => {
   };
 
   return (
-    <View
-      style={[styles.wrap, { paddingBottom: insets.bottom + spacing.xs }]}
-      pointerEvents="box-none"
-    >
-      <View style={styles.barOuter}>
-        {Platform.OS === 'ios' ? (
-          <BlurView intensity={50} tint="light" style={styles.blur}>
-            <View style={styles.fill} pointerEvents="none" />
-            <TabRow current={current} onPress={go} />
-          </BlurView>
-        ) : (
-          <View style={styles.androidFill}>
-            <TabRow current={current} onPress={go} />
-          </View>
-        )}
+    <>
+      {/* Bottom fade — content quietly dissolves into canvas before reaching
+          the floating pill. Removes the visual clash between scroll content
+          and the tabbar's blur edge. */}
+      <LinearGradient
+        pointerEvents="none"
+        colors={[
+          'rgba(251,249,245,0)',
+          'rgba(251,249,245,0.6)',
+          'rgba(251,249,245,0.95)',
+        ]}
+        locations={[0, 0.55, 1]}
+        style={[
+          styles.scrim,
+          { height: insets.bottom + 110 },
+        ]}
+      />
+
+      <View
+        style={[styles.wrap, { paddingBottom: insets.bottom + spacing.xs }]}
+        pointerEvents="box-none"
+      >
+        <View style={styles.barOuter}>
+          {Platform.OS === 'ios' ? (
+            <BlurView intensity={75} tint="light" style={styles.blur}>
+              <View style={styles.fill} pointerEvents="none" />
+              {/* Subtle warm sheen along the top — reads as "warm glass". */}
+              <LinearGradient
+                pointerEvents="none"
+                colors={['rgba(255,219,206,0.35)', 'rgba(255,219,206,0)']}
+                start={{ x: 0.5, y: 0 }}
+                end={{ x: 0.5, y: 1 }}
+                style={styles.sheen}
+              />
+              <TabRow current={current} onPress={go} />
+            </BlurView>
+          ) : (
+            <View style={styles.androidFill}>
+              <TabRow current={current} onPress={go} />
+            </View>
+          )}
+        </View>
       </View>
-    </View>
+    </>
   );
 };
 
@@ -183,7 +211,20 @@ const styles = StyleSheet.create({
   },
   fill: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(255,255,255,0.78)',
+    backgroundColor: 'rgba(255,255,255,0.55)',
+  },
+  sheen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+  },
+  scrim: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
   },
   androidFill: {
     backgroundColor: 'rgba(255,255,255,0.92)',

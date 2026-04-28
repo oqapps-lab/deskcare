@@ -75,7 +75,6 @@ export default function LibraryScreen() {
           styles.root,
           {
             paddingTop: insets.top + spacing.lg,
-            paddingBottom: insets.bottom + 120,
           },
         ]}
       >
@@ -128,7 +127,7 @@ export default function LibraryScreen() {
         {!error && (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 140 }}
+            contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}
             style={{ flex: 1 }}
           >
             {loading && !exercises ? (

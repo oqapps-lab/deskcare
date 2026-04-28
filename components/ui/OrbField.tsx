@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import Animated, {
   Easing,
+  interpolateColor,
   useAnimatedProps,
   useReducedMotion,
   useSharedValue,
@@ -9,26 +10,47 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
-import { gradients } from '../../constants/tokens';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedStop = Animated.createAnimatedComponent(Stop);
 
 /**
  * Slow-drifting "lava" orb field — 3 radial blobs that glide and pulse on
  * long, non-matching periods (29s / 41s / 53s) so the background never
  * repeats. Reduces to static positions when Reduce Motion is on.
  *
+ * Colour drift: each orb's centre stop slowly interpolates between two
+ * tone-matched colours on very long, prime-ish periods (74s / 88s / 102s).
+ * The shift is subtle (sibling hues, never crossing channels) so the
+ * atmosphere reads as "alive" without becoming a disco. Intended to be
+ * almost subliminal — perceived as lighting changing in a room.
+ *
  * Absolute-fill, pointerEvents="none". Uses SVG RadialGradient for true soft
  * edges (LinearGradient produces banding at these sizes).
  */
+
+// Per-orb colour drift presets — A ↔ B over the long colour periods.
+const CORAL_A = '#E87B4E';
+const CORAL_B = '#D9633E'; // warmer red-coral
+const PEACH_A = '#FFB599';
+const PEACH_B = '#FFC9A8'; // creamier peach
+const LAVENDER_A = '#9B8EB4';
+const LAVENDER_B = '#B0A2C9'; // lighter, faintly cooler
+
 export const OrbField: React.FC = () => {
   const { width, height } = useWindowDimensions();
   const reduceMotion = useReducedMotion();
 
-  // Three progress values on different periods so orbs never align.
+  // Position progress (existing behaviour).
   const p1 = useSharedValue(0);
   const p2 = useSharedValue(0);
   const p3 = useSharedValue(0);
+
+  // Colour progress — separate, much slower periods so colour and position
+  // never align.
+  const c1 = useSharedValue(0);
+  const c2 = useSharedValue(0);
+  const c3 = useSharedValue(0);
 
   useEffect(() => {
     if (reduceMotion) return;
@@ -47,7 +69,25 @@ export const OrbField: React.FC = () => {
       -1,
       true,
     );
-  }, [reduceMotion, p1, p2, p3]);
+
+    // Colour drift loops — long, non-matching, sinusoidal. The pingpong
+    // (true) means colour glides A → B → A continuously.
+    c1.value = withRepeat(
+      withTiming(1, { duration: 74000, easing: Easing.inOut(Easing.sin) }),
+      -1,
+      true,
+    );
+    c2.value = withRepeat(
+      withTiming(1, { duration: 88000, easing: Easing.inOut(Easing.sin) }),
+      -1,
+      true,
+    );
+    c3.value = withRepeat(
+      withTiming(1, { duration: 102000, easing: Easing.inOut(Easing.sin) }),
+      -1,
+      true,
+    );
+  }, [reduceMotion, p1, p2, p3, c1, c2, c3]);
 
   // Anchor positions (fraction of screen). Orbs drift ±8% of min(W,H) around these.
   const short = Math.min(width, height);
@@ -62,7 +102,6 @@ export const OrbField: React.FC = () => {
   const lavBase = { cx: width * 0.5, cy: height * 0.92, r: short * 0.5 };
 
   const coralProps = useAnimatedProps(() => {
-    // p1 0→1→0 (reversing). Convert to -1..1 wave then apply drift.
     const w = p1.value * 2 - 1;
     return {
       cx: coralBase.cx + drift * 0.7 * w,
@@ -87,21 +126,32 @@ export const OrbField: React.FC = () => {
     };
   });
 
+  // Colour-drift props for the centre Stop of each gradient.
+  const coralStopProps = useAnimatedProps(() => ({
+    stopColor: interpolateColor(c1.value, [0, 1], [CORAL_A, CORAL_B]),
+  }));
+  const peachStopProps = useAnimatedProps(() => ({
+    stopColor: interpolateColor(c2.value, [0, 1], [PEACH_A, PEACH_B]),
+  }));
+  const lavStopProps = useAnimatedProps(() => ({
+    stopColor: interpolateColor(c3.value, [0, 1], [LAVENDER_A, LAVENDER_B]),
+  }));
+
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
       <Svg width={width} height={height} style={StyleSheet.absoluteFill}>
         <Defs>
           <RadialGradient id="orbCoral" cx="50%" cy="50%" r="50%">
-            <Stop offset="0%" stopColor={gradients.orbCoral} stopOpacity="1" />
-            <Stop offset="100%" stopColor={gradients.orbCoral} stopOpacity="0" />
+            <AnimatedStop offset="0%" animatedProps={coralStopProps} stopOpacity="0.22" />
+            <Stop offset="100%" stopColor={CORAL_A} stopOpacity="0" />
           </RadialGradient>
           <RadialGradient id="orbPeach" cx="50%" cy="50%" r="50%">
-            <Stop offset="0%" stopColor={gradients.orbPeach} stopOpacity="1" />
-            <Stop offset="100%" stopColor={gradients.orbPeach} stopOpacity="0" />
+            <AnimatedStop offset="0%" animatedProps={peachStopProps} stopOpacity="0.28" />
+            <Stop offset="100%" stopColor={PEACH_A} stopOpacity="0" />
           </RadialGradient>
           <RadialGradient id="orbLavender" cx="50%" cy="50%" r="50%">
-            <Stop offset="0%" stopColor={gradients.orbLavender} stopOpacity="1" />
-            <Stop offset="100%" stopColor={gradients.orbLavender} stopOpacity="0" />
+            <AnimatedStop offset="0%" animatedProps={lavStopProps} stopOpacity="0.18" />
+            <Stop offset="100%" stopColor={LAVENDER_A} stopOpacity="0" />
           </RadialGradient>
         </Defs>
         <AnimatedCircle
