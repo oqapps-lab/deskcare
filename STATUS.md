@@ -12,9 +12,10 @@ _Last updated: 2026-04-26_
 
 | Слой | Статус | Где |
 |---|---|---|
-| Supabase project | ✅ live `rwgpvmnuuarhcnpgibtm.supabase.co` (eu-west-1) | в org "burger app" |
-| Schema | ✅ 20 таблиц по `docs/05-database/DATABASE-SCHEMA.md` (atom×reps по Russell-у) | commit `068c70e` |
-| Seed | ✅ 6 zones · 64 atoms · 77 M:N · 20 routines · 190 routine_exercises · 2 programs · 3 phases | seed запущен через MCP |
+| Supabase project | ✅ live `wnmjdxmrpmucfoluxhly.supabase.co` (eu-west-1, Free, dedicated DeskCare) — переехали с шаренного `rwgpvmnuuarhcnpgibtm` (aiChatting) 2026-04-28 | mail `gztstrt-claude@proton.me` |
+| Storage | ✅ `exercise-videos` (57 mp4 = ~118 MB) + `exercise-thumbnails` (пустой) | public read, service-role write |
+| Schema | ✅ 20 таблиц по `docs/05-database/DATABASE-SCHEMA.md` (atom×reps по Russell-у) | `supabase/migrations/202604281700*.sql` |
+| Seed | ✅ 6 zones · 64 atoms · 77 M:N · 20 routines · 190 routine_exercises · 2 programs · 3 phases | копия с прошлого проекта via `scripts/migrate-content.ts` |
 | RLS | ✅ Включена на всех 20 таблицах. Content anon-readable, user-data owner-only | commit `068c70e` |
 | Triggers | ✅ updated_at (13 таблиц), on_auth_user_created (auto-creates profile/settings/streak/free-subscription) | commit `068c70e` |
 | Client lib | ✅ `lib/supabase.ts`, `lib/store/session.ts`, `lib/store/onboarding.ts`, `lib/types/db.ts` | commits `068c70e`, `f61e75b` |

@@ -6,13 +6,19 @@
  * uploads each to the matching Supabase Storage bucket, and updates
  * exercises.video_url / thumbnail_url for the matching slug.
  *
- * Filename convention (case-insensitive):
- *   <slug>.mp4          → exercise-videos/<slug>/video.mp4
- *   <slug>.mov          → exercise-videos/<slug>/video.mov
- *   <slug>.jpg|png|webp → exercise-thumbnails/<slug>/thumb.<ext>
+ * Filename convention (case-insensitive). The stem is matched against
+ * either `exercises.slug` OR `exercises.code` — whichever hits first:
+ *   <slug>.mp4 / <code>.mp4          → exercise-videos/<slug>/video.mp4
+ *   <slug>.mov / <code>.mov          → exercise-videos/<slug>/video.mov
+ *   <slug>.jpg|png|webp              → exercise-thumbnails/<slug>/thumb.<ext>
  *
- * Slugs come from the exercises table — see the printed mapping in
- * docs/07-development/VIDEO-UPLOAD.md, or run `npm run video:list-slugs`.
+ * Cross-reference codes (B12-B14, F11-F15, S12) that don't have their own
+ * row in `exercises` (they're M:N links to other atoms) are skipped — the
+ * underlying atom is uploaded under its primary code, so the cross-ref
+ * file is a dupe.
+ *
+ * Slugs / codes come from the exercises table — see the printed mapping
+ * in docs/07-development/VIDEO-UPLOAD.md, or run `npm run video:list-slugs`.
  *
  * Usage:
  *   SUPABASE_URL=https://...supabase.co \
@@ -85,14 +91,27 @@ const main = async () => {
     process.exit(1);
   }
   const bySlug = new Map(exercises!.map((e) => [e.slug.toLowerCase(), e]));
+  const byCode = new Map(exercises!.map((e) => [e.code.toLowerCase(), e]));
   console.log(`Loaded ${exercises!.length} exercises from DB.`);
+  // Walk inputs recursively so subdirectories (B/, N/, etc.) are picked up.
+  const walk = (root: string): string[] => {
+    const out: string[] = [];
+    for (const name of fs.readdirSync(root)) {
+      if (name.startsWith('.')) continue;
+      const full = path.join(root, name);
+      const st = fs.statSync(full);
+      if (st.isDirectory()) out.push(...walk(full));
+      else out.push(full);
+    }
+    return out;
+  };
 
-  // 2. Walk the input directory.
-  const entries = fs
-    .readdirSync(args.dir)
-    .filter((f) => !f.startsWith('.'))
-    .map((f) => ({ name: f, full: path.join(args.dir, f), stat: fs.statSync(path.join(args.dir, f)) }))
-    .filter((e) => e.stat.isFile());
+  // 2. Walk the input directory recursively.
+  const entries = walk(args.dir).map((full) => ({
+    name: path.basename(full),
+    full,
+    stat: fs.statSync(full),
+  }));
 
   const plan: Array<{
     kind: 'video' | 'thumb';
@@ -107,11 +126,14 @@ const main = async () => {
   for (const e of entries) {
     const ext = path.extname(e.name).toLowerCase();
     const stem = path.basename(e.name, ext).toLowerCase();
-    if (!bySlug.has(stem)) {
-      skipped.push(`${e.name} (no exercise with slug "${stem}")`);
+    // Match by slug first (canonical), fall back to code (e.g. "n5" → N5 row).
+    const row = bySlug.get(stem) ?? byCode.get(stem);
+    if (!row) {
+      skipped.push(`${e.name} (no exercise with slug or code "${stem}")`);
       continue;
     }
-    if (args.only && !args.only.has(stem)) {
+    const slug = row.slug.toLowerCase();
+    if (args.only && !args.only.has(slug) && !args.only.has(stem)) {
       skipped.push(`${e.name} (filtered out by --only)`);
       continue;
     }
@@ -119,18 +141,18 @@ const main = async () => {
       plan.push({
         kind: 'video',
         file: e.full,
-        slug: stem,
+        slug,
         bucket: 'exercise-videos',
-        objectPath: `${stem}/video${ext}`,
+        objectPath: `${slug}/video${ext}`,
         contentType: ext === '.mov' ? 'video/quicktime' : 'video/mp4',
       });
     } else if (THUMB_EXTS.has(ext)) {
       plan.push({
         kind: 'thumb',
         file: e.full,
-        slug: stem,
+        slug,
         bucket: 'exercise-thumbnails',
-        objectPath: `${stem}/thumb${ext}`,
+        objectPath: `${slug}/thumb${ext}`,
         contentType: ext === '.jpg' || ext === '.jpeg' ? 'image/jpeg' : ext === '.png' ? 'image/png' : 'image/webp',
       });
     } else {
