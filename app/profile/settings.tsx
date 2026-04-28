@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -17,7 +17,32 @@ import {
 import type { GlyphName } from '../../components/ui';
 import type { HaloTone } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
-import { useSession } from '../../lib/store/session';
+import { supabase } from '../../lib/supabase';
+import { useSession, useUserId } from '../../lib/store/session';
+
+interface SubInfo {
+  status: string;
+  plan: string;
+  trial_end: string | null;
+}
+
+const formatSubRow = (sub: SubInfo | null): { sub: string; badge?: string } => {
+  if (!sub) return { sub: 'Free · all zones via shorts' };
+  if (sub.status === 'trialing' && sub.trial_end) {
+    const days = Math.max(
+      0,
+      Math.ceil((new Date(sub.trial_end).getTime() - Date.now()) / (24 * 3600 * 1000)),
+    );
+    return { sub: `Trial · ${days} day${days === 1 ? '' : 's'} remaining`, badge: 'TRIAL' };
+  }
+  if (sub.status === 'active') {
+    return { sub: `${sub.plan.replace('_', ' ')} · billed automatically`, badge: 'PRO' };
+  }
+  if (sub.status === 'expired' || sub.status === 'cancelled') {
+    return { sub: 'Plan ended — reactivate any time' };
+  }
+  return { sub: 'Free · all zones via shorts' };
+};
 
 interface SwitchRowDef {
   key: string;
@@ -34,6 +59,7 @@ interface NavRowDef {
   sub: string;
   route?: string;
   accent?: boolean;
+  badge?: string;
 }
 
 const REMINDERS: ReadonlyArray<SwitchRowDef> = [
@@ -42,8 +68,8 @@ const REMINDERS: ReadonlyArray<SwitchRowDef> = [
   { key: 'sound',   icon: 'speaker', tone: 'peach',    title: 'Notification sound', sub: 'Soft tone, never sharp' },
 ];
 
-const ACCOUNT: ReadonlyArray<NavRowDef> = [
-  { key: 'sub',     icon: 'crown',    tone: 'coral',    title: 'Subscription',    sub: 'Trial · 4 days remaining', route: '/onboarding/paywall', badge: 'TRIAL' },
+const ACCOUNT_TPL: ReadonlyArray<NavRowDef> = [
+  { key: 'sub',     icon: 'crown',    tone: 'coral',    title: 'Subscription',    sub: '', route: '/onboarding/paywall' },
   { key: 'profile', icon: 'settings', tone: 'lavender', title: 'Profile details', sub: 'Name, age, pain zones',     route: '/onboarding/quiz/zone' },
   { key: 'restore', icon: 'refresh',  tone: 'mint',     title: 'Restore purchase', sub: 'Re-sync from App Store or Play', route: '/onboarding/paywall' },
 ];
@@ -58,11 +84,34 @@ const PRIVACY: ReadonlyArray<NavRowDef> = [
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
+  const userId = useUserId();
   const [values, setValues] = useState<Record<string, boolean>>({
     nudges: true,
     eye: true,
     sound: true,
   });
+  const [sub, setSub] = useState<SubInfo | null>(null);
+
+  useEffect(() => {
+    if (!userId) return;
+    let cancelled = false;
+    supabase
+      .from('deskcare_subscriptions')
+      .select('status, plan, trial_end')
+      .eq('user_id', userId)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setSub((data as SubInfo) ?? null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
+
+  const subRow = formatSubRow(sub);
+  const ACCOUNT: ReadonlyArray<NavRowDef> = ACCOUNT_TPL.map((r) =>
+    r.key === 'sub' ? { ...r, sub: subRow.sub, badge: subRow.badge } : r,
+  );
 
   const toggle = (k: string) => {
     setValues((v) => ({ ...v, [k]: !v[k] }));

@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.primarySoft,
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
   },
   label: {
     ...typeScale.labelSm,

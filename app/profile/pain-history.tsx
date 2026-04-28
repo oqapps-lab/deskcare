@@ -15,19 +15,6 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
 
-/**
- * Mock fallback for anonymous users — keeps the design preview alive when
- * there's no logged-in pain_entries history. Real signed-in users get
- * everything from Supabase.
- */
-const HISTORY_14_MOCK = [5, 6, 6, 7, 5, 4, 4, 3, 3, 4, 3, 2, 3, 2];
-const PER_ZONE_MOCK = [
-  { zone: 'Neck',    avg: 4.2, trend: 'down' as const },
-  { zone: 'Back',    avg: 3.1, trend: 'flat' as const },
-  { zone: 'Eyes',    avg: 2.4, trend: 'down' as const },
-  { zone: 'Wrists',  avg: 1.5, trend: 'flat' as const },
-];
-
 const colorFor = (v: number) => {
   if (v >= 7) return colors.primary;
   if (v >= 5) return colors.primaryMid;
@@ -90,10 +77,10 @@ export default function PainHistoryScreen() {
     };
   }, [userId]);
 
-  // Build the 14-day strip: max pain_level recorded across zones per day
-  // (gives the worst-pain bar — most useful single metric).
+  // Build the 14-day strip: max pain_level recorded across zones per day.
+  // Empty user → empty array → screen renders empty-state copy.
   const history14 = useMemo(() => {
-    if (!entries || entries.length === 0) return HISTORY_14_MOCK;
+    if (!entries || entries.length === 0) return [];
     const buckets = new Map<string, number>();
     const now = new Date();
     for (let i = 13; i >= 0; i--) {
@@ -110,7 +97,7 @@ export default function PainHistoryScreen() {
   }, [entries]);
 
   const perZone = useMemo(() => {
-    if (!entries || entries.length === 0) return PER_ZONE_MOCK;
+    if (!entries || entries.length === 0) return [];
     const byZone = new Map<string, number[]>();
     entries.forEach((e) => {
       if (!byZone.has(e.body_zone_id)) byZone.set(e.body_zone_id, []);
@@ -119,7 +106,6 @@ export default function PainHistoryScreen() {
     const rows: { zone: string; avg: number; trend: 'down' | 'flat' }[] = [];
     byZone.forEach((vals, zoneId) => {
       const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
-      // Trend: compare first half to second half — drop ≥ 0.7 = down, else flat.
       const half = Math.floor(vals.length / 2);
       const firstHalfAvg = vals.slice(0, half).reduce((a, b) => a + b, 0) / Math.max(1, half);
       const secondHalfAvg = vals.slice(half).reduce((a, b) => a + b, 0) / Math.max(1, vals.length - half);
@@ -130,16 +116,20 @@ export default function PainHistoryScreen() {
         trend,
       });
     });
-    return rows.length > 0 ? rows : PER_ZONE_MOCK;
+    return rows;
   }, [entries, zoneMap]);
+
+  const isEmpty = history14.length === 0;
 
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
   };
 
-  const avg = (history14.reduce((a, b) => a + b, 0) / history14.length).toFixed(1);
-  const delta = history14[history14.length - 1] - history14[0];
+  const avg = isEmpty
+    ? '—'
+    : (history14.reduce((a, b) => a + b, 0) / history14.length).toFixed(1);
+  const delta = isEmpty ? 0 : history14[history14.length - 1] - history14[0];
 
   return (
     <AtmosphericBackground>
@@ -156,6 +146,19 @@ export default function PainHistoryScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
+        {isEmpty ? (
+          <View style={styles.emptyWrap}>
+            <GlassCard tint="cream" radius="xl" padding={spacing.xl}>
+              <Text style={styles.emptyTitle}>No pain ratings yet</Text>
+              <Text style={styles.emptyBody}>
+                Tap the daily check-in on Home and rate your zones — the trend
+                line, 14-day shift and per-zone breakdown all show up here once
+                you have a few days of data.
+              </Text>
+            </GlassCard>
+          </View>
+        ) : (
+        <>
         <View style={styles.summary}>
           <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
             <View style={styles.summaryRow}>
@@ -231,6 +234,8 @@ export default function PainHistoryScreen() {
             </React.Fragment>
           ))}
         </View>
+        </>
+        )}
       </ScrollView>
     </AtmosphericBackground>
   );
@@ -344,5 +349,19 @@ const styles = StyleSheet.create({
   zoneDivider: {
     height: 1,
     backgroundColor: colors.inkHairline,
+  },
+  emptyWrap: {
+    marginTop: spacing.xl,
+  },
+  emptyTitle: {
+    ...typeScale.titleLg,
+    color: colors.ink,
+    textAlign: 'center',
+    marginBottom: spacing.sm,
+  },
+  emptyBody: {
+    ...typeScale.body,
+    color: colors.inkMuted,
+    textAlign: 'center',
   },
 });

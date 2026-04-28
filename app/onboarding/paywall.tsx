@@ -108,7 +108,7 @@ export default function PaywallScreen() {
         <ScrollView
           contentContainerStyle={{
             paddingTop: insets.top + spacing.xxxl + spacing.md,
-            paddingBottom: insets.bottom + 180,
+            paddingBottom: insets.bottom + 260,
             paddingHorizontal: spacing.xxl,
           }}
           showsVerticalScrollIndicator={false}

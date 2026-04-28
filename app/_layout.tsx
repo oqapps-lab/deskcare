@@ -41,8 +41,8 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ animation: 'fade' }} />
           {/* Onboarding quiz steps — slide forward like a wizard, but quick. */}
           <Stack.Screen name="onboarding/quiz/zone" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
+          <Stack.Screen name="onboarding/quiz/frequency" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
           <Stack.Screen name="onboarding/quiz/work" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
-          <Stack.Screen name="onboarding/quiz/sitting" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
           <Stack.Screen name="onboarding/quiz/goal" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
           <Stack.Screen name="onboarding/permission" options={{ animation: 'fade' }} />
           <Stack.Screen name="onboarding/plan" options={{ animation: 'fade' }} />
