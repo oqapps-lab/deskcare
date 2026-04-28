@@ -163,17 +163,17 @@ export const fonts = {
 export const shadows = {
   soft: {
     shadowColor: '#7E2C03',
-    shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.20,
-    shadowRadius: 28,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.13,
+    shadowRadius: 32,
+    elevation: 6,
   },
   lift: {
     shadowColor: '#7E2C03',
-    shadowOffset: { width: 0, height: 22 },
-    shadowOpacity: 0.26,
-    shadowRadius: 40,
-    elevation: 12,
+    shadowOffset: { width: 0, height: 18 },
+    shadowOpacity: 0.18,
+    shadowRadius: 44,
+    elevation: 10,
   },
   cta: {
     shadowColor: '#E87B4E',

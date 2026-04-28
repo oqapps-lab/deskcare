@@ -65,16 +65,6 @@ const INNER_HIGHLIGHT = [
   'rgba(255,255,255,0)',
 ] as const;
 
-// Bottom-edge darkening — soft tone-matched inner shadow that gives cards
-// visible curvature without darkening readability or reading as a printed
-// gradient. Kept gentle (≤0.07 alpha at the bottom edge).
-const INNER_FLOOR: Record<Tint, readonly [string, string]> = {
-  cream: ['rgba(0,0,0,0)', 'rgba(125,55,12,0.04)'],
-  peach: ['rgba(0,0,0,0)', 'rgba(157,67,26,0.05)'],
-  lavender: ['rgba(0,0,0,0)', 'rgba(80,60,110,0.06)'],
-  mint: ['rgba(0,0,0,0)', 'rgba(48,90,68,0.06)'],
-  coral: ['rgba(0,0,0,0)', 'rgba(157,67,26,0.07)'],
-};
 
 // Tone-mid for the decorative corner blob.
 const TINT_DECOR: Record<Tint, string> = {
@@ -123,16 +113,6 @@ export const GlassCard: React.FC<Props> = ({
           pointerEvents="none"
         />
       )}
-      {/* Always-on bottom-edge floor — soft tone-matched shadow that gives
-          every card visible volume regardless of innerGradient prop. */}
-      <LinearGradient
-        colors={INNER_FLOOR[tint]}
-        locations={[0, 1]}
-        start={{ x: 0.5, y: 0.4 }}
-        end={{ x: 0.5, y: 1 }}
-        style={[StyleSheet.absoluteFill, { borderRadius: r }]}
-        pointerEvents="none"
-      />
       {decorativeCorner && (
         <View style={styles.decorCorner} pointerEvents="none">
           <Svg width={40} height={40} viewBox="0 0 40 40">
