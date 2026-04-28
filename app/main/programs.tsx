@@ -11,6 +11,7 @@ import {
   Eyebrow,
   GlassCard,
   IconHalo,
+  PremiumLock,
   TabBar,
 } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
@@ -91,7 +92,7 @@ export default function ProgramsScreen() {
                       <Text style={styles.rowTitle} numberOfLines={1}>
                         {p.title}
                       </Text>
-                      {p.premium ? <KeyGlyph /> : <FreeDot />}
+                      {p.premium ? <PremiumLock size="sm" /> : <FreeDot />}
                     </View>
                     <Text style={styles.rowMeta}>{p.meta}</Text>
                   </View>
@@ -115,12 +116,6 @@ export default function ProgramsScreen() {
     </AtmosphericBackground>
   );
 }
-
-const KeyGlyph = () => (
-  <Svg width={16} height={16} viewBox="0 0 14 14">
-    <Path d="M5 9 a3 3 0 1 1 4 0 L9 9 L12 12 L10 14 L9 13 L8 14 L7 13" stroke={colors.primaryMid} strokeWidth="1.5" strokeLinecap="round" fill="none" />
-  </Svg>
-);
 
 const FreeDot = () => <View style={styles.freeDot} />;
 

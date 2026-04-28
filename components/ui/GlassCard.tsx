@@ -42,6 +42,15 @@ const TINT_WASH: Record<
   coral: gradients.washCoral as unknown as readonly [string, string, ...string[]],
 };
 
+// Soft top-edge sheen — replaces the harsh 1px white line that read as a
+// hard band on coral atmospheric backgrounds. Quick fade to transparent so
+// only the upper ~20% of the card carries the highlight.
+const INNER_HIGHLIGHT = [
+  'rgba(255,255,255,0.42)',
+  'rgba(255,255,255,0.08)',
+  'rgba(255,255,255,0)',
+] as const;
+
 // Tone-mid for the decorative corner blob.
 const TINT_DECOR: Record<Tint, string> = {
   cream: colors.primaryLight,
@@ -129,11 +138,12 @@ export const GlassCard: React.FC<Props> = ({
             pointerEvents="none"
           />
           {Overlays}
-          <View
-            style={[
-              styles.innerHighlight,
-              { borderRadius: r },
-            ]}
+          <LinearGradient
+            colors={INNER_HIGHLIGHT}
+            locations={[0, 0.5, 1]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={[styles.innerHighlight, { borderRadius: r }]}
             pointerEvents="none"
           />
           <View style={styles.content}>{children}</View>
@@ -160,6 +170,14 @@ export const GlassCard: React.FC<Props> = ({
         pointerEvents="none"
       />
       {Overlays}
+      <LinearGradient
+        colors={INNER_HIGHLIGHT}
+        locations={[0, 0.5, 1]}
+        start={{ x: 0.5, y: 0 }}
+        end={{ x: 0.5, y: 1 }}
+        style={[styles.innerHighlight, { borderRadius: r }]}
+        pointerEvents="none"
+      />
       <View style={styles.content}>{children}</View>
     </View>
   );
@@ -177,8 +195,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.7)',
+    height: 36,
   },
   content: {
     width: '100%',

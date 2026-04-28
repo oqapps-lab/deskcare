@@ -17,6 +17,7 @@ export { NavHeader } from './NavHeader';
 export { OrbField } from './OrbField';
 export { PillChip } from './PillChip';
 export { PillCTA } from './PillCTA';
+export { PremiumLock } from './PremiumLock';
 export { ProgressBar } from './ProgressBar';
 export { ProgressDots } from './ProgressDots';
 export { QuizTile } from './QuizTile';

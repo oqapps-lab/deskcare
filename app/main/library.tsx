@@ -10,6 +10,7 @@ import {
   DecorativeArc,
   GlassCard,
   PillChip,
+  PremiumLock,
   TabBar,
   VideoPlaceholder,
 } from '../../components/ui';
@@ -127,7 +128,7 @@ export default function LibraryScreen() {
         {!error && (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: spacing.xxxl }}
+            contentContainerStyle={{ paddingBottom: 140 }}
             style={{ flex: 1 }}
           >
             {loading && !exercises ? (
@@ -157,7 +158,7 @@ export default function LibraryScreen() {
                             <Text style={styles.rowName} numberOfLines={2}>
                               {e.title}
                             </Text>
-                            {e.is_premium && <KeyGlyph />}
+                            {e.is_premium && <PremiumLock size="sm" />}
                           </View>
                           <Text style={styles.rowMeta}>
                             {e.code} · {formatDuration(e.duration_seconds)} · {e.exercise_type}
@@ -177,18 +178,6 @@ export default function LibraryScreen() {
     </AtmosphericBackground>
   );
 }
-
-const KeyGlyph = () => (
-  <Svg width={14} height={14} viewBox="0 0 14 14">
-    <Path
-      d="M5 9 a3 3 0 1 1 4 0 L9 9 L12 12 L10 14 L9 13 L8 14 L7 13"
-      stroke={colors.primaryMid}
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      fill="none"
-    />
-  </Svg>
-);
 
 const styles = StyleSheet.create({
   root: {

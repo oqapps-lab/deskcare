@@ -13,6 +13,7 @@ import {
   GlassCard,
   NavHeader,
   PillCTA,
+  PremiumLock,
   VideoPlaceholder,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
@@ -150,12 +151,7 @@ export default function ExerciseDetailScreen() {
               />
               {locked && (
                 <View style={styles.lockOverlay} pointerEvents="none">
-                  <View style={styles.lockChip}>
-                    <Svg width={18} height={18} viewBox="0 0 18 18">
-                      <Path d="M5 9 L13 9 L13 14 L5 14 Z M7 9 L7 6 Q7 3 9 3 Q11 3 11 6 L11 9" stroke={colors.primaryMid} strokeWidth="1.6" fill="none" strokeLinecap="round" />
-                    </Svg>
-                    <Text style={styles.lockChipText}>Premium</Text>
-                  </View>
+                  <PremiumLock size="md" label="Premium" />
                 </View>
               )}
             </View>
@@ -289,20 +285,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  lockChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.92)',
-  },
-  lockChipText: {
-    ...typeScale.label,
-    color: colors.primaryDeep,
-    textTransform: 'uppercase',
   },
   name: {
     ...typeScale.headline,

@@ -12,6 +12,7 @@ import {
   GlassCard,
   IconHalo,
   PillCTA,
+  PremiumLock,
   TabBar,
   VideoPlaceholder,
 } from '../../components/ui';
@@ -319,9 +320,7 @@ const ZoneCircle: React.FC<{
     <Text style={[styles.zoneDuration, locked && styles.zoneLabelLocked]}>{duration}</Text>
     {locked && (
       <View style={styles.zoneLockBadge}>
-        <Svg width={10} height={10} viewBox="0 0 12 12">
-          <Path d="M3 6 L9 6 L9 10 L3 10 Z M4 6 L4 4 Q4 2 6 2 Q8 2 8 4 L8 6" stroke={colors.inkSubtle} strokeWidth="1.2" fill="none" strokeLinecap="round" />
-        </Svg>
+        <PremiumLock size="xs" tone="subtle" />
       </View>
     )}
   </View>

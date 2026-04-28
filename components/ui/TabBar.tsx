@@ -41,7 +41,7 @@ export const TabBar: React.FC<Props> = ({ current }) => {
     >
       <View style={styles.barOuter}>
         {Platform.OS === 'ios' ? (
-          <BlurView intensity={30} tint="light" style={styles.blur}>
+          <BlurView intensity={50} tint="light" style={styles.blur}>
             <View style={styles.fill} pointerEvents="none" />
             <TabRow current={current} onPress={go} />
           </BlurView>
@@ -72,7 +72,11 @@ const TabRow: React.FC<{ current: TabId; onPress: (id: TabId, r: string) => void
           accessibilityState={{ selected: active }}
           style={styles.tab}
         >
-          <TabIcon id={t.id} color={active ? colors.primaryMid : colors.inkSubtle} />
+          <TabIcon
+            id={t.id}
+            color={active ? colors.primaryDeep : colors.inkSubtle}
+            active={active}
+          />
           <Text style={[styles.label, active && styles.labelActive]}>{t.label}</Text>
           {active && <View style={styles.dot} />}
         </Pressable>
@@ -81,40 +85,77 @@ const TabRow: React.FC<{ current: TabId; onPress: (id: TabId, r: string) => void
   </View>
 );
 
-const TabIcon: React.FC<{ id: TabId; color: string }> = ({ id, color }) => {
+const TabIcon: React.FC<{ id: TabId; color: string; active: boolean }> = ({
+  id,
+  color,
+  active,
+}) => {
+  // Active state gets a soft fill in addition to the stroke — modern
+  // "duotone" pattern. Inactive stays pure outline for cleanliness.
+  const fill = active ? 'rgba(232,123,78,0.14)' : 'none';
   const common = {
     stroke: color,
-    strokeWidth: 1.8 as number,
+    strokeWidth: 1.7 as number,
     strokeLinecap: 'round' as const,
     strokeLinejoin: 'round' as const,
-    fill: 'none' as const,
   };
   const paths: Record<TabId, React.ReactNode> = {
+    // House — softer rounded apex, single closed path so the fill renders
+    // as a filled silhouette rather than two disjoint pieces.
     home: (
-      <Path d="M4 11 L12 4 L20 11 L20 20 L14 20 L14 14 L10 14 L10 20 L4 20 Z" {...common} />
+      <Path
+        d="M4.5 11.5 L12 4.5 L19.5 11.5 L19.5 19 Q19.5 20 18.5 20 L14.5 20 L14.5 14.5 Q14.5 13.5 13.5 13.5 L10.5 13.5 Q9.5 13.5 9.5 14.5 L9.5 20 L5.5 20 Q4.5 20 4.5 19 Z"
+        fill={fill}
+        {...common}
+      />
     ),
+    // Open book — two facing pages with a center spine. Cleaner than the
+    // prior pair-of-bookends shapes that looked like vases at small sizes.
     library: (
       <>
-        <Path d="M5 5 L5 20 L11 19 L11 6 Z" {...common} />
-        <Path d="M13 6 L13 19 L19 20 L19 5 Z" {...common} />
+        <Path
+          d="M4 6 Q4 5 5 5 L11 6 Q11.5 6 11.5 6.5 L11.5 18.5 Q11.5 19 11 19 L5 18 Q4 18 4 17 Z"
+          fill={fill}
+          {...common}
+        />
+        <Path
+          d="M20 6 Q20 5 19 5 L13 6 Q12.5 6 12.5 6.5 L12.5 18.5 Q12.5 19 13 19 L19 18 Q20 18 20 17 Z"
+          fill={fill}
+          {...common}
+        />
       </>
     ),
+    // Stacked panels — single large pane behind, smaller pane in front.
+    // Reads as "structured programs" cleanly.
     programs: (
       <>
-        <Path d="M6 4 L12 4 M12 4 L12 12 L6 12 L6 4 Z" {...common} />
-        <Path d="M14 8 L20 8 L20 20 L14 20 L14 8 Z" {...common} />
+        <Path
+          d="M5 7 Q5 5.5 6.5 5.5 L17.5 5.5 Q19 5.5 19 7 L19 16 Q19 17.5 17.5 17.5 L6.5 17.5 Q5 17.5 5 16 Z"
+          fill={fill}
+          {...common}
+        />
+        <Path d="M9 9.5 L15 9.5 M9 13 L15 13" {...common} />
       </>
     ),
+    // Person — rounded head + soft shoulders.
     profile: (
       <>
-        <Path d="M12 4 a4 4 0 1 1 0 8 a4 4 0 1 1 0 -8" {...common} />
-        <Path d="M4 20 C4 16 8 14 12 14 C16 14 20 16 20 20" {...common} />
+        <Path
+          d="M12 4 a3.5 3.5 0 1 1 0 7 a3.5 3.5 0 1 1 0 -7"
+          fill={fill}
+          {...common}
+        />
+        <Path
+          d="M4.5 19.5 Q4.5 14 12 14 Q19.5 14 19.5 19.5"
+          fill={fill}
+          {...common}
+        />
       </>
     ),
   };
 
   return (
-    <Svg width={22} height={22} viewBox="0 0 24 24">
+    <Svg width={24} height={24} viewBox="0 0 24 24">
       {paths[id]}
     </Svg>
   );
@@ -132,10 +173,10 @@ const styles = StyleSheet.create({
     borderRadius: 28,
     overflow: 'hidden',
     shadowColor: colors.primary,
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 20,
-    elevation: 6,
+    shadowOpacity: 0.16,
+    shadowOffset: { width: 0, height: 14 },
+    shadowRadius: 28,
+    elevation: 10,
   },
   blur: {
     overflow: 'hidden',
