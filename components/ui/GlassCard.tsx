@@ -21,16 +21,16 @@ interface Props {
   decorativeCorner?: boolean;
 }
 
-// Solid inner wash color applied over BlurView / base. The cream/neutral
-// fills sit higher on opacity (~0.62) so cards still read as matte glass
-// over the saturated coral atmospheric backdrop. Coloured tints (peach/coral)
-// stay slightly translucent so they pick up some atmosphere through the blur.
+// Lower-opacity tint washes — paired with intensity 88 BlurView gives the
+// "frosted matte glass" feel the user asked for: card has its own colour but
+// the atmospheric wash still shows through. White-ish cream stays on the
+// higher end so its content has enough background contrast.
 const TINT_FILL: Record<Tint, string> = {
-  cream: 'rgba(253,251,247,0.66)',
-  peach: 'rgba(255,225,210,0.62)',
-  lavender: 'rgba(234,221,255,0.55)',
-  mint: 'rgba(208,231,217,0.58)',
-  coral: 'rgba(255,197,170,0.52)',
+  cream: 'rgba(253,251,247,0.58)',
+  peach: 'rgba(255,225,210,0.50)',
+  lavender: 'rgba(234,221,255,0.46)',
+  mint: 'rgba(208,231,217,0.48)',
+  coral: 'rgba(255,197,170,0.46)',
 };
 
 // Tone-matched hairline border colour. Pulls the card edge against the
@@ -140,7 +140,7 @@ export const GlassCard: React.FC<Props> = ({
     return (
       <View style={[{ borderRadius: r }, shadowStyle, style]}>
         <BlurView
-          intensity={75}
+          intensity={88}
           tint="light"
           style={[styles.blur, { borderRadius: r, padding }]}
         >

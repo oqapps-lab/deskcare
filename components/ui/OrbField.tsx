@@ -30,16 +30,21 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
  * Absolute-fill, pointerEvents="none".
  */
 
+// Wider sibling pairs so the colour drift is genuinely visible rather than
+// a sub-perceptual nudge. Each pair stays in-channel (coral / peach / soft
+// lavender) so the atmosphere doesn't whiplash hue.
 const CORAL_A = '#E87B4E';
-const CORAL_B = '#D9633E';
+const CORAL_B = '#FF9F6B';
 const PEACH_A = '#FFB599';
-const PEACH_B = '#FFC9A8';
+const PEACH_B = '#FFD2A8';
 const LAVENDER_A = '#9B8EB4';
-const LAVENDER_B = '#B0A2C9';
+const LAVENDER_B = '#C2B0DC';
 
-const CORAL_ALPHA = '0.22';
-const PEACH_ALPHA = '0.28';
-const LAVENDER_ALPHA = '0.18';
+// Slightly stronger alphas — the sum of two crossfading orbs at any instant
+// equals one orb at peak, so the visible intensity is preserved.
+const CORAL_ALPHA = '0.28';
+const PEACH_ALPHA = '0.32';
+const LAVENDER_ALPHA = '0.22';
 
 export const OrbField: React.FC = () => {
   const { width, height } = useWindowDimensions();
@@ -54,41 +59,46 @@ export const OrbField: React.FC = () => {
 
   useEffect(() => {
     if (reduceMotion) return;
+    // Position drift periods — sped up so the motion is actually noticeable
+    // within ~10s of looking. Still non-aligning so the field never repeats.
     p1.value = withRepeat(
-      withTiming(1, { duration: 29000, easing: Easing.inOut(Easing.quad) }),
+      withTiming(1, { duration: 16000, easing: Easing.inOut(Easing.quad) }),
       -1,
       true,
     );
     p2.value = withRepeat(
-      withTiming(1, { duration: 41000, easing: Easing.inOut(Easing.quad) }),
+      withTiming(1, { duration: 22000, easing: Easing.inOut(Easing.quad) }),
       -1,
       true,
     );
     p3.value = withRepeat(
-      withTiming(1, { duration: 53000, easing: Easing.inOut(Easing.quad) }),
+      withTiming(1, { duration: 28000, easing: Easing.inOut(Easing.quad) }),
       -1,
       true,
     );
+    // Colour drift — kept slow per the brief ("чуть-чуть очень медленно
+    // перетекали"), but still aligned to be perceptible inside a minute.
     c1.value = withRepeat(
-      withTiming(1, { duration: 74000, easing: Easing.inOut(Easing.sin) }),
+      withTiming(1, { duration: 40000, easing: Easing.inOut(Easing.sin) }),
       -1,
       true,
     );
     c2.value = withRepeat(
-      withTiming(1, { duration: 88000, easing: Easing.inOut(Easing.sin) }),
+      withTiming(1, { duration: 50000, easing: Easing.inOut(Easing.sin) }),
       -1,
       true,
     );
     c3.value = withRepeat(
-      withTiming(1, { duration: 102000, easing: Easing.inOut(Easing.sin) }),
+      withTiming(1, { duration: 60000, easing: Easing.inOut(Easing.sin) }),
       -1,
       true,
     );
   }, [reduceMotion, p1, p2, p3, c1, c2, c3]);
 
   const short = Math.min(width, height);
-  const drift = short * 0.08;
-  const radiusFlex = short * 0.05;
+  // Wider drift (was 8% / 5%) so position movement is actually visible.
+  const drift = short * 0.16;
+  const radiusFlex = short * 0.10;
 
   const coralBase = { cx: width * 0.88, cy: height * 0.12, r: short * 0.55 };
   const peachBase = { cx: width * 0.02, cy: height * 0.48, r: short * 0.45 };

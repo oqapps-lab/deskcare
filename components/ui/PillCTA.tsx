@@ -19,7 +19,7 @@ import Animated, {
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import { colors, fonts, gradients, radii, shadows, spacing, typeScale } from '../../constants/tokens';
+import { colors, fonts, radii, shadows, spacing, typeScale } from '../../constants/tokens';
 import { Glyph, GlyphName } from './Glyph';
 
 type Variant = 'primary' | 'outlined' | 'ghost' | 'iconOnly' | 'glass';
@@ -248,26 +248,47 @@ export const PillCTA: React.FC<Props> = ({
           style,
         ]}
       >
-        {/* Base — 4-stop diagonal mesh. Top-left blush, bottom-right ember. */}
-        <LinearGradient
-          colors={gradients.ctaMesh as unknown as readonly [string, string, ...string[]]}
-          locations={[0, 0.38, 0.72, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: radii.pill }]}
-        />
-        {/* Matte gloss overlay — soft top highlight fading to nothing. */}
-        <LinearGradient
-          pointerEvents="none"
-          colors={gradients.ctaGloss as unknown as readonly [string, string, ...string[]]}
-          locations={[0, 0.55, 1]}
-          start={{ x: 0.5, y: 0 }}
-          end={{ x: 0.5, y: 0.9 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: radii.pill }]}
-        />
-        {/* Soft top sheen — replaces the 1px hard white line that read as a
-            seam on the gradient. Quick fade so it only suggests glass at the
-            top edge. */}
+        {/* Matte coral glass — frosted blur + saturated coral tint. Replaces
+            the previous solid 4-stop gradient so the CTA reads as premium
+            glass instead of printed paint. */}
+        {Platform.OS === 'ios' ? (
+          <BlurView
+            intensity={42}
+            tint="light"
+            style={[StyleSheet.absoluteFill, { borderRadius: radii.pill, overflow: 'hidden' }]}
+          >
+            <View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFill,
+                { backgroundColor: 'rgba(232,123,78,0.78)', borderRadius: radii.pill },
+              ]}
+            />
+            {/* Diagonal life — barely-there light/dark crossing keeps the pill
+                from looking flat without re-introducing a hard gradient. */}
+            <LinearGradient
+              pointerEvents="none"
+              colors={[
+                'rgba(255,255,255,0.10)',
+                'rgba(0,0,0,0)',
+                'rgba(0,0,0,0.10)',
+              ] as const}
+              locations={[0, 0.5, 1]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={[StyleSheet.absoluteFill, { borderRadius: radii.pill }]}
+            />
+          </BlurView>
+        ) : (
+          <View
+            pointerEvents="none"
+            style={[
+              StyleSheet.absoluteFill,
+              { backgroundColor: 'rgba(232,123,78,0.92)', borderRadius: radii.pill },
+            ]}
+          />
+        )}
+        {/* Soft top sheen — quick white fade for the upper glass curve. */}
         <LinearGradient
           pointerEvents="none"
           colors={SHEEN_COLORS}
@@ -275,6 +296,18 @@ export const PillCTA: React.FC<Props> = ({
           start={{ x: 0.5, y: 0 }}
           end={{ x: 0.5, y: 1 }}
           style={[styles.topSheen, { borderRadius: radii.pill }]}
+        />
+        {/* Hairline white edge — defines the glass curve crisply. */}
+        <View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFillObject,
+            {
+              borderRadius: radii.pill,
+              borderWidth: StyleSheet.hairlineWidth,
+              borderColor: 'rgba(255,255,255,0.40)',
+            },
+          ]}
         />
         {renderContent()}
       </AnimatedPressable>
