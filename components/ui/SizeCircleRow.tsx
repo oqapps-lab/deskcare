@@ -1,8 +1,9 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import { colors, gradients, radii, shadows, spacing, typeScale } from '../../constants/tokens';
+import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 
 export interface SizeCircleOption {
   value: string;
@@ -58,12 +59,41 @@ export const SizeCircleRow: React.FC<Props> = ({ options, value, onChange }) => 
               ]}
             >
               {active && (
-                <LinearGradient
-                  colors={gradients.chipActive as unknown as readonly [string, string, ...string[]]}
-                  start={{ x: 0.5, y: 0 }}
-                  end={{ x: 0.5, y: 1 }}
-                  style={[StyleSheet.absoluteFill, { borderRadius: size / 2 }]}
-                />
+                Platform.OS === 'ios' ? (
+                  <BlurView
+                    intensity={32}
+                    tint="light"
+                    style={[StyleSheet.absoluteFill, { borderRadius: size / 2, overflow: 'hidden' }]}
+                  >
+                    <View
+                      pointerEvents="none"
+                      style={[
+                        StyleSheet.absoluteFill,
+                        { backgroundColor: 'rgba(232,123,78,0.78)', borderRadius: size / 2 },
+                      ]}
+                    />
+                    <LinearGradient
+                      pointerEvents="none"
+                      colors={[
+                        'rgba(255,255,255,0.10)',
+                        'rgba(0,0,0,0)',
+                        'rgba(0,0,0,0.08)',
+                      ] as const}
+                      locations={[0, 0.5, 1]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={StyleSheet.absoluteFill}
+                    />
+                  </BlurView>
+                ) : (
+                  <View
+                    pointerEvents="none"
+                    style={[
+                      StyleSheet.absoluteFill,
+                      { backgroundColor: 'rgba(232,123,78,0.92)', borderRadius: size / 2 },
+                    ]}
+                  />
+                )
               )}
               <Text
                 style={[styles.value, active ? styles.valueActive : styles.valueInactive]}

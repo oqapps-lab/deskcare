@@ -11,7 +11,7 @@ import Animated, {
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
-import { colors, gradients } from '../../constants/tokens';
+import { colors } from '../../constants/tokens';
 import { Glyph, GlyphName } from './Glyph';
 
 export type HaloTone = 'coral' | 'peach' | 'lavender' | 'mint';
@@ -33,12 +33,14 @@ const SIZE_MAP: Record<HaloSize, number> = {
   xl: 96,
 };
 
-// 3-stop diagonal gradients per tone
-const GRADIENT_MAP: Record<HaloTone, readonly [string, string, ...string[]]> = {
-  coral: gradients.haloCoral as unknown as readonly [string, string, ...string[]],
-  peach: gradients.haloPeachSolid as unknown as readonly [string, string, ...string[]],
-  lavender: gradients.haloLavender as unknown as readonly [string, string, ...string[]],
-  mint: gradients.haloMint as unknown as readonly [string, string, ...string[]],
+// Active-state matte fills per tone — solid translucent colour over the
+// BlurView. Replaces the prior 3-stop diagonal gradient that read as a
+// printed paint band on tiny disc surfaces.
+const ACTIVE_FILL_MAP: Record<HaloTone, string> = {
+  coral: 'rgba(232,123,78,0.78)',
+  peach: 'rgba(255,138,92,0.65)',
+  lavender: 'rgba(155,142,180,0.70)',
+  mint: 'rgba(107,164,133,0.70)',
 };
 
 // Tone-mid color for tinted/glass icon color + halo stroke
@@ -190,12 +192,41 @@ export const IconHalo: React.FC<Props> = ({
         ]}
       >
         {variant === 'gradient' && (
-          <LinearGradient
-            colors={GRADIENT_MAP[tone]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={[StyleSheet.absoluteFill, { borderRadius: radius }]}
-          />
+          Platform.OS === 'ios' ? (
+            <BlurView
+              intensity={32}
+              tint="light"
+              style={[StyleSheet.absoluteFill, { borderRadius: radius, overflow: 'hidden' }]}
+            >
+              <View
+                pointerEvents="none"
+                style={[
+                  StyleSheet.absoluteFill,
+                  { backgroundColor: ACTIVE_FILL_MAP[tone], borderRadius: radius },
+                ]}
+              />
+              <LinearGradient
+                pointerEvents="none"
+                colors={[
+                  'rgba(255,255,255,0.10)',
+                  'rgba(0,0,0,0)',
+                  'rgba(0,0,0,0.08)',
+                ] as const}
+                locations={[0, 0.5, 1]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={StyleSheet.absoluteFill}
+              />
+            </BlurView>
+          ) : (
+            <View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFill,
+                { backgroundColor: ACTIVE_FILL_MAP[tone], borderRadius: radius },
+              ]}
+            />
+          )
         )}
 
         {variant === 'glass' && Platform.OS === 'ios' && (

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -8,7 +7,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from 'react-native-reanimated';
-import { colors, gradients, radii } from '../../constants/tokens';
+import { colors, radii } from '../../constants/tokens';
 
 interface Props {
   /** Progress value 0..1 */
@@ -52,14 +51,13 @@ export const ProgressBar: React.FC<Props> = ({
         now: Math.round(Math.max(0, Math.min(1, value)) * 100),
       }}
     >
-      <Animated.View style={[styles.fillWrap, fillStyle]}>
-        <LinearGradient
-          colors={gradients.chipActive as unknown as readonly [string, string, ...string[]]}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={[StyleSheet.absoluteFill, { borderRadius: radii.pill }]}
-        />
-      </Animated.View>
+      <Animated.View
+        style={[
+          styles.fillWrap,
+          fillStyle,
+          { backgroundColor: colors.primaryMid, borderRadius: radii.pill },
+        ]}
+      />
     </View>
   );
 };
