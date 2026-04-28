@@ -254,7 +254,7 @@ export default function HomeScreen() {
         {/* Pain check-in banner */}
         {cfg.showPainCheckIn && (
           <Pressable onPress={openPainCheckIn} style={({ pressed }) => [pressed && styles.pressed, styles.painCheckInWrap]}>
-            <GlassCard tint="coral" radius="xl" padding={spacing.lg} innerGradient>
+            <GlassCard tint="peach" radius="xl" padding={spacing.lg}>
               <View style={styles.painRow}>
                 <View style={{ flex: 1, minWidth: 0 }}>
                   <Text style={styles.painTitle}>How's your neck today?</Text>

@@ -65,15 +65,15 @@ const INNER_HIGHLIGHT = [
   'rgba(255,255,255,0)',
 ] as const;
 
-// Bottom-edge darkening — soft tone-matched shadow at the lower third that
-// fakes a slight inset / curvature so cards have visible volume rather than
-// reading as flat rectangles.
+// Bottom-edge darkening — soft tone-matched inner shadow that gives cards
+// visible curvature without darkening readability or reading as a printed
+// gradient. Kept gentle (≤0.07 alpha at the bottom edge).
 const INNER_FLOOR: Record<Tint, readonly [string, string]> = {
-  cream: ['rgba(0,0,0,0)', 'rgba(125,55,12,0.08)'],
-  peach: ['rgba(0,0,0,0)', 'rgba(157,67,26,0.12)'],
-  lavender: ['rgba(0,0,0,0)', 'rgba(80,60,110,0.12)'],
-  mint: ['rgba(0,0,0,0)', 'rgba(48,90,68,0.12)'],
-  coral: ['rgba(0,0,0,0)', 'rgba(157,67,26,0.16)'],
+  cream: ['rgba(0,0,0,0)', 'rgba(125,55,12,0.04)'],
+  peach: ['rgba(0,0,0,0)', 'rgba(157,67,26,0.05)'],
+  lavender: ['rgba(0,0,0,0)', 'rgba(80,60,110,0.06)'],
+  mint: ['rgba(0,0,0,0)', 'rgba(48,90,68,0.06)'],
+  coral: ['rgba(0,0,0,0)', 'rgba(157,67,26,0.07)'],
 };
 
 // Tone-mid for the decorative corner blob.

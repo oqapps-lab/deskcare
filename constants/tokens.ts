@@ -104,14 +104,14 @@ export const gradients = {
   haloLavender: ['#E8DEEF', '#D1BFDE', '#C9B8D4'] as const,
   haloMint: ['#DFECE4', '#BED8C9', '#9BC3AE'] as const,
 
-  // Inner card washes (used with innerGradient). Bumped saturation —
-  // previously these were sub-perceptual against the BlurView; now the
-  // diagonal hue actually reads as a soft gradient over the card surface.
-  washPeach: ['rgba(255,170,135,0.42)', 'rgba(255,139,92,0.10)'] as const,
-  washLavender: ['rgba(180,158,200,0.40)', 'rgba(120,98,150,0.10)'] as const,
-  washCream: ['rgba(255,234,212,0.55)', 'rgba(245,205,177,0.16)'] as const,
-  washMint: ['rgba(165,205,182,0.42)', 'rgba(95,150,118,0.10)'] as const,
-  washCoral: ['rgba(255,139,92,0.45)', 'rgba(216,90,55,0.14)'] as const,
+  // Inner card washes — kept subtle. Higher saturation read as a printed
+  // top-to-bottom paint gradient ("идиотский градиент"); these now provide
+  // only a hint of in-channel hue across the card.
+  washPeach: ['rgba(255,170,135,0.22)', 'rgba(255,139,92,0.04)'] as const,
+  washLavender: ['rgba(180,158,200,0.22)', 'rgba(120,98,150,0.04)'] as const,
+  washCream: ['rgba(255,234,212,0.30)', 'rgba(245,205,177,0.06)'] as const,
+  washMint: ['rgba(165,205,182,0.22)', 'rgba(95,150,118,0.04)'] as const,
+  washCoral: ['rgba(255,139,92,0.20)', 'rgba(216,90,55,0.04)'] as const,
 } as const;
 
 export const radii = {
