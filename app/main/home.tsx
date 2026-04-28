@@ -1,5 +1,7 @@
 import React, { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Circle, Path } from 'react-native-svg';
@@ -156,7 +158,7 @@ export default function HomeScreen() {
       <ScrollView
         contentContainerStyle={{
           paddingTop: insets.top + spacing.lg,
-          paddingBottom: insets.bottom + 130,
+          paddingBottom: insets.bottom + 200,
           paddingHorizontal: spacing.xxl,
         }}
         showsVerticalScrollIndicator={false}
@@ -208,9 +210,7 @@ export default function HomeScreen() {
               </View>
             </View>
             <View style={styles.routineCtaWrap}>
-              <View style={styles.ctaPill}>
-                <Text style={styles.ctaPillText}>{cfg.routineCta}</Text>
-              </View>
+              <MatteCoralPill label={cfg.routineCta} />
             </View>
           </GlassCard>
         </Pressable>
@@ -326,6 +326,46 @@ const ZoneCircle: React.FC<{
   </View>
 );
 
+/**
+ * Non-interactive matte coral-glass pill — visual affordance inside cards
+ * whose whole surface is the tap target. Same matte-glass language as the
+ * primary PillCTA but compact and decoupled from press handling.
+ */
+const MatteCoralPill: React.FC<{ label: string }> = ({ label }) => (
+  <View style={styles.mcpOuter}>
+    {Platform.OS === 'ios' ? (
+      <BlurView intensity={32} tint="light" style={styles.mcpBlur}>
+        <View style={[StyleSheet.absoluteFill, styles.mcpFill]} pointerEvents="none" />
+        <LinearGradient
+          pointerEvents="none"
+          colors={[
+            'rgba(255,255,255,0.10)',
+            'rgba(0,0,0,0)',
+            'rgba(0,0,0,0.10)',
+          ] as const}
+          locations={[0, 0.5, 1]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </BlurView>
+    ) : (
+      <View style={[StyleSheet.absoluteFill, styles.mcpFillAndroid]} pointerEvents="none" />
+    )}
+    <LinearGradient
+      pointerEvents="none"
+      colors={['rgba(255,255,255,0.32)', 'rgba(255,255,255,0)'] as const}
+      start={{ x: 0.5, y: 0 }}
+      end={{ x: 0.5, y: 1 }}
+      style={styles.mcpSheen}
+    />
+    <View style={styles.mcpBorder} pointerEvents="none" />
+    <View style={styles.mcpContent}>
+      <Text style={styles.mcpText}>{label}</Text>
+    </View>
+  </View>
+);
+
 const ProgramTile: React.FC<{ label: string; subtitle: string; tone: HaloTone }> = ({ label, subtitle, tone }) => (
   <View style={styles.programTile}>
     <GlassCard tint={tone === 'coral' ? 'coral' : tone === 'mint' ? 'mint' : 'lavender'} radius="lg" padding={spacing.md}>
@@ -426,14 +466,39 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: spacing.md,
   },
-  ctaPill: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+  mcpOuter: {
     borderRadius: 999,
-    backgroundColor: colors.primaryMid,
+    overflow: 'hidden',
     ...shadows.chip,
   },
-  ctaPillText: {
+  mcpBlur: {
+    ...StyleSheet.absoluteFillObject,
+    overflow: 'hidden',
+  },
+  mcpFill: {
+    backgroundColor: 'rgba(232,123,78,0.78)',
+  },
+  mcpFillAndroid: {
+    backgroundColor: 'rgba(232,123,78,0.92)',
+  },
+  mcpSheen: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
+  },
+  mcpBorder: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 999,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.45)',
+  },
+  mcpContent: {
+    paddingHorizontal: spacing.xl,
+    paddingVertical: spacing.sm + 2,
+  },
+  mcpText: {
     ...typeScale.title,
     color: colors.white,
     fontFamily: typeScale.titleLg.fontFamily,

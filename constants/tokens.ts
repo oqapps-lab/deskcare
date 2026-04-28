@@ -104,12 +104,14 @@ export const gradients = {
   haloLavender: ['#E8DEEF', '#D1BFDE', '#C9B8D4'] as const,
   haloMint: ['#DFECE4', '#BED8C9', '#9BC3AE'] as const,
 
-  // Inner card washes (used with innerGradient)
-  washPeach: ['rgba(255,197,170,0.18)', 'rgba(255,139,92,0.06)'] as const,
-  washLavender: ['rgba(201,184,212,0.22)', 'rgba(148,123,170,0.06)'] as const,
-  washCream: ['rgba(255,250,243,0.5)', 'rgba(245,225,207,0.12)'] as const,
-  washMint: ['rgba(190,216,201,0.22)', 'rgba(107,164,133,0.06)'] as const,
-  washCoral: ['rgba(255,139,92,0.22)', 'rgba(232,123,78,0.08)'] as const,
+  // Inner card washes (used with innerGradient). Bumped saturation —
+  // previously these were sub-perceptual against the BlurView; now the
+  // diagonal hue actually reads as a soft gradient over the card surface.
+  washPeach: ['rgba(255,170,135,0.42)', 'rgba(255,139,92,0.10)'] as const,
+  washLavender: ['rgba(180,158,200,0.40)', 'rgba(120,98,150,0.10)'] as const,
+  washCream: ['rgba(255,234,212,0.55)', 'rgba(245,205,177,0.16)'] as const,
+  washMint: ['rgba(165,205,182,0.42)', 'rgba(95,150,118,0.10)'] as const,
+  washCoral: ['rgba(255,139,92,0.45)', 'rgba(216,90,55,0.14)'] as const,
 } as const;
 
 export const radii = {
@@ -160,18 +162,18 @@ export const fonts = {
 
 export const shadows = {
   soft: {
-    shadowColor: '#9D431A',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.09,
-    shadowRadius: 26,
-    elevation: 5,
+    shadowColor: '#7E2C03',
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.20,
+    shadowRadius: 28,
+    elevation: 8,
   },
   lift: {
-    shadowColor: '#9D431A',
-    shadowOffset: { width: 0, height: 16 },
-    shadowOpacity: 0.13,
-    shadowRadius: 36,
-    elevation: 8,
+    shadowColor: '#7E2C03',
+    shadowOffset: { width: 0, height: 22 },
+    shadowOpacity: 0.26,
+    shadowRadius: 40,
+    elevation: 12,
   },
   cta: {
     shadowColor: '#E87B4E',

@@ -56,14 +56,25 @@ const TINT_WASH: Record<
   coral: gradients.washCoral as unknown as readonly [string, string, ...string[]],
 };
 
-// Soft top-edge sheen — replaces the harsh 1px white line that read as a
-// hard band on coral atmospheric backgrounds. Quick fade to transparent so
-// only the upper ~20% of the card carries the highlight.
+// Top-edge sheen — visible white-cream blush along the upper third of
+// every card. Pulled stronger than the previous near-invisible band so the
+// glass curve actually reads.
 const INNER_HIGHLIGHT = [
-  'rgba(255,255,255,0.42)',
-  'rgba(255,255,255,0.08)',
+  'rgba(255,255,255,0.62)',
+  'rgba(255,255,255,0.18)',
   'rgba(255,255,255,0)',
 ] as const;
+
+// Bottom-edge darkening — soft tone-matched shadow at the lower third that
+// fakes a slight inset / curvature so cards have visible volume rather than
+// reading as flat rectangles.
+const INNER_FLOOR: Record<Tint, readonly [string, string]> = {
+  cream: ['rgba(0,0,0,0)', 'rgba(125,55,12,0.08)'],
+  peach: ['rgba(0,0,0,0)', 'rgba(157,67,26,0.12)'],
+  lavender: ['rgba(0,0,0,0)', 'rgba(80,60,110,0.12)'],
+  mint: ['rgba(0,0,0,0)', 'rgba(48,90,68,0.12)'],
+  coral: ['rgba(0,0,0,0)', 'rgba(157,67,26,0.16)'],
+};
 
 // Tone-mid for the decorative corner blob.
 const TINT_DECOR: Record<Tint, string> = {
@@ -112,6 +123,16 @@ export const GlassCard: React.FC<Props> = ({
           pointerEvents="none"
         />
       )}
+      {/* Always-on bottom-edge floor — soft tone-matched shadow that gives
+          every card visible volume regardless of innerGradient prop. */}
+      <LinearGradient
+        colors={INNER_FLOOR[tint]}
+        locations={[0, 1]}
+        start={{ x: 0.5, y: 0.4 }}
+        end={{ x: 0.5, y: 1 }}
+        style={[StyleSheet.absoluteFill, { borderRadius: r }]}
+        pointerEvents="none"
+      />
       {decorativeCorner && (
         <View style={styles.decorCorner} pointerEvents="none">
           <Svg width={40} height={40} viewBox="0 0 40 40">
