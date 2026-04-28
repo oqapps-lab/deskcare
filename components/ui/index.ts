@@ -29,4 +29,5 @@ export { SettingsRow } from './SettingsRow';
 export { SeveritySlider } from './SeveritySlider';
 export { TabBar, type TabId } from './TabBar';
 export { ToggleSwitch } from './ToggleSwitch';
+export { ExerciseVideo } from './ExerciseVideo';
 export { VideoPlaceholder } from './VideoPlaceholder';

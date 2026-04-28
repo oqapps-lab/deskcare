@@ -12,6 +12,7 @@ import {
   GlassCard,
   NavHeader,
   PillCTA,
+  ExerciseVideo,
   VideoPlaceholder,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
@@ -78,7 +79,12 @@ export default function RoutinePreviewScreen() {
             {routine.description && <Text style={styles.sub}>{routine.description}</Text>}
 
             <View style={styles.heroWrap}>
-              <VideoPlaceholder pose={poseFor(items[0]?.exercise?.code)} width={320} height={200} />
+              <ExerciseVideo
+                pose={poseFor(items[0]?.exercise?.code)}
+                videoUrl={items[0]?.exercise?.video_url}
+                width={320}
+                height={200}
+              />
             </View>
 
             <View style={styles.statsRow}>

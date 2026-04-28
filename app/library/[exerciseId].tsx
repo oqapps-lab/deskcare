@@ -8,13 +8,13 @@ import {
   AtmosphericBackground,
   BgPattern,
   DecorativeArc,
+  ExerciseVideo,
   Eyebrow,
   FloatingScrim,
   GlassCard,
   NavHeader,
   PillCTA,
   PremiumLock,
-  VideoPlaceholder,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
@@ -143,8 +143,9 @@ export default function ExerciseDetailScreen() {
         ) : (
           <>
             <View style={[styles.thumbWrap, locked && styles.thumbLocked]}>
-              <VideoPlaceholder
+              <ExerciseVideo
                 pose={poseFor(exercise.code)}
+                videoUrl={locked ? null : exercise.video_url}
                 width={320}
                 height={240}
                 showPlay={!locked}

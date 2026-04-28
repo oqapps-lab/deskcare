@@ -24,7 +24,7 @@ import {
   NavHeader,
   PillCTA,
   ProgressDots,
-  VideoPlaceholder,
+  ExerciseVideo,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useRoutineWithItems } from '../../hooks/useContent';
@@ -188,8 +188,9 @@ export default function ExercisePlayerScreen() {
             />
           </Svg>
           <View style={styles.ringCenter}>
-            <VideoPlaceholder
+            <ExerciseVideo
               pose={poseFor(step.exercise?.code)}
+              videoUrl={step.exercise?.video_url}
               width={220}
               height={220}
               showPlay={false}
