@@ -175,10 +175,10 @@ export const shadows = {
   },
   cta: {
     shadowColor: '#E87B4E',
-    shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.32,
-    shadowRadius: 28,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.38,
+    shadowRadius: 32,
+    elevation: 10,
   },
   chip: {
     shadowColor: '#E87B4E',

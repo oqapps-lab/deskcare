@@ -48,6 +48,9 @@ export default function PaywallScreen() {
   const headY = useSharedValue(12);
   const contentOpacity = useSharedValue(0);
   const ctaOpacity = useSharedValue(0);
+  // Close (×) intentionally hidden for the first ~3s so users actually read
+  // the offer before bailing. Standard practice on Calm/Spotify/Tinder paywalls.
+  const closeOpacity = useSharedValue(0);
 
   useEffect(() => {
     const d = reduceMotion ? 0 : 140;
@@ -55,7 +58,8 @@ export default function PaywallScreen() {
     headY.value = withTiming(0, { duration: 480, easing: Easing.out(Easing.cubic) });
     contentOpacity.value = withDelay(d * 2, withTiming(1, { duration: 520 }));
     ctaOpacity.value = withDelay(d * 4, withTiming(1, { duration: 420 }));
-  }, [reduceMotion, headOpacity, headY, contentOpacity, ctaOpacity]);
+    closeOpacity.value = withDelay(reduceMotion ? 0 : 3000, withTiming(1, { duration: 360 }));
+  }, [reduceMotion, headOpacity, headY, contentOpacity, ctaOpacity, closeOpacity]);
 
   const headStyle = useAnimatedStyle(() => ({
     opacity: headOpacity.value,
@@ -63,6 +67,7 @@ export default function PaywallScreen() {
   }));
   const contentStyle = useAnimatedStyle(() => ({ opacity: contentOpacity.value }));
   const ctaStyle = useAnimatedStyle(() => ({ opacity: ctaOpacity.value }));
+  const closeStyle = useAnimatedStyle(() => ({ opacity: closeOpacity.value }));
 
   const close = () => {
     Haptics.selectionAsync();
@@ -83,7 +88,10 @@ export default function PaywallScreen() {
       <DecorativeArc position="top-right" tone="peach" size={240} opacity={0.18} />
       <DecorativeArc position="bottom-right" tone="coral" size={280} opacity={0.16} />
 
-      <View style={[styles.closeWrap, { top: insets.top + spacing.sm }]}>
+      <Animated.View
+        style={[styles.closeWrap, { top: insets.top + spacing.sm }, closeStyle]}
+        pointerEvents="box-none"
+      >
         <Pressable
           onPress={close}
           hitSlop={12}
@@ -94,7 +102,7 @@ export default function PaywallScreen() {
             <Glyph name="close-x" size={16} color={colors.inkMuted} />
           </View>
         </Pressable>
-      </View>
+      </Animated.View>
 
       <View style={styles.wrap}>
         <ScrollView

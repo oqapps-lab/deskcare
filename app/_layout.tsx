@@ -32,12 +32,27 @@ export default function RootLayout() {
           screenOptions={{
             headerShown: false,
             contentStyle: { backgroundColor: colors.canvas },
-            animation: 'slide_from_right',
-            animationDuration: 280,
+            // Default: gentle fade for forward navigation. Slide-from-right
+            // on every push reads as old-school iOS page-flip.
+            animation: 'fade',
+            animationDuration: 220,
           }}
         >
           <Stack.Screen name="index" options={{ animation: 'fade' }} />
+          {/* Onboarding quiz steps — slide forward like a wizard, but quick. */}
+          <Stack.Screen name="onboarding/quiz/zone" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
+          <Stack.Screen name="onboarding/quiz/work" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
+          <Stack.Screen name="onboarding/quiz/sitting" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
+          <Stack.Screen name="onboarding/quiz/goal" options={{ animation: 'slide_from_right', animationDuration: 200 }} />
           <Stack.Screen name="onboarding/permission" options={{ animation: 'fade' }} />
+          <Stack.Screen name="onboarding/plan" options={{ animation: 'fade' }} />
+          <Stack.Screen name="onboarding/labor-illusion" options={{ animation: 'fade' }} />
+          <Stack.Screen name="onboarding/paywall" options={{ animation: 'fade_from_bottom', animationDuration: 320 }} />
+          {/* Main tabs — instant swap. Sliding tab content is jarring. */}
+          <Stack.Screen name="main/home" options={{ animation: 'none' }} />
+          <Stack.Screen name="main/library" options={{ animation: 'none' }} />
+          <Stack.Screen name="main/programs" options={{ animation: 'none' }} />
+          <Stack.Screen name="main/profile" options={{ animation: 'none' }} />
           <Stack.Screen name="eye/session" options={{ animation: 'fade_from_bottom' }} />
           <Stack.Screen name="pain/check-in" options={{ animation: 'slide_from_bottom' }} />
           <Stack.Screen name="sync" options={{ animation: 'fade' }} />

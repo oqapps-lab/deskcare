@@ -126,7 +126,7 @@ export const GlassCard: React.FC<Props> = ({
     return (
       <View style={[{ borderRadius: r }, shadowStyle, style]}>
         <BlurView
-          intensity={40}
+          intensity={55}
           tint="light"
           style={[styles.blur, { borderRadius: r, padding }]}
         >
@@ -145,6 +145,15 @@ export const GlassCard: React.FC<Props> = ({
             end={{ x: 0.5, y: 1 }}
             style={[styles.innerHighlight, { borderRadius: r }]}
             pointerEvents="none"
+          />
+          {/* Crisp edge — hairline coral-tinted border defines the card
+              against the soft atmospheric backdrop without looking boxy. */}
+          <View
+            pointerEvents="none"
+            style={[
+              styles.hairline,
+              { borderRadius: r },
+            ]}
           />
           <View style={styles.content}>{children}</View>
         </BlurView>
@@ -178,6 +187,10 @@ export const GlassCard: React.FC<Props> = ({
         style={[styles.innerHighlight, { borderRadius: r }]}
         pointerEvents="none"
       />
+      <View
+        pointerEvents="none"
+        style={[styles.hairline, { borderRadius: r }]}
+      />
       <View style={styles.content}>{children}</View>
     </View>
   );
@@ -196,6 +209,11 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 36,
+  },
+  hairline: {
+    ...StyleSheet.absoluteFillObject,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: 'rgba(255,255,255,0.55)',
   },
   content: {
     width: '100%',

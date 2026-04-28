@@ -25,6 +25,10 @@ import { Glyph, GlyphName } from './Glyph';
 type Variant = 'primary' | 'outlined' | 'ghost' | 'iconOnly' | 'glass';
 type Size = 'md' | 'lg' | 'xl' | 'iconBig';
 
+// Sheen — soft white highlight along the top edge, replaces a hard 1px line
+// that read as a seam over the gradient. Visible across the top ~38% only.
+const SHEEN_COLORS = ['rgba(255,255,255,0.32)', 'rgba(255,255,255,0)'] as const;
+
 interface Props {
   children?: string;
   onPress?: () => void;
@@ -88,10 +92,10 @@ export const PillCTA: React.FC<Props> = ({
   }, [breathActive, reduceMotion, breathScale]);
 
   const handlePressIn = () => {
-    scale.value = withTiming(0.97, { duration: 100 });
+    scale.value = withTiming(0.955, { duration: 90, easing: Easing.out(Easing.quad) });
   };
   const handlePressOut = () => {
-    scale.value = withTiming(1, { duration: 160 });
+    scale.value = withTiming(1, { duration: 220, easing: Easing.out(Easing.cubic) });
   };
   const handlePress = () => {
     if (disabled || loading) return;
@@ -261,8 +265,17 @@ export const PillCTA: React.FC<Props> = ({
           end={{ x: 0.5, y: 0.9 }}
           style={[StyleSheet.absoluteFill, { borderRadius: radii.pill }]}
         />
-        {/* thin top-inner hairline for glass feel */}
-        <View style={styles.topHighlight} pointerEvents="none" />
+        {/* Soft top sheen — replaces the 1px hard white line that read as a
+            seam on the gradient. Quick fade so it only suggests glass at the
+            top edge. */}
+        <LinearGradient
+          pointerEvents="none"
+          colors={SHEEN_COLORS}
+          locations={[0, 1]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={[styles.topSheen, { borderRadius: radii.pill }]}
+        />
         {renderContent()}
       </AnimatedPressable>
     );
@@ -316,7 +329,14 @@ export const PillCTA: React.FC<Props> = ({
             ]}
           />
         )}
-        <View style={styles.topHighlight} pointerEvents="none" />
+        <LinearGradient
+          pointerEvents="none"
+          colors={SHEEN_COLORS}
+          locations={[0, 1]}
+          start={{ x: 0.5, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={[styles.topSheen, { borderRadius: radii.pill }]}
+        />
         {renderContent()}
       </AnimatedPressable>
     );
@@ -393,13 +413,12 @@ const styles = StyleSheet.create({
     ...typeScale.title,
     fontFamily: fonts.bold,
   },
-  topHighlight: {
+  topSheen: {
     position: 'absolute',
     top: 0,
-    left: 16,
-    right: 16,
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.35)',
+    left: 0,
+    right: 0,
+    height: '38%',
   },
   iconBg: {
     width: 28,
