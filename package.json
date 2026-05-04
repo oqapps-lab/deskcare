@@ -1,6 +1,6 @@
 {
   "name": "deskcare",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "expo-router/entry",
   "private": true,
   "scripts": {
@@ -16,8 +16,10 @@
   "dependencies": {
     "@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
     "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-google-signin/google-signin": "^14.0.0",
     "@supabase/supabase-js": "^2.104.1",
     "expo": "~55.0.15",
+    "expo-apple-authentication": "~7.0.0",
     "expo-blur": "~55.0.14",
     "expo-constants": "~55.0.14",
     "expo-font": "~55.0.6",

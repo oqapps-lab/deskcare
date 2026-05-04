@@ -17,6 +17,7 @@ import {
   TabBar,
 } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
+import { useIsPremium } from '../../lib/premium';
 
 const PROGRAMS = [
   {
@@ -55,9 +56,16 @@ const PROGRAMS = [
 
 export default function ProgramsScreen() {
   const insets = useSafeAreaInsets();
+  const isPremium = useIsPremium();
 
-  const open = (route: string) => {
+  const open = (route: string, premium: boolean) => {
     Haptics.selectionAsync();
+    // Premium-locked programs route to the paywall when the user is not
+    // entitled. Premium-entitled (or TF-bypass) users go to the program.
+    if (premium && !isPremium) {
+      router.push('/onboarding/paywall' as never);
+      return;
+    }
     router.push(route as never);
   };
 
@@ -83,7 +91,7 @@ export default function ProgramsScreen() {
           {PROGRAMS.map((p) => (
             <Pressable
               key={p.id}
-              onPress={() => open(p.route)}
+              onPress={() => open(p.route, p.premium)}
               style={({ pressed }) => [pressed && styles.pressed]}
             >
               <GlassCard tint={p.tone} radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
@@ -94,7 +102,7 @@ export default function ProgramsScreen() {
                       <Text style={styles.rowTitle} numberOfLines={1}>
                         {p.title}
                       </Text>
-                      {p.premium ? <PremiumLock size="sm" /> : <FreeDot />}
+                      {p.premium && !isPremium ? <PremiumLock size="sm" /> : <FreeDot />}
                     </View>
                     <Text style={styles.rowMeta}>{p.meta}</Text>
                   </View>

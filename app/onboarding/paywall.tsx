@@ -3,6 +3,8 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import { adapty } from 'react-native-adapty';
+import { PREMIUM_BYPASS } from '../../lib/premium';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -73,10 +75,52 @@ export default function PaywallScreen() {
     Haptics.selectionAsync();
     router.replace('/main/home');
   };
-  const begin = () => {
+
+  const begin = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.replace('/main/home');
+    // TF-internal: paywall is purely cosmetic — premium content is unlocked
+    // app-wide via PREMIUM_BYPASS. Tap routes directly to home.
+    if (PREMIUM_BYPASS) {
+      router.replace('/main/home');
+      return;
+    }
+    // Production: attempt the Adapty purchase. The actual product key is
+    // wired once Adapty paywalls + ASC IAP products are live (Stage 7).
+    // Until then, this branch routes to home and the user remains free.
+    try {
+      const paywall = await (adapty as any).getPaywall('default');
+      const products = await (adapty as any).getPaywallProducts(paywall);
+      const product = (products as any[]).find((p) => {
+        const unit = p?.subscriptionPeriod?.unit ?? p?.subscription?.unit;
+        return plan === 'yearly' ? unit === 'year' : unit === 'month';
+      });
+      if (!product) throw new Error('No matching product in Adapty paywall');
+      await (adapty as any).makePurchase(product);
+      router.replace('/main/home');
+    } catch (e) {
+      // Either the SDK isn't activated (no key) or the paywall isn't yet
+      // configured. Fall back to home — the user keeps the free tier.
+      console.warn('[deskcare] Paywall purchase fell back to home:', e);
+      router.replace('/main/home');
+    }
   };
+
+  const restore = async () => {
+    Haptics.selectionAsync();
+    if (PREMIUM_BYPASS) {
+      // No real subscription state on TF-internal — nothing to restore.
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      return;
+    }
+    try {
+      await (adapty as any).restorePurchases();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    } catch (e) {
+      console.warn('[deskcare] Restore purchases failed:', e);
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+    }
+  };
+
   const pickPlan = (p: Plan) => {
     Haptics.selectionAsync();
     setPlan(p);
@@ -217,7 +261,12 @@ export default function PaywallScreen() {
           </Animated.View>
 
           <Animated.View style={[styles.legalRow, contentStyle]}>
-            <Pressable hitSlop={10} accessibilityRole="button" accessibilityLabel="Restore purchase">
+            <Pressable
+              hitSlop={10}
+              onPress={restore}
+              accessibilityRole="button"
+              accessibilityLabel="Restore purchase"
+            >
               <Text style={styles.legalLink}>Restore purchase</Text>
             </Pressable>
             <View style={styles.legalDotDivider} />

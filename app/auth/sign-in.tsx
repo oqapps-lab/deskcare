@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -20,7 +21,13 @@ export default function SignInScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
-  const { signIn: doSignIn, loading, error } = useAuth();
+  const {
+    signIn: doSignIn,
+    signInWithApple,
+    signInWithGoogle,
+    loading,
+    error,
+  } = useAuth();
 
   const back = () => {
     Haptics.selectionAsync();
@@ -35,9 +42,17 @@ export default function SignInScreen() {
     Haptics.selectionAsync();
     router.replace('/auth/sign-up');
   };
-  const apple = () => {
-    // Apple/Google OAuth wired in Stage 6.5 — for now show a friendly stub.
-    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+  const apple = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    const r = await signInWithApple();
+    if (r.ok) router.replace('/main/home');
+    else if (!r.cancelled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+  };
+  const google = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    const r = await signInWithGoogle();
+    if (r.ok) router.replace('/main/home');
+    else if (!r.cancelled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
   };
 
   const canSubmit = email.length > 3 && password.length >= 6 && !loading;
@@ -124,14 +139,20 @@ export default function SignInScreen() {
             <View style={styles.dividerLine} />
           </View>
 
-          <Pressable onPress={apple} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
-            <AppleGlyph />
-            <Text style={styles.oauthLabel}>Continue with Apple</Text>
-          </Pressable>
+          {Platform.OS === 'ios' && (
+            <>
+              <AppleAuthentication.AppleAuthenticationButton
+                buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
+                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                cornerRadius={999}
+                style={styles.appleBtn}
+                onPress={apple}
+              />
+              <View style={{ height: spacing.sm }} />
+            </>
+          )}
 
-          <View style={{ height: spacing.sm }} />
-
-          <Pressable onPress={apple} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
+          <Pressable onPress={google} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
             <GoogleGlyph />
             <Text style={styles.oauthLabel}>Continue with Google</Text>
           </Pressable>
@@ -151,11 +172,6 @@ const Label: React.FC<{ children: string }> = ({ children }) => (
   <Text style={styles.label}>{children}</Text>
 );
 
-const AppleGlyph = () => (
-  <Svg width={16} height={18} viewBox="0 0 16 18">
-    <Path d="M12 5 Q10 3 8 3 Q6 3 4 5 Q2 8 3 13 Q4 16 6 16 Q7 16 8 15 Q9 16 10 16 Q12 16 13 13 Q14 10 12 5 Z M8 3 Q9 2 10 1" fill={colors.ink} />
-  </Svg>
-);
 const GoogleGlyph = () => (
   <Svg width={18} height={18} viewBox="0 0 18 18">
     <Path d="M9 8 L9 11 L13.4 11 Q13 12.5 12 13.5 Q11 14.5 9 14.5 Q6 14.5 4.5 12 Q3 9 4.5 6 Q6 3.5 9 3.5 Q10.5 3.5 12 4.5 L14 2.5 Q12 1 9 1 Q5 1 2.5 4 Q0 7 2 11 Q4 15 9 15 Q12 15 14 13 Q16 11 16 8 L9 8 Z" fill={colors.primaryMid} />
@@ -228,6 +244,10 @@ const styles = StyleSheet.create({
     ...typeScale.labelSm,
     color: colors.inkSubtle,
     textTransform: 'uppercase',
+  },
+  appleBtn: {
+    width: '100%',
+    height: 48,
   },
   oauthBtn: {
     flexDirection: 'row',

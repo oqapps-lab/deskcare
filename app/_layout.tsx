@@ -3,6 +3,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
+import { adapty } from 'react-native-adapty';
 import { useAppFonts } from '../hooks/useAppFonts';
 import { colors } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
@@ -11,6 +12,21 @@ import { configureForegroundBehavior } from '../lib/notifications';
 // Configure how foreground notifications are presented. Must run at module
 // scope so it happens before any notification fires.
 configureForegroundBehavior();
+
+// Adapty: activate at module scope when key is provided. Silently skip
+// otherwise — TF-internal builds run without IAP wired (see lib/premium.ts).
+const ADAPTY_KEY = process.env.EXPO_PUBLIC_ADAPTY_KEY;
+if (ADAPTY_KEY) {
+  // Cast to any: Adapty SDK options drift between minor versions. Keeping
+  // the activation call resilient to that without pinning the type here.
+  (adapty as any)
+    .activate(ADAPTY_KEY, { logLevel: 'error' })
+    .catch((e: unknown) => {
+      // Activation failure should never crash the app — premium gate falls
+      // back to free until the SDK recovers (or until next cold start).
+      console.warn('[deskcare] Adapty.activate failed:', e);
+    });
+}
 
 export default function RootLayout() {
   const fontsLoaded = useAppFonts();

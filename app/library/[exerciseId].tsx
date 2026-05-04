@@ -17,6 +17,7 @@ import {
   PremiumLock,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { useIsPremium } from '../../lib/premium';
 import { supabase } from '../../lib/supabase';
 import type { Exercise } from '../../lib/types/db';
 
@@ -82,7 +83,8 @@ export default function ExerciseDetailScreen() {
   const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<{ exerciseId?: string; locked?: string }>();
   const { exercise, loading, notFound, error } = useExercise(params.exerciseId as string | undefined);
-  const locked = params.locked === '1' || !!exercise?.is_premium;
+  const isPremium = useIsPremium();
+  const locked = !isPremium && (params.locked === '1' || !!exercise?.is_premium);
 
   const back = () => {
     Haptics.selectionAsync();

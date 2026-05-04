@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -22,7 +23,13 @@ export default function SignUpScreen() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [marketing, setMarketing] = useState(true);
-  const { signUp: doSignUp, loading, error } = useAuth();
+  const {
+    signUp: doSignUp,
+    signInWithApple,
+    signInWithGoogle,
+    loading,
+    error,
+  } = useAuth();
 
   const back = () => {
     Haptics.selectionAsync();
@@ -36,6 +43,18 @@ export default function SignUpScreen() {
   const signIn = () => {
     Haptics.selectionAsync();
     router.replace('/auth/sign-in');
+  };
+  const apple = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    const r = await signInWithApple();
+    if (r.ok) router.replace('/onboarding/welcome');
+    else if (!r.cancelled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+  };
+  const google = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    const r = await signInWithGoogle();
+    if (r.ok) router.replace('/onboarding/welcome');
+    else if (!r.cancelled) Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
   };
 
   const mismatch = confirm.length > 0 && confirm !== password;
@@ -127,6 +146,30 @@ export default function SignUpScreen() {
           </PillCTA>
           {error && <Text style={styles.authError}>{error}</Text>}
 
+          <View style={styles.divider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>OR</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          {Platform.OS === 'ios' && (
+            <>
+              <AppleAuthentication.AppleAuthenticationButton
+                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP}
+                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+                cornerRadius={999}
+                style={styles.appleBtn}
+                onPress={apple}
+              />
+              <View style={{ height: spacing.sm }} />
+            </>
+          )}
+
+          <Pressable onPress={google} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
+            <GoogleGlyph />
+            <Text style={styles.oauthLabel}>Sign up with Google</Text>
+          </Pressable>
+
           <Text style={styles.legal}>
             By continuing you accept the <Text style={styles.legalAccent}>Terms</Text> and{' '}
             <Text style={styles.legalAccent}>Privacy Policy</Text>.
@@ -145,6 +188,12 @@ export default function SignUpScreen() {
 
 const Label: React.FC<{ children: string }> = ({ children }) => (
   <Text style={styles.label}>{children}</Text>
+);
+
+const GoogleGlyph = () => (
+  <Svg width={18} height={18} viewBox="0 0 18 18">
+    <Path d="M9 8 L9 11 L13.4 11 Q13 12.5 12 13.5 Q11 14.5 9 14.5 Q6 14.5 4.5 12 Q3 9 4.5 6 Q6 3.5 9 3.5 Q10.5 3.5 12 4.5 L14 2.5 Q12 1 9 1 Q5 1 2.5 4 Q0 7 2 11 Q4 15 9 15 Q12 15 14 13 Q16 11 16 8 L9 8 Z" fill={colors.primaryMid} />
+  </Svg>
 );
 
 const styles = StyleSheet.create({
@@ -227,5 +276,42 @@ const styles = StyleSheet.create({
     color: colors.error,
     textAlign: 'center',
     marginTop: spacing.md,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginVertical: spacing.xl,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.inkHairline,
+  },
+  dividerText: {
+    ...typeScale.labelSm,
+    color: colors.inkSubtle,
+    textTransform: 'uppercase',
+  },
+  appleBtn: {
+    width: '100%',
+    height: 48,
+  },
+  oauthBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.surfaceCard,
+    borderRadius: 999,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+  },
+  oauthLabel: {
+    ...typeScale.title,
+    color: colors.ink,
+  },
+  pressed: {
+    opacity: 0.82,
   },
 });

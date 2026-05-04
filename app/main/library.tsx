@@ -16,6 +16,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useExercises } from '../../hooks/useContent';
+import { useIsPremium } from '../../lib/premium';
 import type { BodyZoneSlug } from '../../lib/types/db';
 
 interface Filter {
@@ -47,6 +48,7 @@ export default function LibraryScreen() {
   const [query, setQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState<Filter>(FILTERS[0]);
   const { exercises, loading, error } = useExercises(activeFilter.zone);
+  const isPremium = useIsPremium();
 
   const list = useMemo(() => {
     if (!exercises) return [];
@@ -143,7 +145,7 @@ export default function LibraryScreen() {
               list.map((e) => (
                 <Pressable
                   key={e.id}
-                  onPress={() => open(e.slug, !!e.is_premium)}
+                  onPress={() => open(e.slug, !!e.is_premium && !isPremium)}
                   accessibilityRole="button"
                   accessibilityLabel={`${e.title}, ${formatDuration(e.duration_seconds)}, ${e.code}${e.is_premium ? ', premium' : ''}`}
                   style={({ pressed }) => [pressed && styles.pressed]}
@@ -157,7 +159,7 @@ export default function LibraryScreen() {
                             <Text style={styles.rowName} numberOfLines={2}>
                               {e.title}
                             </Text>
-                            {e.is_premium && <PremiumLock size="sm" />}
+                            {e.is_premium && !isPremium && <PremiumLock size="sm" />}
                           </View>
                           <Text style={styles.rowMeta}>
                             {e.code} · {formatDuration(e.duration_seconds)} · {e.exercise_type}
