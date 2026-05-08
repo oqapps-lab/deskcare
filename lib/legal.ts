@@ -1,17 +1,15 @@
 /**
  * Legal + marketing URLs published on https://oqapps.pro.
  *
- * NOTE: the URL path uses `/deskfit/` because the project was generated
- * under the working name "DeskFit" before the rebrand to "DeskCare". The
- * docs themselves (live at oqapps.pro) reference the user-facing name
- * "DeskCare" — only the path slug stays for URL stability.
+ * Mirrored locally at `_LEGAL_DOCS/legal/deskcare/*.html` — push that
+ * folder to oqapps.pro static hosting whenever the source changes.
  */
 
 export const LEGAL_URLS = {
-  privacy: 'https://oqapps.pro/legal/deskfit/privacy',
-  terms: 'https://oqapps.pro/legal/deskfit/terms',
-  support: 'https://oqapps.pro/legal/deskfit/support',
-  deleteAccount: 'https://oqapps.pro/legal/deskfit/delete-account',
+  privacy: 'https://oqapps.pro/legal/deskcare/privacy',
+  terms: 'https://oqapps.pro/legal/deskcare/terms',
+  support: 'https://oqapps.pro/legal/deskcare/support',
+  deleteAccount: 'https://oqapps.pro/legal/deskcare/delete-account',
   marketing: 'https://oqapps.pro/products',
 } as const;
 

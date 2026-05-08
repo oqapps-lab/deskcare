@@ -152,10 +152,12 @@ export default function SignInScreen() {
             </>
           )}
 
-          <Pressable onPress={google} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
-            <GoogleGlyph />
-            <Text style={styles.oauthLabel}>Continue with Google</Text>
-          </Pressable>
+          {!!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID && (
+            <Pressable onPress={google} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
+              <GoogleGlyph />
+              <Text style={styles.oauthLabel}>Continue with Google</Text>
+            </Pressable>
+          )}
 
           <Pressable onPress={signUp} hitSlop={10} style={styles.switchRow}>
             <Text style={styles.switchText}>

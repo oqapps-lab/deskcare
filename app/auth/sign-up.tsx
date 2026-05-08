@@ -166,10 +166,12 @@ export default function SignUpScreen() {
             </>
           )}
 
-          <Pressable onPress={google} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
-            <GoogleGlyph />
-            <Text style={styles.oauthLabel}>Sign up with Google</Text>
-          </Pressable>
+          {!!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID && (
+            <Pressable onPress={google} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
+              <GoogleGlyph />
+              <Text style={styles.oauthLabel}>Sign up with Google</Text>
+            </Pressable>
+          )}
 
           <Text style={styles.legal}>
             By continuing you accept the{' '}
