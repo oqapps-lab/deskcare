@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { LEGAL_URLS, SUPPORT_EMAIL } from '../../lib/legal';
 import {
   AtmosphericBackground,
   BgPattern,
@@ -57,7 +58,10 @@ interface NavRowDef {
   tone: HaloTone;
   title: string;
   sub: string;
+  /** Internal expo-router path (mutually exclusive with `url`). */
   route?: string;
+  /** External URL — opened via Linking. */
+  url?: string;
   accent?: boolean;
   badge?: string;
 }
@@ -75,10 +79,11 @@ const ACCOUNT_TPL: ReadonlyArray<NavRowDef> = [
 ];
 
 const PRIVACY: ReadonlyArray<NavRowDef> = [
-  { key: 'data',     icon: 'settings', tone: 'lavender', title: 'Data & analytics', sub: 'What we collect and why', route: '/onboarding/permission' },
-  { key: 'terms',    icon: 'plus',     tone: 'peach',    title: 'Terms of use',     sub: '',                         route: '/onboarding/permission' },
-  { key: 'privacy',  icon: 'plus',     tone: 'peach',    title: 'Privacy policy',   sub: '',                         route: '/onboarding/permission' },
-  { key: 'contact',  icon: 'plus',     tone: 'coral',    title: 'Contact support',  sub: 'hi@deskcare.app',          route: '/onboarding/permission' },
+  { key: 'data',     icon: 'settings', tone: 'lavender', title: 'Data & analytics', sub: 'What we collect and why', url: LEGAL_URLS.privacy },
+  { key: 'terms',    icon: 'plus',     tone: 'peach',    title: 'Terms of use',     sub: '',                         url: LEGAL_URLS.terms },
+  { key: 'privacy',  icon: 'plus',     tone: 'peach',    title: 'Privacy policy',   sub: '',                         url: LEGAL_URLS.privacy },
+  { key: 'contact',  icon: 'plus',     tone: 'coral',    title: 'Contact support',  sub: SUPPORT_EMAIL,              url: `mailto:${SUPPORT_EMAIL}` },
+  { key: 'delete',   icon: 'close-x',  tone: 'coral',    title: 'Delete account',   sub: 'Permanent. Deletes data.', route: '/profile/delete-account' },
   { key: 'signout',  icon: 'close-x',  tone: 'coral',    title: 'Sign out',         sub: '',                         route: '/auth/sign-in', accent: true },
 ];
 
@@ -127,6 +132,12 @@ export default function SettingsScreen() {
     if (r.key === 'signout') {
       await supabaseSignOut();
       router.replace('/auth/sign-in');
+      return;
+    }
+    if (r.url) {
+      Linking.openURL(r.url).catch(() => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      });
       return;
     }
     if (r.route) router.push(r.route as never);
@@ -211,7 +222,7 @@ export default function SettingsScreen() {
           ))}
         </View>
 
-        <Text style={styles.version}>DeskCare v0.1 · Stage 5 design review</Text>
+        <Text style={styles.version}>DeskCare v1.0.0 · pre-TF</Text>
       </ScrollView>
     </AtmosphericBackground>
   );

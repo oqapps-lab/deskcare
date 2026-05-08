@@ -42,3 +42,7 @@ expo-env.d.ts
 
 # Russell's raw video drops (per-batch download folders)
 drive-download-*/
+
+# MidJourney raw icon outputs — kept locally for re-export, not in repo.
+# Resized 1024x1024 versions live in icons/candidates/ and ARE tracked.
+icons/u7799383528_*.png

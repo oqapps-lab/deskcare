@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { adapty } from 'react-native-adapty';
+import { LEGAL_URLS } from '../../lib/legal';
 import { PREMIUM_BYPASS } from '../../lib/premium';
 import Animated, {
   Easing,
@@ -270,11 +271,27 @@ export default function PaywallScreen() {
               <Text style={styles.legalLink}>Restore purchase</Text>
             </Pressable>
             <View style={styles.legalDotDivider} />
-            <Pressable hitSlop={10} accessibilityRole="button" accessibilityLabel="Terms of service">
+            <Pressable
+              hitSlop={10}
+              onPress={() => {
+                Haptics.selectionAsync();
+                Linking.openURL(LEGAL_URLS.terms);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Terms of service"
+            >
               <Text style={styles.legalLink}>Terms</Text>
             </Pressable>
             <View style={styles.legalDotDivider} />
-            <Pressable hitSlop={10} accessibilityRole="button" accessibilityLabel="Privacy policy">
+            <Pressable
+              hitSlop={10}
+              onPress={() => {
+                Haptics.selectionAsync();
+                Linking.openURL(LEGAL_URLS.privacy);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel="Privacy policy"
+            >
               <Text style={styles.legalLink}>Privacy</Text>
             </Pressable>
           </Animated.View>

@@ -81,18 +81,61 @@ Verify with `npm run typecheck`. Should pass clean.
 6. The `app.config.ts` plugin block reads `EXPO_PUBLIC_GOOGLE_IOS_URL_SCHEME` and
    wires the Google plugin only when set. No code changes needed.
 
-### 2.3 Adapty (skip for first TF-internal pass)
+### 2.2.1 Firebase — NOT used
 
-For the first internal TF, set `EXPO_PUBLIC_PREMIUM_BYPASS=1` in `eas.json` env
-(already wired in `preview` profile). Real Adapty + IAP setup happens before
-external TF / App Store launch:
+DeskCare deliberately does NOT pull in Firebase. Reasons:
 
-1. Adapty dashboard → create app linked to bundle `com.gazetastreet.deskcare`.
-2. Note the **Public SDK key** → set `EXPO_PUBLIC_ADAPTY_KEY` in `.env.local`.
-3. App Store Connect → Apps → DeskCare → Subscriptions →
-   create products `pro_monthly`, `pro_annual`.
-4. Adapty → Paywalls → create `default` placement → attach products.
-5. Wire the Adapty webhook → Supabase Edge Function → upsert `deskcare_subscriptions`.
+- iOS-only for now (Android is post-launch). FCM (the main reason to use Firebase on RN) is for cross-platform push, which we don't need.
+- Adapty covers monetization analytics (revenue, MRR, LTV, retention).
+- AppsFlyer covers attribution + campaign analytics.
+- expo-notifications uses APNs directly for push — no FCM needed on iOS.
+- Firebase would add 4+ native pods, ~3-4 MB to the IPA, and an extra config plugin. Not worth it for parity coverage we already have.
+
+If we add **crashlytics** later, prefer Sentry (`@sentry/react-native`) — single SDK, smaller binary footprint, equivalent dashboard.
+
+### 2.3 Adapty
+
+App is already registered in Adapty (named **DeskFit** in dashboard from the
+project's earlier name — the bundle ID `com.gazetastreet.deskcare` is the
+real link). Public SDK key is already in `.env.local`:
+
+```
+EXPO_PUBLIC_ADAPTY_KEY=public_live_qQdab6dY.QG2obAJ349l36yOsSV7T
+```
+
+(Optional cosmetic fix on the dashboard: rename "DeskFit" → "DeskCare". Doesn't
+affect SDK; just labels.)
+
+For the first internal TF: `EXPO_PUBLIC_PREMIUM_BYPASS=1` is set in `eas.json`
+preview profile, so the paywall short-circuits. Adapty SDK still activates
+and reports basic events. Real IAP wiring (App Store Connect → Subscriptions
+products `pro_monthly`, `pro_annual`, `sciatica_addon`; Adapty → Paywalls;
+Edge Function webhook → `deskcare_subscriptions` upsert) is the pre-external-
+launch step.
+
+### 2.4 AppsFlyer (deferred to after ASC listing exists)
+
+AppsFlyer registration needs the **numeric Apple App ID**, which is generated
+when the ASC app listing is created (Step 3). Order:
+
+1. Create ASC listing first (Step 3 below). After save, ASC shows the App ID
+   under the listing — looks like `1234567890`.
+2. AppsFlyer dashboard → Apps → **Add new app** → iOS → paste the App Store URL
+   `https://apps.apple.com/app/id1234567890`.
+3. Capture the **Dev Key** from AppsFlyer dashboard → Settings → Dev Key.
+4. Add both to `.env.local`:
+   ```
+   EXPO_PUBLIC_APPSFLYER_DEV_KEY=<af-dev-key>
+   EXPO_PUBLIC_APPSFLYER_APP_ID=1234567890
+   ```
+5. Rebuild + resubmit. The `app/_layout.tsx` activation block fires
+   automatically when both env vars are non-empty.
+
+Apple ATT prompt copy is already in `app.config.ts → ios.infoPlist.NSUserTrackingUsageDescription`.
+
+Alternatively register via the AppsFlyer Management API once Apple App ID is
+known — see `_APPSFLYER/README.md` (`POST /api/mng/apps/v2`) for the curl
+recipe; the API token is in `_APPSFLYER/CREDENTIALS.md`.
 
 ---
 

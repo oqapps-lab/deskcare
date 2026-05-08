@@ -9,6 +9,10 @@ const config: ExpoConfig = {
   orientation: 'portrait',
   scheme: 'deskcare',
   userInterfaceStyle: 'light',
+  // Primary icon — selected from `icons/candidates/icon-A.png`. After the
+  // app goes live in App Store, an alternate-icons PPO test surfaces the
+  // other 3 candidates (B, C, D) — see `icons/ICON_TESTING.md`.
+  icon: './assets/icon.png',
   ios: {
     supportsTablet: false,
     bundleIdentifier: 'com.gazetastreet.deskcare',
@@ -16,6 +20,11 @@ const config: ExpoConfig = {
     usesAppleSignIn: true,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      // AppsFlyer + Apple ATT prompt copy. Surfaced as the system sheet
+      // the first time tracking is requested. Wording follows Apple's
+      // editorial review ("explain in plain language what data is used").
+      NSUserTrackingUsageDescription:
+        'DeskCare uses anonymized data to measure which referrals bring helpful users — never identifying you personally.',
     },
   },
   android: {

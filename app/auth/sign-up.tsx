@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import Svg, { Path } from 'react-native-svg';
+import { LEGAL_URLS } from '../../lib/legal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -171,8 +172,27 @@ export default function SignUpScreen() {
           </Pressable>
 
           <Text style={styles.legal}>
-            By continuing you accept the <Text style={styles.legalAccent}>Terms</Text> and{' '}
-            <Text style={styles.legalAccent}>Privacy Policy</Text>.
+            By continuing you accept the{' '}
+            <Text
+              style={styles.legalAccent}
+              onPress={() => {
+                Haptics.selectionAsync();
+                Linking.openURL(LEGAL_URLS.terms);
+              }}
+            >
+              Terms
+            </Text>
+            {' '}and{' '}
+            <Text
+              style={styles.legalAccent}
+              onPress={() => {
+                Haptics.selectionAsync();
+                Linking.openURL(LEGAL_URLS.privacy);
+              }}
+            >
+              Privacy Policy
+            </Text>
+            .
           </Text>
 
           <Pressable onPress={signIn} hitSlop={10} style={styles.switchRow}>

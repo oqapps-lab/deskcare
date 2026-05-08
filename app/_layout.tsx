@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
 import { adapty } from 'react-native-adapty';
+import appsFlyer from 'react-native-appsflyer';
 import { useAppFonts } from '../hooks/useAppFonts';
 import { colors } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
@@ -26,6 +27,32 @@ if (ADAPTY_KEY) {
       // back to free until the SDK recovers (or until next cold start).
       console.warn('[deskcare] Adapty.activate failed:', e);
     });
+}
+
+// AppsFlyer: initialize when both env vars are present. The Apple App ID
+// (numeric) only exists after the ASC listing is created — until then this
+// block silently skips. ATT prompt is intentionally NOT requested here:
+// Apple HIG prefers asking after value is established, so DeskCare requests
+// it post-onboarding via `requestTrackingPermissionsAsync` later.
+const AF_DEV_KEY = process.env.EXPO_PUBLIC_APPSFLYER_DEV_KEY;
+const AF_APP_ID = process.env.EXPO_PUBLIC_APPSFLYER_APP_ID;
+if (AF_DEV_KEY && AF_APP_ID) {
+  (appsFlyer as any).initSdk(
+    {
+      devKey: AF_DEV_KEY,
+      isDebug: false,
+      appId: AF_APP_ID,
+      onInstallConversionDataListener: false,
+      onDeepLinkListener: false,
+      timeToWaitForATTUserAuthorization: 10,
+    },
+    () => {
+      // AppsFlyer ready — install/event reporting will flow.
+    },
+    (err: unknown) => {
+      console.warn('[deskcare] AppsFlyer.initSdk failed:', err);
+    },
+  );
 }
 
 export default function RootLayout() {
@@ -73,6 +100,7 @@ export default function RootLayout() {
           <Stack.Screen name="pain/check-in" options={{ animation: 'slide_from_bottom' }} />
           <Stack.Screen name="sync" options={{ animation: 'fade' }} />
           <Stack.Screen name="errors/no-connection" options={{ animation: 'fade' }} />
+          <Stack.Screen name="profile/delete-account" options={{ animation: 'slide_from_bottom' }} />
           {/* Modal screens — iOS sheet presentation gives swipe-to-dismiss,
               backdrop tap, and the rounded top corners users expect. */}
           <Stack.Screen name="modals/push-primer" options={{ presentation: 'modal' }} />
