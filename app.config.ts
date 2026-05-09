@@ -16,10 +16,12 @@ const config: ExpoConfig = {
   ios: {
     supportsTablet: false,
     bundleIdentifier: 'com.gazetastreet.deskcare',
-    buildNumber: '1',
+    // buildNumber + versionCode are managed by EAS (`appVersionSource: remote`
+    // in eas.json) — setting them here triggers a warning AND is ignored.
     usesAppleSignIn: true,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
+      UIBackgroundModes: ['remote-notification'],
       // AppsFlyer + Apple ATT prompt copy. Surfaced as the system sheet
       // the first time tracking is requested. Wording follows Apple's
       // editorial review ("explain in plain language what data is used").
@@ -29,7 +31,6 @@ const config: ExpoConfig = {
   },
   android: {
     package: 'com.gazetastreet.deskcare',
-    versionCode: 1,
   },
   plugins: [
     'expo-router',

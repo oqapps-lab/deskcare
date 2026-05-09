@@ -14,7 +14,6 @@
       "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
-      "channel": "development",
       "env": {
         "EXPO_PUBLIC_PREMIUM_BYPASS": "1"
       }
@@ -22,11 +21,11 @@
     "preview": {
       "extends": "base",
       "distribution": "internal",
-      "channel": "preview",
       "ios": {
         "simulator": false,
         "buildConfiguration": "Release"
       },
+      "autoIncrement": true,
       "env": {
         "EXPO_PUBLIC_PREMIUM_BYPASS": "1"
       }
@@ -34,7 +33,6 @@
     "production": {
       "extends": "base",
       "distribution": "store",
-      "channel": "production",
       "autoIncrement": true,
       "ios": {
         "buildConfiguration": "Release"
@@ -44,10 +42,11 @@
   "submit": {
     "production": {
       "ios": {
+        "appleTeamId": "6Y6BFVDS4L",
+        "ascAppId": "6767548896",
         "ascApiKeyPath": "/Users/evgenij/.appstoreconnect/private_keys/AuthKey_787835NFD8.p8",
         "ascApiKeyId": "787835NFD8",
-        "ascApiKeyIssuerId": "2f01e90d-40ee-4f1d-9a37-651713378b40",
-        "appleTeamId": "6Y6BFVDS4L"
+        "ascApiKeyIssuerId": "2f01e90d-40ee-4f1d-9a37-651713378b40"
       }
     }
   }
