@@ -49,6 +49,12 @@ const config: ExpoConfig = {
   experiments: {
     typedRoutes: true,
   },
+  owner: 'gazetastreet',
+  extra: {
+    eas: {
+      projectId: 'cf7555e8-a507-41cb-a43a-dd88f8da0de1',
+    },
+  },
 };
 
 export default config;
