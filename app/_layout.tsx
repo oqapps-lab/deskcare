@@ -3,56 +3,62 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { View } from 'react-native';
-import { adapty } from 'react-native-adapty';
-import appsFlyer from 'react-native-appsflyer';
 import { useAppFonts } from '../hooks/useAppFonts';
 import { colors } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
 import { configureForegroundBehavior } from '../lib/notifications';
+import { IS_EXPO_GO } from '../lib/native-runtime';
 
 // Configure how foreground notifications are presented. Must run at module
 // scope so it happens before any notification fires.
 configureForegroundBehavior();
 
-// Adapty: activate at module scope when key is provided. Silently skip
-// otherwise — TF-internal builds run without IAP wired (see lib/premium.ts).
+// Adapty + AppsFlyer are NATIVE modules (TurboModules). Importing them at
+// top-level inside Expo Go raises "Invariant Violation: native module does
+// not exist" because the public Expo Go shell does not bundle them. So we
+// gate on `IS_EXPO_GO` and dynamically `require()` only inside dev/preview/
+// production builds where the modules are actually present.
+
 const ADAPTY_KEY = process.env.EXPO_PUBLIC_ADAPTY_KEY;
-if (ADAPTY_KEY) {
-  // Cast to any: Adapty SDK options drift between minor versions. Keeping
-  // the activation call resilient to that without pinning the type here.
-  (adapty as any)
-    .activate(ADAPTY_KEY, { logLevel: 'error' })
-    .catch((e: unknown) => {
-      // Activation failure should never crash the app — premium gate falls
-      // back to free until the SDK recovers (or until next cold start).
-      console.warn('[deskcare] Adapty.activate failed:', e);
-    });
+if (!IS_EXPO_GO && ADAPTY_KEY) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { adapty } = require('react-native-adapty');
+    (adapty as any)
+      .activate(ADAPTY_KEY, { logLevel: 'error' })
+      .catch((e: unknown) => {
+        console.warn('[deskcare] Adapty.activate failed:', e);
+      });
+  } catch (e) {
+    console.warn('[deskcare] react-native-adapty unavailable:', e);
+  }
 }
 
-// AppsFlyer: initialize when both env vars are present. The Apple App ID
-// (numeric) only exists after the ASC listing is created — until then this
-// block silently skips. ATT prompt is intentionally NOT requested here:
-// Apple HIG prefers asking after value is established, so DeskCare requests
-// it post-onboarding via `requestTrackingPermissionsAsync` later.
 const AF_DEV_KEY = process.env.EXPO_PUBLIC_APPSFLYER_DEV_KEY;
 const AF_APP_ID = process.env.EXPO_PUBLIC_APPSFLYER_APP_ID;
-if (AF_DEV_KEY && AF_APP_ID) {
-  (appsFlyer as any).initSdk(
-    {
-      devKey: AF_DEV_KEY,
-      isDebug: false,
-      appId: AF_APP_ID,
-      onInstallConversionDataListener: false,
-      onDeepLinkListener: false,
-      timeToWaitForATTUserAuthorization: 10,
-    },
-    () => {
-      // AppsFlyer ready — install/event reporting will flow.
-    },
-    (err: unknown) => {
-      console.warn('[deskcare] AppsFlyer.initSdk failed:', err);
-    },
-  );
+if (!IS_EXPO_GO && AF_DEV_KEY && AF_APP_ID) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const appsFlyer = require('react-native-appsflyer').default;
+    (appsFlyer as any).initSdk(
+      {
+        devKey: AF_DEV_KEY,
+        isDebug: false,
+        appId: AF_APP_ID,
+        onInstallConversionDataListener: false,
+        onDeepLinkListener: false,
+        timeToWaitForATTUserAuthorization: 10,
+      },
+      () => {
+        // AppsFlyer ready — install/event reporting will flow.
+      },
+      (err: unknown) => {
+        console.warn('[deskcare] AppsFlyer.initSdk failed:', err);
+      },
+    );
+  } catch (e) {
+    console.warn('[deskcare] react-native-appsflyer unavailable:', e);
+  }
 }
 
 export default function RootLayout() {

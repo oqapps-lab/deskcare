@@ -1,4 +1,5 @@
 /** Barrel export for all UI primitives. */
+export { AppleSignInButton, type AppleSignInButtonProps } from './AppleSignInButton';
 export { AtmosphericBackground } from './AtmosphericBackground';
 export { BgPattern, type BgPatternVariant, type BgPatternTone } from './BgPattern';
 export { BodyPainMap, type PainZone } from './BodyPainMap';

@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import Constants from 'expo-constants';
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -116,7 +117,7 @@ export default function ForceUpdateScreen() {
           <PillCTA variant="primary" size="lg" breath onPress={update}>
             Update in App Store
           </PillCTA>
-          <Text style={styles.versionText}>You are on DeskCare 0.1 · Required 0.2+</Text>
+          <Text style={styles.versionText}>{`You are on DeskCare ${Constants.expoConfig?.version ?? '—'} · Required latest`}</Text>
         </View>
       </View>
     </AtmosphericBackground>

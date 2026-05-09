@@ -3,9 +3,21 @@ import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-na
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { adapty } from 'react-native-adapty';
 import { LEGAL_URLS } from '../../lib/legal';
+import { IS_EXPO_GO } from '../../lib/native-runtime';
 import { PREMIUM_BYPASS } from '../../lib/premium';
+
+// Adapty is a native TurboModule and crashes at import time inside Expo Go.
+// Lazy-load it so the screen still renders for visual QA on Expo Go.
+const loadAdapty = (): any => {
+  if (IS_EXPO_GO) return null;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require('react-native-adapty').adapty;
+  } catch {
+    return null;
+  }
+};
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -88,19 +100,23 @@ export default function PaywallScreen() {
     // Production: attempt the Adapty purchase. The actual product key is
     // wired once Adapty paywalls + ASC IAP products are live (Stage 7).
     // Until then, this branch routes to home and the user remains free.
+    const adapty = loadAdapty();
+    if (!adapty) {
+      // Expo Go OR module unavailable — short-circuit to home.
+      router.replace('/main/home');
+      return;
+    }
     try {
-      const paywall = await (adapty as any).getPaywall('default');
-      const products = await (adapty as any).getPaywallProducts(paywall);
+      const paywall = await adapty.getPaywall('default');
+      const products = await adapty.getPaywallProducts(paywall);
       const product = (products as any[]).find((p) => {
         const unit = p?.subscriptionPeriod?.unit ?? p?.subscription?.unit;
         return plan === 'yearly' ? unit === 'year' : unit === 'month';
       });
       if (!product) throw new Error('No matching product in Adapty paywall');
-      await (adapty as any).makePurchase(product);
+      await adapty.makePurchase(product);
       router.replace('/main/home');
     } catch (e) {
-      // Either the SDK isn't activated (no key) or the paywall isn't yet
-      // configured. Fall back to home — the user keeps the free tier.
       console.warn('[deskcare] Paywall purchase fell back to home:', e);
       router.replace('/main/home');
     }
@@ -113,8 +129,13 @@ export default function PaywallScreen() {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       return;
     }
+    const adapty = loadAdapty();
+    if (!adapty) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      return;
+    }
     try {
-      await (adapty as any).restorePurchases();
+      await adapty.restorePurchases();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (e) {
       console.warn('[deskcare] Restore purchases failed:', e);

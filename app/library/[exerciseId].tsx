@@ -210,6 +210,10 @@ export default function ExerciseDetailScreen() {
         )}
       </ScrollView>
 
+      {/* Hide the floating CTA entirely on not-found / error states so users
+          don't see a stray "Begin" button under the "This move isn't in our
+          library" copy. */}
+      {exercise && !notFound && !error && (
       <View style={[styles.ctaFloating, { paddingBottom: insets.bottom + spacing.md }]} pointerEvents="box-none">
         <FloatingScrim />
         {locked ? (
@@ -251,6 +255,7 @@ export default function ExerciseDetailScreen() {
           </View>
         )}
       </View>
+      )}
     </AtmosphericBackground>
   );
 }

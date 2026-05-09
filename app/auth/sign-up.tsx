@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import * as AppleAuthentication from 'expo-apple-authentication';
 import Svg, { Path } from 'react-native-svg';
 import { LEGAL_URLS } from '../../lib/legal';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  AppleSignInButton,
   AtmosphericBackground,
   BgPattern,
   DecorativeArc,
@@ -155,13 +155,7 @@ export default function SignUpScreen() {
 
           {Platform.OS === 'ios' && (
             <>
-              <AppleAuthentication.AppleAuthenticationButton
-                buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_UP}
-                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                cornerRadius={999}
-                style={styles.appleBtn}
-                onPress={apple}
-              />
+              <AppleSignInButton variant="sign_up" onPress={apple} style={styles.appleBtn} />
               <View style={{ height: spacing.sm }} />
             </>
           )}

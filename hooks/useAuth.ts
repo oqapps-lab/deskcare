@@ -1,8 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Platform } from 'react-native';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { supabase } from '../lib/supabase';
+import { IS_EXPO_GO } from '../lib/native-runtime';
 
 export interface AuthResult {
   ok: boolean;
@@ -14,11 +13,37 @@ export interface AuthResult {
 const GOOGLE_IOS_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID;
 const GOOGLE_WEB_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID;
 
-if (GOOGLE_WEB_CLIENT_ID) {
-  GoogleSignin.configure({
-    webClientId: GOOGLE_WEB_CLIENT_ID,
-    iosClientId: GOOGLE_IOS_CLIENT_ID,
-  });
+// Lazy-load the native modules — they crash at import time inside Expo Go.
+// The wrappers below `require()` only when actually called.
+const loadAppleAuth = (): any => {
+  if (IS_EXPO_GO) return null;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require('expo-apple-authentication');
+  } catch {
+    return null;
+  }
+};
+
+const loadGoogleSignIn = (): { GoogleSignin: any; statusCodes: any } | null => {
+  if (IS_EXPO_GO) return null;
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    return require('@react-native-google-signin/google-signin');
+  } catch {
+    return null;
+  }
+};
+
+// Configure Google Sign-In once at module init when running outside Expo Go.
+if (!IS_EXPO_GO && GOOGLE_WEB_CLIENT_ID) {
+  const gs = loadGoogleSignIn();
+  if (gs) {
+    gs.GoogleSignin.configure({
+      webClientId: GOOGLE_WEB_CLIENT_ID,
+      iosClientId: GOOGLE_IOS_CLIENT_ID,
+    });
+  }
 }
 
 /**
@@ -27,9 +52,9 @@ if (GOOGLE_WEB_CLIENT_ID) {
  * Email/password: `signIn`, `signUp`.
  * Social: `signInWithApple` (iOS-only), `signInWithGoogle` (iOS+Android).
  *
- * The session itself is held in `useSession()` (Zustand) — listened via
- * supabase.auth.onAuthStateChange. The `signIn*` methods only kick off the
- * exchange; callers route after `r.ok`.
+ * Native social-auth modules are unavailable inside the public Expo Go shell,
+ * so `signInWithApple` / `signInWithGoogle` short-circuit to a friendly
+ * error there. They work normally in dev/preview/production EAS builds.
  *
  * Cancellation policy: when the user backs out of the system sheet, the
  * method returns `{ ok: false, cancelled: true }` and DOES NOT set the
@@ -81,6 +106,14 @@ export const useAuth = () => {
       setError(msg);
       return { ok: false, error: msg };
     }
+    const AppleAuthentication = loadAppleAuth();
+    if (!AppleAuthentication) {
+      const msg = IS_EXPO_GO
+        ? 'Apple Sign-In requires a dev build (not Expo Go).'
+        : 'Apple Sign-In module unavailable.';
+      setError(msg);
+      return { ok: false, error: msg };
+    }
     const available = await AppleAuthentication.isAvailableAsync();
     if (!available) {
       const msg = 'Apple Sign-In is unavailable on this device.';
@@ -127,15 +160,21 @@ export const useAuth = () => {
       setError(msg);
       return { ok: false, error: msg };
     }
+    const gs = loadGoogleSignIn();
+    if (!gs) {
+      const msg = IS_EXPO_GO
+        ? 'Google Sign-In requires a dev build (not Expo Go).'
+        : 'Google Sign-In module unavailable.';
+      setError(msg);
+      return { ok: false, error: msg };
+    }
     setLoading(true);
     setError(null);
     try {
       if (Platform.OS === 'android') {
-        await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: false });
+        await gs.GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: false });
       }
-      const userInfo = await GoogleSignin.signIn();
-      // SDK 13+ returns `{ data: { idToken, ... } }`; older returns idToken at
-      // the top level. Normalize both shapes.
+      const userInfo = await gs.GoogleSignin.signIn();
       const idToken =
         (userInfo as any)?.idToken ?? (userInfo as any)?.data?.idToken ?? null;
       if (!idToken) {
@@ -154,7 +193,7 @@ export const useAuth = () => {
       return { ok: true };
     } catch (e: any) {
       if (
-        e?.code === statusCodes.SIGN_IN_CANCELLED ||
+        e?.code === gs.statusCodes?.SIGN_IN_CANCELLED ||
         e?.code === '-5' ||
         e?.code === 'CANCELED'
       ) {
@@ -169,10 +208,13 @@ export const useAuth = () => {
   }, []);
 
   const signOut = useCallback(async () => {
-    try {
-      await GoogleSignin.signOut().catch(() => {});
-    } catch {
-      // best-effort — Google sign-out is local revoke, ok if it fails
+    if (!IS_EXPO_GO) {
+      const gs = loadGoogleSignIn();
+      try {
+        await gs?.GoogleSignin.signOut().catch(() => {});
+      } catch {
+        // best-effort — Google sign-out is local revoke, ok if it fails
+      }
     }
     await supabase.auth.signOut();
   }, []);

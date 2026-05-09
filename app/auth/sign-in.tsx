@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import * as AppleAuthentication from 'expo-apple-authentication';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
+  AppleSignInButton,
   AtmosphericBackground,
   BgPattern,
   DecorativeArc,
@@ -141,13 +141,7 @@ export default function SignInScreen() {
 
           {Platform.OS === 'ios' && (
             <>
-              <AppleAuthentication.AppleAuthenticationButton
-                buttonType={AppleAuthentication.AppleAuthenticationButtonType.CONTINUE}
-                buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-                cornerRadius={999}
-                style={styles.appleBtn}
-                onPress={apple}
-              />
+              <AppleSignInButton variant="continue" onPress={apple} style={styles.appleBtn} />
               <View style={{ height: spacing.sm }} />
             </>
           )}
