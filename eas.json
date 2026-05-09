@@ -14,6 +14,7 @@
       "extends": "base",
       "developmentClient": true,
       "distribution": "internal",
+      "credentialsSource": "local",
       "env": {
         "EXPO_PUBLIC_PREMIUM_BYPASS": "1"
       }
@@ -21,6 +22,7 @@
     "preview": {
       "extends": "base",
       "distribution": "internal",
+      "credentialsSource": "local",
       "ios": {
         "simulator": false,
         "buildConfiguration": "Release"
@@ -33,6 +35,7 @@
     "production": {
       "extends": "base",
       "distribution": "store",
+      "credentialsSource": "local",
       "autoIncrement": true,
       "ios": {
         "buildConfiguration": "Release"

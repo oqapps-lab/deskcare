@@ -46,3 +46,10 @@ drive-download-*/
 # MidJourney raw icon outputs — kept locally for re-export, not in repo.
 # Resized 1024x1024 versions live in icons/candidates/ and ARE tracked.
 icons/u7799383528_*.png
+
+# Local EAS credentials (eas-local-credentials skill). The .p12 + the
+# .mobileprovision are already covered by *.p12 / *.mobileprovision globs
+# above; explicitly gitignoring credentials.json because it carries the
+# .p12 password.
+credentials.json
+credentials/
