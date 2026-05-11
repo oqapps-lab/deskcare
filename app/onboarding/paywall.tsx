@@ -39,7 +39,7 @@ import {
 } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 
-type Plan = 'yearly' | 'monthly';
+type Plan = 'yearly' | 'monthly' | 'weekly';
 
 const TIMELINE = [
   { marker: 'Today',  title: 'Full access',   sub: 'Every zone, every routine — start right now.' },
@@ -111,7 +111,9 @@ export default function PaywallScreen() {
       const products = await adapty.getPaywallProducts(paywall);
       const product = (products as any[]).find((p) => {
         const unit = p?.subscriptionPeriod?.unit ?? p?.subscription?.unit;
-        return plan === 'yearly' ? unit === 'year' : unit === 'month';
+        if (plan === 'yearly') return unit === 'year';
+        if (plan === 'monthly') return unit === 'month';
+        return unit === 'week';
       });
       if (!product) throw new Error('No matching product in Adapty paywall');
       await adapty.makePurchase(product);
@@ -271,6 +273,22 @@ export default function PaywallScreen() {
                 </View>
               </View>
             </Pressable>
+
+            <View style={{ height: spacing.sm }} />
+
+            <Pressable onPress={() => pickPlan('weekly')} accessibilityRole="button" accessibilityLabel="Weekly — $1.99 per week">
+              <View style={[styles.planMonthly, plan === 'weekly' && styles.planMonthlyActive]}>
+                <View style={styles.planRow}>
+                  <View style={styles.planRadio}>
+                    {plan === 'weekly' && <View style={styles.planRadioDot} />}
+                  </View>
+                  <View style={styles.planMain}>
+                    <Text style={[styles.planTitle, styles.planTitleMonthly]}>Weekly — $1.99 / week</Text>
+                    <Text style={styles.planSub}>Try a week, cancel any time.</Text>
+                  </View>
+                </View>
+              </View>
+            </Pressable>
           </Animated.View>
 
           <Animated.View style={[styles.trustRow, contentStyle]}>
@@ -337,7 +355,11 @@ export default function PaywallScreen() {
           </PillCTA>
           <View style={{ height: spacing.xs }} />
           <Text style={styles.afterText}>
-            {plan === 'yearly' ? 'Then $29.99 / year · cancel anytime' : 'Then $4.99 / month · cancel anytime'}
+            {plan === 'yearly'
+              ? 'Then $29.99 / year · cancel anytime'
+              : plan === 'monthly'
+                ? 'Then $4.99 / month · cancel anytime'
+                : 'Then $1.99 / week · cancel anytime'}
           </Text>
         </Animated.View>
       </View>

@@ -9,9 +9,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import Svg, {
-  Circle,
   Defs,
   LinearGradient as SvgLinearGradient,
+  Rect,
   Stop,
 } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -29,11 +29,23 @@ import {
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useRoutineWithItems } from '../../hooks/useContent';
 
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
+const AnimatedRect = Animated.createAnimatedComponent(Rect);
 
-const RING_RADIUS = 140;
-const RING_STROKE = 10;
-const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
+// Video is 3:4 portrait (300×400, matching Russell's shooting spec).
+// The progress stroke wraps around the video as a rounded rectangle.
+const VIDEO_W = 300;
+const VIDEO_H = 400;
+const RING_STROKE = 8;
+const RING_RADIUS_PX = 24;
+// Outer SVG canvas includes a half-stroke + small padding so the stroke
+// sits cleanly outside the video, never bleeding into the rounded corners.
+const SVG_PAD = 12;
+const SVG_W = VIDEO_W + 2 * SVG_PAD;
+const SVG_H = VIDEO_H + 2 * SVG_PAD;
+// Perimeter of a rounded rectangle = 2(W + H − 2r) − 8r + 2πr.
+const RING_PERIMETER =
+  2 * (VIDEO_W + VIDEO_H - 2 * RING_RADIUS_PX) +
+  2 * Math.PI * RING_RADIUS_PX;
 
 const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch' => {
   if (!code) return 'neck-roll';
@@ -94,7 +106,7 @@ export default function ExercisePlayerScreen() {
   }, [elapsed, progress, stepDur, step]);
 
   const ringProps = useAnimatedProps(() => ({
-    strokeDashoffset: CIRCUMFERENCE * (1 - progress.value),
+    strokeDashoffset: RING_PERIMETER * (1 - progress.value),
   }));
 
   const close = () => {
@@ -158,7 +170,21 @@ export default function ExercisePlayerScreen() {
         </View>
 
         <View style={styles.ringCluster}>
-          <Svg width={320} height={320} viewBox="0 0 320 320" style={StyleSheet.absoluteFill}>
+          <ExerciseVideo
+            pose={poseFor(step.exercise?.code)}
+            videoUrl={step.exercise?.video_url}
+            width={VIDEO_W}
+            height={VIDEO_H}
+            radius="xl"
+            showPlay={false}
+          />
+          <Svg
+            width={SVG_W}
+            height={SVG_H}
+            viewBox={`0 0 ${SVG_W} ${SVG_H}`}
+            style={styles.ringSvg}
+            pointerEvents="none"
+          >
             <Defs>
               <SvgLinearGradient id="player-ring" x1="0" y1="0" x2="1" y2="1">
                 <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="1" />
@@ -166,36 +192,32 @@ export default function ExercisePlayerScreen() {
                 <Stop offset="1" stopColor={colors.primary} stopOpacity="1" />
               </SvgLinearGradient>
             </Defs>
-            <Circle
-              cx={160}
-              cy={160}
-              r={RING_RADIUS}
+            <Rect
+              x={SVG_PAD}
+              y={SVG_PAD}
+              width={VIDEO_W}
+              height={VIDEO_H}
+              rx={RING_RADIUS_PX}
+              ry={RING_RADIUS_PX}
               stroke={colors.inkHairline}
               strokeWidth={RING_STROKE}
               fill="none"
             />
-            <AnimatedCircle
-              cx={160}
-              cy={160}
-              r={RING_RADIUS}
+            <AnimatedRect
+              x={SVG_PAD}
+              y={SVG_PAD}
+              width={VIDEO_W}
+              height={VIDEO_H}
+              rx={RING_RADIUS_PX}
+              ry={RING_RADIUS_PX}
               stroke="url(#player-ring)"
               strokeWidth={RING_STROKE}
               strokeLinecap="round"
               fill="none"
-              strokeDasharray={CIRCUMFERENCE}
+              strokeDasharray={RING_PERIMETER}
               animatedProps={ringProps}
-              transform="rotate(-90 160 160)"
             />
           </Svg>
-          <View style={styles.ringCenter}>
-            <ExerciseVideo
-              pose={poseFor(step.exercise?.code)}
-              videoUrl={step.exercise?.video_url}
-              width={220}
-              height={220}
-              showPlay={false}
-            />
-          </View>
         </View>
 
         {step.overlay_text && (
@@ -274,15 +296,15 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   ringCluster: {
-    width: 320,
-    height: 320,
+    width: SVG_W,
+    height: SVG_H,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ringCenter: {
-    ...StyleSheet.absoluteFillObject,
-    alignItems: 'center',
-    justifyContent: 'center',
+  ringSvg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
   timerCluster: {
     alignItems: 'center',

@@ -82,8 +82,8 @@ export default function RoutinePreviewScreen() {
               <ExerciseVideo
                 pose={poseFor(items[0]?.exercise?.code)}
                 videoUrl={items[0]?.exercise?.video_url}
-                width={320}
-                height={200}
+                width={300}
+                height={400}
               />
             </View>
 
@@ -92,7 +92,13 @@ export default function RoutinePreviewScreen() {
               <Sep />
               <StatCol value={`${items.length}`} unit="MOVES" />
               <Sep />
-              <StatCol value={routine.routine_type.replace('_', ' ').toUpperCase()} unit="TYPE" />
+              <StatCol
+                value={
+                  routine.routine_type.charAt(0).toUpperCase() +
+                  routine.routine_type.slice(1).replace('_', ' ')
+                }
+                unit="TYPE"
+              />
             </View>
 
             <Eyebrow>WHAT YOU'LL DO</Eyebrow>

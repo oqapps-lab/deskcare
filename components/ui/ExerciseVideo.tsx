@@ -40,8 +40,8 @@ interface Props {
 export const ExerciseVideo: React.FC<Props> = ({
   pose,
   videoUrl,
-  width = 320,
-  height = 240,
+  width = 300,
+  height = 400, // 3:4 portrait — matches Russell's shooting spec
   radius = 'lg',
   compact = false,
   showPlay = true,

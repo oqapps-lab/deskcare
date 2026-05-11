@@ -148,8 +148,8 @@ export default function ExerciseDetailScreen() {
               <ExerciseVideo
                 pose={poseFor(exercise.code)}
                 videoUrl={locked ? null : exercise.video_url}
-                width={320}
-                height={240}
+                width={300}
+                height={400}
                 showPlay={!locked}
               />
               {locked && (

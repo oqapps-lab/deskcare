@@ -39,7 +39,17 @@ export const useBodyZones = () => {
  * Fetch all exercises, optionally filtered by zone slug.
  * Joins exercise_body_zones to filter; returns the exercises themselves.
  */
-export const useExercises = (zoneSlug?: BodyZoneSlug | 'all') => {
+export const useExercises = (
+  zoneSlug?: BodyZoneSlug | 'all',
+  /**
+   * Whether to include sciatica-program (S-prefixed) exercises in the
+   * results. False by default — they live in their own curated program
+   * (/programs/sciatica) and shouldn't appear under Library zone tabs,
+   * which would otherwise show them as locked premium items mixed in
+   * with free Back/Wrist atoms.
+   */
+  includeSciatica: boolean = false,
+) => {
   const [exercises, setExercises] = useState<Exercise[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -80,8 +90,18 @@ export const useExercises = (zoneSlug?: BodyZoneSlug | 'all') => {
 
       const { data, error: e } = await query;
       if (cancelled) return;
-      if (e) setError(e.message);
-      else setExercises((data ?? []) as Exercise[]);
+      if (e) {
+        setError(e.message);
+        return;
+      }
+      let rows = (data ?? []) as Exercise[];
+      // Exclude S-prefixed sciatica program items from the general library
+      // browse (Back/Wrists/All filters all-zones flow). They remain
+      // reachable via /programs/sciatica.
+      if (!includeSciatica) {
+        rows = rows.filter((e) => !e.code.startsWith('S'));
+      }
+      setExercises(rows);
     };
 
     run().finally(() => {
@@ -90,7 +110,7 @@ export const useExercises = (zoneSlug?: BodyZoneSlug | 'all') => {
     return () => {
       cancelled = true;
     };
-  }, [zoneSlug]);
+  }, [zoneSlug, includeSciatica]);
 
   return { exercises, error, loading };
 };

@@ -45,8 +45,10 @@ export const VideoPlaceholder: React.FC<Props> = ({
 }) => {
   const reduceMotion = useReducedMotion();
   const breath = useSharedValue(1);
-  const w = width ?? (compact ? 80 : 220);
-  const h = height ?? (compact ? 80 : 220);
+  // Defaults match the 3:4 portrait shooting spec for real videos. Compact
+  // mode stays small for in-list use; full mode is the screen-hero size.
+  const w = width ?? (compact ? 64 : 300);
+  const h = height ?? (compact ? 86 : 400);
 
   useEffect(() => {
     if (reduceMotion) return;

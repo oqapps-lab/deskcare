@@ -142,6 +142,70 @@ export default function HomeScreen() {
     Haptics.selectionAsync();
     router.push('/pain/check-in');
   };
+  const openQuickRoutine = (slug: string) => {
+    Haptics.selectionAsync();
+    router.push({ pathname: '/exercise/preview', params: { routine: slug } } as never);
+  };
+
+  // Contextual "Quick breaks" prompts. The Eye prompt is always shown
+  // (DeskCare's 20-20-20 anchor). The other prompts surface based on the
+  // user's flagged pain zones from onboarding — so a wrist-heavy user
+  // sees a wrist-break, a back-heavy user sees a back-reset, etc.
+  type QuickBreak = {
+    id: string;
+    title: string;
+    sub: string;
+    tone: 'lavender' | 'coral' | 'peach' | 'mint';
+    icon: 'eye' | 'plus' | 'refresh' | 'bell';
+    onPress: () => void;
+  };
+  const userZones = new Set(snap.onboardingData?.pain_zones ?? []);
+  const quickBreaks: QuickBreak[] = [
+    {
+      id: 'eyes',
+      title: 'Eyes tired?',
+      sub: '30 seconds · 20 ft away',
+      tone: 'lavender',
+      icon: 'eye',
+      onPress: openEyeBreak,
+    },
+    ...(userZones.has('neck') || userZones.size === 0
+      ? [
+          {
+            id: 'neck',
+            title: 'Neck reset',
+            sub: '60 seconds · slow side-tilt',
+            tone: 'coral' as const,
+            icon: 'refresh' as const,
+            onPress: () => openQuickRoutine('neck-quick-2min'),
+          },
+        ]
+      : []),
+    ...(userZones.has('wrists') || userZones.has('hands')
+      ? [
+          {
+            id: 'wrists',
+            title: 'Wrist break',
+            sub: '45 seconds · open close',
+            tone: 'peach' as const,
+            icon: 'plus' as const,
+            onPress: () => openQuickRoutine('wrists-quick-2min'),
+          },
+        ]
+      : []),
+    ...(userZones.has('back') || userZones.has('lower_back')
+      ? [
+          {
+            id: 'back',
+            title: 'Back release',
+            sub: '60 seconds · gentle twist',
+            tone: 'mint' as const,
+            icon: 'plus' as const,
+            onPress: () => openQuickRoutine('back-quick-3min'),
+          },
+        ]
+      : []),
+  ];
 
   return (
     <AtmosphericBackground>
@@ -200,23 +264,35 @@ export default function HomeScreen() {
           </GlassCard>
         </Pressable>
 
-        {/* Eye break — shown in all states */}
-        <Pressable onPress={openEyeBreak} style={({ pressed }) => [pressed && styles.pressed, styles.eyeRowWrap]}>
-          <GlassCard tint="lavender" radius="xl" padding={spacing.lg}>
-            <View style={styles.eyeRow}>
-              <IconHalo icon="eye" size="md" tone="lavender" variant="tinted" />
-              <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={styles.eyeTitle}>Eyes tired?</Text>
-                <Text style={styles.eyeSub}>30 seconds · 20 ft away</Text>
+        {/* Quick breaks — Eye + contextual prompts for user's pain zones */}
+        <View style={styles.eyeRowWrap}>
+          <Eyebrow>QUICK BREAKS</Eyebrow>
+        </View>
+        {quickBreaks.map((qb, idx) => (
+          <Pressable
+            key={qb.id}
+            onPress={qb.onPress}
+            style={({ pressed }) => [
+              pressed && styles.pressed,
+              idx > 0 && { marginTop: spacing.sm },
+            ]}
+          >
+            <GlassCard tint={qb.tone} radius="xl" padding={spacing.lg}>
+              <View style={styles.eyeRow}>
+                <IconHalo icon={qb.icon} size="md" tone={qb.tone} variant="tinted" />
+                <View style={{ flex: 1, minWidth: 0 }}>
+                  <Text style={styles.eyeTitle}>{qb.title}</Text>
+                  <Text style={styles.eyeSub}>{qb.sub}</Text>
+                </View>
+                <View style={styles.eyeArrow}>
+                  <Svg width={16} height={16} viewBox="0 0 16 16">
+                    <Path d="M6 3 L11 8 L6 13" stroke={colors.primaryMid} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                  </Svg>
+                </View>
               </View>
-              <View style={styles.eyeArrow}>
-                <Svg width={16} height={16} viewBox="0 0 16 16">
-                  <Path d="M6 3 L11 8 L6 13" stroke={colors.primaryMid} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                </Svg>
-              </View>
-            </View>
-          </GlassCard>
-        </Pressable>
+            </GlassCard>
+          </Pressable>
+        ))}
 
         {/* Body zone selector */}
         <View style={styles.zoneRowWrap}>
