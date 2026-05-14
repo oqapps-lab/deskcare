@@ -66,10 +66,10 @@ export default function HomeScreen() {
         {/* ── Header ── */}
         <View style={styles.header}>
           <View>
-            <Text variant="bodyMd" color={Colors.onSurfaceVar}>Добро пожаловать</Text>
+            <Text variant="bodyMd" color={Colors.onSurfaceVar}>Welcome back</Text>
             <Text variant="h1">{user.name}</Text>
           </View>
-          <Pressable style={styles.gearBtn} accessibilityRole="button" accessibilityLabel="Настройки">
+          <Pressable style={styles.gearBtn} accessibilityRole="button" accessibilityLabel="Settings">
             <Ionicons name="settings-outline" size={22} color={Colors.onSurfaceVar} />
           </Pressable>
         </View>
@@ -81,7 +81,7 @@ export default function HomeScreen() {
           <View style={styles.streakRow}>
             <View>
               <Text style={styles.heroNumber}>{user.streak}</Text>
-              <Text variant="bodyMd" color={Colors.onSurfaceVar}>дней подряд</Text>
+              <Text variant="bodyMd" color={Colors.onSurfaceVar}>day streak</Text>
             </View>
             <Ionicons name="flame" size={28} color={ACCENT} />
           </View>
@@ -116,11 +116,11 @@ export default function HomeScreen() {
           <Text variant="h2">{recommended.name}</Text>
           <Divider size="xs" />
           <Text variant="bodyMd" color={Colors.onSurfaceVar}>
-            {recommended.durationMin} мин · {recommended.exercises.length} упражнения
+            {recommended.durationMin} min · {recommended.exercises.length} exercises
           </Text>
           <Divider size="lg" />
           <PillCTA
-            label="Начать рутину"
+            label="Start Routine"
             onPress={() => goZone('neck')}
             icon={<Ionicons name="play" size={16} color={Colors.onPrimary} />}
             direction="diagonal"
@@ -130,7 +130,7 @@ export default function HomeScreen() {
         <Divider size="xxl" />
 
         {/* ── Body Zones ── */}
-        <H2>Выберите зону</H2>
+        <H2>Choose Zone</H2>
         <Divider size="md" />
 
         <View style={styles.grid}>
@@ -180,7 +180,7 @@ export default function HomeScreen() {
           </View>
           <View style={{ flex: 1 }}>
             <Text variant="body" color={Colors.onSurface}>Eye Break</Text>
-            <Text variant="bodyMd" color={Colors.onSurfaceVar}>Глаза устали? 30 сек без звука</Text>
+            <Text variant="bodyMd" color={Colors.onSurfaceVar}>Eyes tired? 30 sec, no sound</Text>
           </View>
           <Ionicons name="chevron-forward" size={16} color={Colors.outline} />
         </Pressable>
@@ -197,7 +197,7 @@ export default function HomeScreen() {
               <Ionicons name="analytics-outline" size={17} color={ACCENT} />
             </View>
             <Text variant="bodyMd" color={Colors.onSurfaceVar} style={{ flex: 1 }}>
-              Оценить боль сегодня
+              Rate your pain today
             </Text>
             <Ionicons name="chevron-forward" size={16} color={Colors.outline} />
           </Pressable>

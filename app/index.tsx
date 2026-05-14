@@ -71,20 +71,20 @@ export default function WelcomeScreen() {
         ]}
       >
         <Text style={styles.headline} color={Colors.onSurface}>
-          2 минуты в день —{'\n'}шея перестанет болеть
+          2 minutes a day —{'\n'}no more neck pain
         </Text>
 
         <Divider size="md" />
 
         <Text variant="body" color={Colors.onSurfaceVar} style={styles.sub}>
-          Микро-растяжки прямо за рабочим столом.{'\n'}
-          Без коврика. Без переодевания.
+          Micro-stretches right at your desk.{'\n'}
+          No mat. No changing clothes.
         </Text>
 
         <Divider size="xl" />
 
         <PillCTA
-          label="Начать"
+          label="Get Started"
           onPress={() => router.push('/home')}
           icon={<Ionicons name="arrow-forward" size={18} color="rgba(255,255,255,0.95)" />}
           direction="diagonal"
@@ -101,8 +101,8 @@ export default function WelcomeScreen() {
           style={styles.signIn}
         >
           <Text variant="bodyMd" color={Colors.onSurfaceVar}>
-            Уже есть аккаунт?{'  '}
-            <Text variant="bodyMd" color={Colors.primary}>Войти</Text>
+            Already have an account?{'  '}
+            <Text variant="bodyMd" color={Colors.primary}>Sign In</Text>
           </Text>
         </Pressable>
       </View>

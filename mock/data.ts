@@ -1,5 +1,19 @@
 // Mock data for DeskCare prototype
-// Primary persona: Марина, 31, frontend dev, neck pain, Austin TX
+// Primary persona: Marina, 31, frontend dev, neck pain, Austin TX
+
+export interface Badge {
+  id: string;
+  label: string;
+  earned: boolean;
+  icon: 'flame' | 'ribbon' | 'star' | 'diamond';
+}
+
+export interface FocusAreas {
+  neck: number;
+  back: number;
+  eyes: number;
+  wrists: number;
+}
 
 export interface User {
   name: string;
@@ -41,7 +55,7 @@ export interface BodyZone {
 }
 
 export const mockUser: User = {
-  name: 'Марина',
+  name: 'Marina',
   streak: 6,
   totalSessions: 42,
   totalMinutes: 126,
@@ -51,45 +65,75 @@ export const mockUser: User = {
 };
 
 export const BODY_ZONES: BodyZone[] = [
-  { id: 'neck',   label: 'Шея',      emoji: '🦴' },
-  { id: 'back',   label: 'Спина',    emoji: '💪' },
-  { id: 'eyes',   label: 'Глаза',    emoji: '👁' },
-  { id: 'wrists', label: 'Запястья', emoji: '🤚' },
+  { id: 'neck',   label: 'Neck',   emoji: '🦴' },
+  { id: 'back',   label: 'Back',   emoji: '💪' },
+  { id: 'eyes',   label: 'Eyes',   emoji: '👁' },
+  { id: 'wrists', label: 'Wrists', emoji: '🤚' },
 ];
 
-export const WEEK_DAYS = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'] as const;
+export const WEEK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
+
+export const mockActivityGrid: number[][] = [
+  [2, 3, 1, 3, 2, 1, 0],
+  [1, 2, 3, 2, 3, 2, 1],
+  [0, 3, 2, 3, 1, 2, 0],
+  [2, 3, 1, 2, 0, 0, 0],
+];
+
+export const mockFocusAreas: FocusAreas = {
+  neck:   0.80,
+  back:   0.53,
+  eyes:   0.30,
+  wrists: 0.08,
+};
+
+export const mockBadges: Badge[] = [
+  { id: '3day',  label: '3-day',  earned: true,  icon: 'flame'   },
+  { id: '7day',  label: '7-day',  earned: true,  icon: 'ribbon'  },
+  { id: '14day', label: '14-day', earned: true,  icon: 'star'    },
+  { id: '30day', label: '30-day', earned: false, icon: 'diamond' },
+];
+
+export const mockSettings = {
+  reminderFrequency: 'Every 45 min',
+  targetDuration:    '5 minutes',
+  focusUpperBody:    true,
+  focusLowerBody:    false,
+  hapticFeedback:    true,
+  ambientSounds:     false,
+};
 
 export const mockRoutines: Record<ZoneId, Routine> = {
   neck: {
     id: 'neck-relief',
-    name: 'Разминка шеи',
+    name: 'Neck Relief',
     zone: 'neck',
     zoneLabel: 'NECK',
     durationMin: 3,
     level: 'Beginner',
     description:
-      'Снимает напряжение в шейном отделе позвоночника и трапециевидных мышцах после долгого сидения за экраном.',
-    targetMuscles: 'Трапеция, грудино-ключично-сосцевидная, леваторы лопатки',
+      'Releases tension in the cervical spine and trapezius muscles after long hours at a screen.',
+    targetMuscles: 'Trapezius, sternocleidomastoid, levator scapulae',
     exercises: [
-      { id: 'e1', name: 'Наклоны шеи', duration: '60 сек' },
-      { id: 'e2', name: 'Повороты головы', duration: '45 сек' },
-      { id: 'e3', name: 'Chin Tucks', duration: '60 сек', sets: 3, reps: 10 },
+      { id: 'e1', name: 'Neck Tilts', duration: '60 sec' },
+      { id: 'e2', name: 'Head Rotations', duration: '45 sec' },
+      { id: 'e3', name: 'Chin Tucks', duration: '60 sec', sets: 3, reps: 10 },
     ],
   },
   back: {
     id: 'back-relief',
-    name: 'Разминка спины',
+    name: 'Back Relief',
     zone: 'back',
     zoneLabel: 'BACK',
     durationMin: 4,
     level: 'Beginner',
     description:
-      'Мобилизует грудной отдел и снимает поясничное напряжение. Все упражнения выполняются сидя.',
-    targetMuscles: 'Широчайшие, выпрямители позвоночника, ромбовидные',
+      'Mobilizes the thoracic spine and relieves lumbar tension. All exercises are done seated.',
+    targetMuscles: 'Latissimus dorsi, spinal erectors, rhomboids',
     exercises: [
-      { id: 'e1', name: 'Кошка-корова сидя', duration: '60 сек' },
-      { id: 'e2', name: 'Ротация грудного отдела', duration: '45 сек' },
-      { id: 'e3', name: 'Наклоны в стороны', duration: '60 сек' },
+      { id: 'e1', name: 'Seated Cat-Cow', duration: '60 sec' },
+      { id: 'e2', name: 'Thoracic Rotation', duration: '45 sec' },
+      { id: 'e3', name: 'Side Bends', duration: '60 sec' },
     ],
   },
   eyes: {
@@ -100,27 +144,27 @@ export const mockRoutines: Record<ZoneId, Routine> = {
     durationMin: 1,
     level: 'Beginner',
     description:
-      'Снимает зрительное напряжение по правилу 20-20-20. Работает без звука — можно делать прямо в офисе.',
-    targetMuscles: 'Глазодвигательные мышцы',
+      'Reduces eye strain using the 20-20-20 rule. Works silently — perfect for the office.',
+    targetMuscles: 'Extraocular muscles',
     exercises: [
-      { id: 'e1', name: 'Фокус вдаль (6 м)', duration: '20 сек' },
-      { id: 'e2', name: 'Пальминг', duration: '20 сек' },
-      { id: 'e3', name: 'Движение глазами по кругу', duration: '20 сек' },
+      { id: 'e1', name: 'Focus at Distance (20 ft)', duration: '20 sec' },
+      { id: 'e2', name: 'Palming', duration: '20 sec' },
+      { id: 'e3', name: 'Eye Circles', duration: '20 sec' },
     ],
   },
   wrists: {
     id: 'wrist-relief',
-    name: 'Разминка запястий',
+    name: 'Wrist Relief',
     zone: 'wrists',
     zoneLabel: 'WRISTS',
     durationMin: 2,
     level: 'Beginner',
-    description: 'Снимает усталость запястий от клавиатуры и мыши. Помогает при начальных признаках карпального туннеля.',
-    targetMuscles: 'Сгибатели и разгибатели предпредплечья',
+    description: 'Relieves wrist fatigue from keyboard and mouse use. Helps with early signs of carpal tunnel.',
+    targetMuscles: 'Forearm flexors and extensors',
     exercises: [
-      { id: 'e1', name: 'Вращение запястий', duration: '30 сек' },
-      { id: 'e2', name: 'Растяжка сгибателей', duration: '30 сек' },
-      { id: 'e3', name: 'Finger tendon glides', duration: '30 сек' },
+      { id: 'e1', name: 'Wrist Circles', duration: '30 sec' },
+      { id: 'e2', name: 'Flexor Stretch', duration: '30 sec' },
+      { id: 'e3', name: 'Finger Tendon Glides', duration: '30 sec' },
     ],
   },
 };

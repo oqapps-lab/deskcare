@@ -55,13 +55,13 @@ export default function RoutineScreen() {
           <IconButton
             icon={<Ionicons name="arrow-back" size={20} color={Colors.onPrimary} />}
             onPress={() => router.back()}
-            accessibilityLabel="Назад"
+            accessibilityLabel="Back"
             variant="ghost"
           />
           <IconButton
             icon={<Ionicons name="bookmark-outline" size={20} color={Colors.onPrimary} />}
             onPress={() => {}}
-            accessibilityLabel="Сохранить"
+            accessibilityLabel="Save"
             variant="ghost"
           />
         </View>
@@ -81,7 +81,7 @@ export default function RoutineScreen() {
             <Badge label={routine.zoneLabel} variant="zone" />
             <View style={styles.metaItem}>
               <Ionicons name="time-outline" size={13} color={Colors.onSurfaceVar} />
-              <Text variant="bodyMd" color={Colors.onSurfaceVar}>{routine.durationMin} мин</Text>
+              <Text variant="bodyMd" color={Colors.onSurfaceVar}>{routine.durationMin} min</Text>
             </View>
             <View style={styles.metaItem}>
               <Ionicons name="bar-chart-outline" size={13} color={Colors.onSurfaceVar} />
@@ -95,7 +95,7 @@ export default function RoutineScreen() {
           <Text variant="body" color={Colors.onSurfaceVar}>{routine.description}</Text>
 
           <Divider size="xxxl" />
-          <Text variant="h2">Упражнения</Text>
+          <Text variant="h2">Exercises</Text>
           <Divider size="lg" />
 
           {routine.exercises.map((ex, i) => (
@@ -114,7 +114,7 @@ export default function RoutineScreen() {
                   <Text variant="h3">{ex.name}</Text>
                   <Text variant="bodyMd" color={Colors.onSurfaceVar}>
                     {ex.sets != null
-                      ? `${ex.sets} сета · ${ex.reps ?? ''} повт`
+                      ? `${ex.sets} sets · ${ex.reps ?? ''} reps`
                       : ex.duration}
                   </Text>
                 </View>
@@ -127,7 +127,7 @@ export default function RoutineScreen() {
           <Divider size="xxxl" />
 
           <Card bg={Colors.surfaceLow} style={styles.musclesCard}>
-            <Text variant="label" upper color={Colors.onSurfaceVar}>Целевые мышцы</Text>
+            <Text variant="label" upper color={Colors.onSurfaceVar}>Target Muscles</Text>
             <Divider size="xs" />
             <Text variant="bodyMd" color={Colors.onSurfaceVar}>{routine.targetMuscles}</Text>
           </Card>
@@ -135,7 +135,7 @@ export default function RoutineScreen() {
 
         <View style={[styles.ctaWrap, { paddingBottom: Math.max(insets.bottom, Spacing.lg) }]}>
           <PillCTA
-            label="Начать рутину"
+            label="Start Routine"
             onPress={() => {}}
             icon={<Ionicons name="play" size={16} color={Colors.onPrimary} />}
             direction="diagonal"
