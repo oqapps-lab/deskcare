@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   },
   exText:  { flex: 1, gap: 2 },
   rowGlow: {
-    shadowColor: '#00677d',
+    shadowColor: '#2271B3',
     shadowOpacity: 0.06,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 3 },

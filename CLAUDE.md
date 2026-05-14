@@ -15,7 +15,7 @@ Micro-stretching app for remote/office workers. Short 2-5 min video exercises fo
 - People with sciatica/specific conditions (premium programs)
 
 ## Current Stage
-Research (Stage 3)
+Design (pilot batch: Welcome + Home + Routine Preview built)
 
 ## Rules
 - useWindowDimensions() for responsive
@@ -28,6 +28,17 @@ Research (Stage 3)
 - No class components
 - No any types
 
+## Design Rules
+- Backgrounds: `Colors.canvas` (#F8F9FA) for screens, `Colors.surface` (#fff) for cards
+- Cards: `Card elevated` (white + tinted shadow) — NO glassmorphism on regular cards
+- Shadows: tinted only — `Colors.primary`, `Colors.primaryLight`, or `#72b8f8` (pebble glow)
+- No `shadowColor: '#000'`, no decorative `borderWidth`
+- Fonts: CormorantGaramond (display/headlines) + Inter (body/labels)
+- No background color blobs or decorative gradients on Home screen
+- Glassmorphism allowed only: BottomNav island, Welcome screen light leaks
+- Body zones: Neck / Back / Eyes / Wrists only (no Shoulders)
+- No sci-fi language, no Mindfulness, no v2.0 features in UI
+
 ## 3-Layer Layout System
 Each screen has three layers:
 1. **Background** — absolute, gradients/images, NOT inside ScrollView
@@ -36,8 +47,9 @@ Each screen has three layers:
 
 ## File Structure
 - /app/ — screens (expo-router)
-- /components/ui/ — shared UI components
+- /components/primitives/ — shared primitive components
 - /components/[feature]/ — feature-specific components
-- /constants/ — colors, fonts, layout
+- /constants/tokens.ts — colors, fonts, spacing, radii, shadows
+- /mock/ — mock data (user, routines, zones)
 - /docs/ — all documentation
-- /docs/01-research/ — market research (DeskStretch + SciatiCare combined)
+- /docs/06-design/DESIGN-GUIDE.md — full design reference

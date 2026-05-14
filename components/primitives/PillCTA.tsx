@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Pressable, StyleSheet, View, ViewStyle,
+  Pressable, StyleSheet, View, ViewStyle, TextStyle,
   ActivityIndicator, Platform,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,11 +16,14 @@ interface PillCTAProps {
   style?: ViewStyle;
   icon?: React.ReactNode;
   direction?: 'horizontal' | 'diagonal';
+  gradientColors?: readonly [string, string, ...string[]];
+  labelGlow?: boolean;
 }
 
 export function PillCTA({
   label, onPress, disabled = false, loading = false,
   style, icon, direction = 'horizontal',
+  gradientColors, labelGlow = false,
 }: PillCTAProps) {
   function handlePress() {
     if (disabled || loading) return;
@@ -30,6 +33,7 @@ export function PillCTA({
 
   const start = direction === 'diagonal' ? { x: 0, y: 0 } : { x: 0, y: 0.5 };
   const end   = direction === 'diagonal' ? { x: 1, y: 1 } : { x: 1, y: 0.5 };
+  const colors = gradientColors ?? (['#2271B3', '#4A9FD9'] as const);
 
   return (
     <Pressable
@@ -45,14 +49,12 @@ export function PillCTA({
         style,
       ]}
     >
-      {/* Subtle 2-stop gradient — dark teal to muted cyan */}
       <LinearGradient
-        colors={['#005f73', '#008fa3']}
+        colors={colors}
         start={start}
         end={end}
         style={StyleSheet.absoluteFillObject}
       />
-      {/* Very faint inner highlight at top edge */}
       <View style={styles.topEdge} />
 
       <View style={styles.content}>
@@ -60,7 +62,13 @@ export function PillCTA({
           <ActivityIndicator color={Colors.onPrimary} />
         ) : (
           <>
-            <Text variant="h3" color={Colors.onPrimary}>{label}</Text>
+            <Text
+              variant="h3"
+              color={Colors.onPrimary}
+              style={labelGlow ? styles.glowLabel : undefined}
+            >
+              {label}
+            </Text>
             {icon != null && <View style={styles.icon}>{icon}</View>}
           </>
         )}
@@ -78,7 +86,7 @@ const styles = StyleSheet.create({
   },
   glow: Platform.select({
     ios: {
-      shadowColor: '#00b4d8',
+      shadowColor: '#4A9FD9',
       shadowOpacity: 0.22,
       shadowRadius: 28,
       shadowOffset: { width: 0, height: 6 },
@@ -106,4 +114,9 @@ const styles = StyleSheet.create({
   icon: {},
   disabled: { opacity: 0.45 },
   pressed: { opacity: 0.85, transform: [{ scale: 0.985 }] },
+  glowLabel: {
+    textShadowColor: 'rgba(0, 235, 255, 0.95)',
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 12,
+  } satisfies TextStyle,
 });

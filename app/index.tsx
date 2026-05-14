@@ -1,5 +1,7 @@
 import React from 'react';
-import { View, StyleSheet, Pressable, StatusBar } from 'react-native';
+import {
+  View, StyleSheet, Pressable, StatusBar,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,9 +11,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { PillCTA, Text, Divider } from '@/components/primitives';
 import { Colors, Spacing } from '@/constants/tokens';
 
-// Yoga stretching — elegant, warm light
 const HERO =
-  'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?w=900&q=85&auto=format&fit=crop';
+  'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=900&q=85&auto=format&fit=crop';
+
+const LEAK_COLOR  = 'rgba(34, 113, 179, 0.13)';
+const LEAK_CLEAR  = 'rgba(34, 113, 179, 0)';
+const LEAK_COLORS = [LEAK_COLOR, LEAK_CLEAR] as const;
+
+const CTA_GRADIENT = ['rgba(74, 159, 217, 0.30)', '#1A5E9A'] as const;
 
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -21,60 +28,55 @@ export default function WelcomeScreen() {
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
 
-      {/* Hero */}
+      {/* ── Полноэкранное изображение ── */}
       <Image
         source={HERO}
         style={StyleSheet.absoluteFillObject}
         contentFit="cover"
+        contentPosition="50% 50%"
         transition={600}
       />
 
-      {/* Cinematic gradient overlay */}
+      {/* Белый fade снизу — плавный переход к белой зоне контента */}
       <LinearGradient
-        colors={[
-          'rgba(8,14,16,0.0)',
-          'rgba(8,14,16,0.30)',
-          'rgba(8,14,16,0.78)',
-          'rgba(8,14,16,0.96)',
-        ]}
-        locations={[0.2, 0.48, 0.75, 1]}
+        colors={['rgba(255,255,255,0)', 'rgba(255,255,255,0.78)', '#ffffff']}
+        locations={[0.30, 0.62, 0.88]}
         style={StyleSheet.absoluteFillObject}
       />
 
-      {/* Brand mark */}
-      <View style={[styles.brand, { paddingTop: insets.top + Spacing.lg }]}>
-        <Text
-          variant="caption"
-          upper
-          color="rgba(255,255,255,0.5)"
-          style={styles.brandText}
-        >
-          DeskCare
-        </Text>
+      {/* ── Corner light leaks ── */}
+      <View style={[styles.leak, styles.leakTL]} pointerEvents="none">
+        <LinearGradient colors={LEAK_COLORS} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={StyleSheet.absoluteFillObject} />
+      </View>
+      <View style={[styles.leak, styles.leakTR]} pointerEvents="none">
+        <LinearGradient colors={LEAK_COLORS} start={{ x: 1, y: 0 }} end={{ x: 0, y: 1 }} style={StyleSheet.absoluteFillObject} />
+      </View>
+      <View style={[styles.leak, styles.leakBL]} pointerEvents="none">
+        <LinearGradient colors={LEAK_COLORS} start={{ x: 0, y: 1 }} end={{ x: 1, y: 0 }} style={StyleSheet.absoluteFillObject} />
+      </View>
+      <View style={[styles.leak, styles.leakBR]} pointerEvents="none">
+        <LinearGradient colors={LEAK_COLORS} start={{ x: 1, y: 1 }} end={{ x: 0, y: 0 }} style={StyleSheet.absoluteFillObject} />
       </View>
 
-      {/* Bottom content */}
-      <View style={[
-        styles.bottom,
-        { paddingBottom: Math.max(insets.bottom, Spacing.xl) + Spacing.lg },
-      ]}>
+      {/* ── DESKCARE — верхний левый угол, белый, капс ── */}
+      <View style={[styles.brand, { paddingTop: insets.top + Spacing.lg }]}>
+        <Text style={styles.brandText}>DESKCARE</Text>
+      </View>
 
-        {/* Serif display headline */}
-        <Text
-          style={styles.headline}
-          color={Colors.onPrimary}
-        >
+      {/* ── Контент внизу ── */}
+      <View
+        style={[
+          styles.bottom,
+          { paddingBottom: Math.max(insets.bottom, Spacing.xl) + Spacing.lg },
+        ]}
+      >
+        <Text style={styles.headline} color={Colors.onSurface}>
           2 минуты в день —{'\n'}шея перестанет болеть
         </Text>
 
         <Divider size="md" />
 
-        {/* Subtitle — brighter, slightly larger */}
-        <Text
-          variant="body"
-          color="rgba(255,255,255,0.72)"
-          style={styles.sub}
-        >
+        <Text variant="body" color={Colors.onSurfaceVar} style={styles.sub}>
           Микро-растяжки прямо за рабочим столом.{'\n'}
           Без коврика. Без переодевания.
         </Text>
@@ -84,8 +86,11 @@ export default function WelcomeScreen() {
         <PillCTA
           label="Начать"
           onPress={() => router.push('/home')}
-          icon={<Ionicons name="arrow-forward" size={18} color={Colors.onPrimary} />}
+          icon={<Ionicons name="arrow-forward" size={18} color="rgba(255,255,255,0.95)" />}
           direction="diagonal"
+          gradientColors={CTA_GRADIENT}
+          labelGlow
+          style={styles.ctaShape}
         />
 
         <Divider size="md" />
@@ -95,9 +100,9 @@ export default function WelcomeScreen() {
           accessibilityRole="link"
           style={styles.signIn}
         >
-          <Text variant="bodyMd" color="rgba(255,255,255,0.42)">
+          <Text variant="bodyMd" color={Colors.onSurfaceVar}>
             Уже есть аккаунт?{'  '}
-            <Text variant="bodyMd" color="rgba(255,255,255,0.80)">Войти</Text>
+            <Text variant="bodyMd" color={Colors.primary}>Войти</Text>
           </Text>
         </Pressable>
       </View>
@@ -105,30 +110,54 @@ export default function WelcomeScreen() {
   );
 }
 
+const LEAK_SIZE = 230;
+
 const styles = StyleSheet.create({
-  root:  { flex: 1, backgroundColor: '#080e10' },
-  brand: { position: 'absolute', top: 0, left: Spacing.xl, zIndex: 10 },
-  brandText: { letterSpacing: 4 },
+  root: { flex: 1, backgroundColor: '#ffffff' },
+
+  leak: { position: 'absolute', width: LEAK_SIZE, height: LEAK_SIZE, zIndex: 0 },
+  leakTL: { top: 0, left: 0 },
+  leakTR: { top: 0, right: 0 },
+  leakBL: { bottom: 0, left: 0 },
+  leakBR: { bottom: 0, right: 0 },
+
+  brand: {
+    position: 'absolute',
+    top: 0,
+    left: Spacing.xl,
+    zIndex: 10,
+  },
+  brandText: {
+    fontFamily: 'CormorantGaramond-SemiBold',
+    fontSize: 20,
+    letterSpacing: 3,
+    color: '#ffffff',
+    textShadowColor: 'rgba(0, 0, 0, 0.45)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 10,
+  },
 
   bottom: {
     position: 'absolute',
-    bottom: 0, left: 0, right: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
     paddingHorizontal: Spacing.xl,
   },
 
-  // Cormorant Garamond — elegant serif headline
   headline: {
     fontFamily: 'CormorantGaramond-SemiBold',
     fontSize: 38,
     lineHeight: 48,
     letterSpacing: 0.2,
-    color: Colors.onPrimary,
   },
 
   sub: {
     fontSize: 16,
     lineHeight: 25,
   },
+
+  ctaShape: { borderRadius: 22 },
 
   signIn: { alignSelf: 'center', paddingVertical: Spacing.sm },
 });

@@ -4,15 +4,15 @@ import { Platform, TextStyle } from 'react-native';
 
 export const Colors = {
   // Backgrounds
-  canvas:           '#f2f6f8',
+  canvas:           '#F8F9FA',
   surface:          '#ffffff',
-  surfaceLow:       '#eceef0',
-  surfaceHighest:   '#e0e3e5',
+  surfaceLow:       '#E2F4F8',
+  surfaceHighest:   '#CDEAF1',
 
-  // Primary blue-cyan
-  primary:          '#00677d',
-  primaryLight:     '#00b4d8',
-  primaryFixed:     '#4cd6fb',
+  // Primary blue
+  primary:          '#2271B3',
+  primaryLight:     '#4A9FD9',
+  primaryFixed:     '#85C4EA',
 
   // Text
   onSurface:        '#191c1e',
@@ -28,46 +28,52 @@ export const Colors = {
   warning:          '#7d5700',
 
   // Gradient endpoints
-  gradientStart:    '#00677d',
-  gradientEnd:      '#00b4d8',
+  gradientStart:    '#2271B3',
+  gradientEnd:      '#4A9FD9',
 } as const;
 
 // ─── Typography ──────────────────────────────────────────────────────────────
 
 export const FontFamily = {
-  manropeBold:      'Manrope-Bold',
-  manropeSemiBold:  'Manrope-SemiBold',
-  manropeMedium:    'Manrope-Medium',
+  // Display & headlines — elegant serif
+  displaySerif:     'CormorantGaramond-SemiBold',
+  displaySerifLight:'CormorantGaramond-Regular',
+  displaySerifItalic:'CormorantGaramond-Italic',
+  // Body & labels — clean sans-serif (system fallback)
   interRegular:     'Inter-Regular',
   interMedium:      'Inter-Medium',
 } as const;
 
 export const Typography = {
   display: {
-    fontFamily: FontFamily.manropeBold,
+    fontFamily: FontFamily.displaySerif,
     fontSize: 56,
-    lineHeight: 64,
+    lineHeight: 66,
+    letterSpacing: 0.2,
     color: Colors.onSurface,
   } satisfies TextStyle,
 
   h1: {
-    fontFamily: FontFamily.manropeBold,
-    fontSize: 28,
-    lineHeight: 36,
+    fontFamily: FontFamily.displaySerif,
+    fontSize: 32,
+    lineHeight: 40,
+    letterSpacing: 0.1,
     color: Colors.onSurface,
   } satisfies TextStyle,
 
   h2: {
-    fontFamily: FontFamily.manropeBold,
-    fontSize: 22,
-    lineHeight: 30,
+    fontFamily: FontFamily.displaySerif,
+    fontSize: 24,
+    lineHeight: 32,
+    letterSpacing: 0.1,
     color: Colors.onSurface,
   } satisfies TextStyle,
 
   h3: {
-    fontFamily: FontFamily.manropeSemiBold,
-    fontSize: 18,
-    lineHeight: 26,
+    fontFamily: FontFamily.displaySerif,
+    fontSize: 20,
+    lineHeight: 28,
+    letterSpacing: 0.1,
     color: Colors.onSurface,
   } satisfies TextStyle,
 
