@@ -1,33 +1,59 @@
 # DeskCare
 
-Micro-stretching app for remote/office workers. Short 2-5 min video exercises for neck, back, eyes, wrists — done right at the desk. Specialized programs (sciatica, carpal tunnel). Smart reminders, body-part targeting, habit tracking.
+Micro-stretching app for remote/office workers. Short 2-5 min exercises for neck, back, eyes, and wrists — done right at the desk, no mat, no changing clothes. Smart reminders, body-part targeting, habit tracking.
 
 ## Stack
+
 - Expo SDK 55, React Native, TypeScript (strict)
 - expo-router (file-based routing)
 - Supabase (auth, database, storage)
 - Adapty (subscriptions)
 
-
 ## Getting started
+
 ```bash
-npm install
-cp .env.example .env  # fill in real keys
+npm install --legacy-peer-deps
 npm start
 ```
 
-## Project structure
-See `CLAUDE.md` for the full architectural rules and the 3-layer layout system.
+Scan the QR code with Expo Go, or press `w` to open in browser. Full instructions: [`docs/07-development/RUN-LOCAL.md`](docs/07-development/RUN-LOCAL.md)
 
-Documentation lives in `/docs/`:
-- `01-research/` — market research, personas, domain research, product brief
-- `02-product/` — features, user flows, screens
-- `03-business/` — monetization, pricing, unit economics
-- `04-design/` — design system, screen prompts, navigation
-- `05-technical/` — DB schema, auth, edge functions
-- `06-development/` — implementation notes
-- `07-analytics/` — events, KPIs
-- `08-deployment/` — store listings, release notes
+## Screens
+
+| Screen | Route | Status |
+|--------|-------|--------|
+| Welcome | `/` | Done |
+| Onboarding | `/onboarding` | Done |
+| Quiz | `/quiz` | Done |
+| Home | `/home` | Done |
+| Routine Preview | `/routine` | Done |
+| Exercise Player | `/player` | Done |
+| Progress | `/progress` | Done |
+| Profile | `/profile` | Done |
+| Settings | `/settings` | Done |
+
+## Development
+
+- **Run locally:** [`docs/07-development/RUN-LOCAL.md`](docs/07-development/RUN-LOCAL.md)
+- **Design guide:** [`docs/06-design/DESIGN-GUIDE.md`](docs/06-design/DESIGN-GUIDE.md)
+- **Architecture rules:** [`CLAUDE.md`](CLAUDE.md)
+
+## Project structure
+
+```
+app/              # Screens (expo-router)
+components/
+  primitives/     # Shared design-system components
+constants/
+  tokens.ts       # Colors, spacing, radii, typography
+mock/
+  data.ts         # All prototype data (no API yet)
+docs/
+  01-research/    # Market research, personas
+  06-design/      # Design guide, Stitch references
+  07-development/ # Local setup, contribution notes
+```
 
 ## Current stage
-Research (Stage 3)
+
+Design complete — all 9 prototype screens built and verified.
