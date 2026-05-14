@@ -72,7 +72,7 @@ export default function SettingsScreen() {
           Manage your session preferences and notifications.
         </Text>
 
-        <Divider size="xxl" />
+        <Divider size="xl" />
 
         {/* Timers & Reminders */}
         <SectionTitle>Timers & Reminders</SectionTitle>
@@ -90,7 +90,7 @@ export default function SettingsScreen() {
           />
         </Card>
 
-        <Divider size="xxl" />
+        <Divider size="xl" />
 
         {/* Focus Zones */}
         <SectionTitle>Focus Zones</SectionTitle>
@@ -124,7 +124,7 @@ export default function SettingsScreen() {
           </View>
         </Card>
 
-        <Divider size="xxl" />
+        <Divider size="xl" />
 
         {/* Experience */}
         <SectionTitle>Experience</SectionTitle>

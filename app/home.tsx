@@ -127,7 +127,7 @@ export default function HomeScreen() {
           />
         </Card>
 
-        <Divider size="xxl" />
+        <Divider size="xl" />
 
         {/* ── Body Zones ── */}
         <H2>Choose Zone</H2>
@@ -167,7 +167,7 @@ export default function HomeScreen() {
           ))}
         </View>
 
-        <Divider size="xxl" />
+        <Divider size="xl" />
 
         {/* ── Eye Break ── */}
         <Pressable

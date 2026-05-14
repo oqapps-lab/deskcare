@@ -76,7 +76,7 @@ export default function ProfileScreen() {
           <Text variant="bodyMd" color={Colors.onSurfaceVar}>Member since 2023</Text>
         </View>
 
-        <Divider size="xxl" />
+        <Divider size="xl" />
 
         {/* Stats */}
         <View style={styles.statsRow}>

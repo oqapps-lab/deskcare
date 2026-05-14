@@ -33,7 +33,6 @@ export default function WelcomeScreen() {
         source={HERO}
         style={StyleSheet.absoluteFillObject}
         contentFit="cover"
-        contentPosition="50% 50%"
         transition={600}
       />
 
