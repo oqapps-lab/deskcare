@@ -50,9 +50,9 @@ const TIMELINE = [
 
 const BENEFITS = [
   t('paywall_feature_zones'),
-  'All zones, every program unlocked',
-  'Sciatica program + symptom check-in',
-  'Pain tracking & weekly insights',
+  t('paywall_feature_all_zones'),
+  t('paywall_feature_sciatica'),
+  t('paywall_feature_pain_insights'),
 ];
 
 export default function PaywallScreen() {

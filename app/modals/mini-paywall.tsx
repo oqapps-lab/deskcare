@@ -17,9 +17,9 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { t } from '../../lib/i18n';
 
 const PERKS = [
-  'Every program, every zone',
-  'Sciatica & carpal tunnel care',
-  'Pain tracking & insights',
+  t('mini_pw_perk_every'),
+  t('mini_pw_perk_sciatica'),
+  t('mini_pw_perk_pain'),
 ];
 
 export default function MiniPaywallScreen() {

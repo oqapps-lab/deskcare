@@ -36,7 +36,7 @@ const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const STAGES = [
   t('labor_step_reading'),
   t('labor_step_matching'),
-  'Laying out your first 14 days',
+  t('labor_step_laying_out'),
 ];
 
 /**

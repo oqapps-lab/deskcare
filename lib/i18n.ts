@@ -589,6 +589,26 @@ const en: Dict = {
   pd_confirm_hint_prefix: 'Type',
   pd_confirm_hint_suffix: 'to enable the button.',
 
+  rate_prompt_zero: 'Pick a rating — we read every one.',
+  rate_prompt_high: 'Lovely — would you leave this on the App Store?',
+  rate_prompt_low: 'Fair enough. What could be gentler?',
+  sciatica_locked_unlock_day8: 'Unlocks on day 8',
+  pain_hist_trend_down: 'Gentle downward trend — stretching is showing up in the data.',
+  pain_hist_trend_up: 'Trending up. Try a symptom check-in tomorrow.',
+  pain_hist_trend_steady: 'Hovering steady. Consistency is doing its job.',
+  pain_hist_eb_14day_shift: '14-DAY SHIFT',
+  preview_load_error: 'Could not load routine: {error}',
+  preview_load_not_found: 'Routine not found.',
+  labor_step_laying_out: 'Laying out your first 14 days',
+  mini_pw_perk_every: 'Every program, every zone',
+  mini_pw_perk_sciatica: 'Sciatica & carpal tunnel care',
+  mini_pw_perk_pain: 'Pain tracking & insights',
+  sciatica_feature_symptom: 'Symptom check-in that adapts the program',
+  sciatica_feature_redflag: 'Red-flag screener for safety',
+  paywall_feature_all_zones: 'All zones, every program unlocked',
+  paywall_feature_sciatica: 'Sciatica program + symptom check-in',
+  paywall_feature_pain_insights: 'Pain tracking & weekly insights',
+
 };
 
 const enGB: Dict = {
@@ -966,6 +986,26 @@ const enGB: Dict = {
 
   pd_confirm_hint_prefix: 'Type',
   pd_confirm_hint_suffix: 'to enable the button.',
+
+  rate_prompt_zero: 'Pick a rating — we read every one.',
+  rate_prompt_high: 'Lovely — would you leave this on the App Store?',
+  rate_prompt_low: 'Fair enough. What could be gentler?',
+  sciatica_locked_unlock_day8: 'Unlocks on day 8',
+  pain_hist_trend_down: 'Gentle downward trend — stretching is showing up in the data.',
+  pain_hist_trend_up: 'Trending up. Try a symptom check-in tomorrow.',
+  pain_hist_trend_steady: 'Hovering steady. Consistency is doing its job.',
+  pain_hist_eb_14day_shift: '14-DAY SHIFT',
+  preview_load_error: 'Could not load routine: {error}',
+  preview_load_not_found: 'Routine not found.',
+  labor_step_laying_out: 'Laying out your first 14 days',
+  mini_pw_perk_every: 'Every programme, every zone',
+  mini_pw_perk_sciatica: 'Sciatica & carpal tunnel care',
+  mini_pw_perk_pain: 'Pain tracking & insights',
+  sciatica_feature_symptom: 'Symptom check-in that adapts the programme',
+  sciatica_feature_redflag: 'Red-flag screener for safety',
+  paywall_feature_all_zones: 'All zones, every programme unlocked',
+  paywall_feature_sciatica: 'Sciatica programme + symptom check-in',
+  paywall_feature_pain_insights: 'Pain tracking & weekly insights',
 
 };
 
@@ -1417,6 +1457,26 @@ const de: Dict = {
   pd_confirm_hint_prefix: 'Tippe',
   pd_confirm_hint_suffix: 'um den Button freizugeben.',
 
+  rate_prompt_zero: 'Bewerte uns — wir lesen jede Antwort.',
+  rate_prompt_high: 'Klasse — magst du das im App Store hinterlassen?',
+  rate_prompt_low: 'Verstanden. Was könnte sanfter sein?',
+  sciatica_locked_unlock_day8: 'Wird an Tag 8 freigeschaltet',
+  pain_hist_trend_down: 'Leichter Abwärtstrend — Dehnübungen zeigen Wirkung.',
+  pain_hist_trend_up: 'Tendenz steigend. Mach morgen einen Symptom-Check.',
+  pain_hist_trend_steady: 'Stabil. Beständigkeit zahlt sich aus.',
+  pain_hist_eb_14day_shift: '14-TAGE-VERLAUF',
+  preview_load_error: 'Routine konnte nicht geladen werden: {error}',
+  preview_load_not_found: 'Routine nicht gefunden.',
+  labor_step_laying_out: 'Deine ersten 14 Tage werden geplant',
+  mini_pw_perk_every: 'Alle Programme, alle Bereiche',
+  mini_pw_perk_sciatica: 'Ischias- & Karpaltunnel-Pflege',
+  mini_pw_perk_pain: 'Schmerz-Tracking & Einblicke',
+  sciatica_feature_symptom: 'Symptom-Check-in, das das Programm anpasst',
+  sciatica_feature_redflag: 'Red-Flag-Screening für Sicherheit',
+  paywall_feature_all_zones: 'Alle Bereiche, jedes Programm freigeschaltet',
+  paywall_feature_sciatica: 'Ischias-Programm + Symptom-Check-in',
+  paywall_feature_pain_insights: 'Schmerz-Tracking & wöchentliche Einblicke',
+
 };
 
 const ja: Dict = {
@@ -1866,6 +1926,26 @@ const ja: Dict = {
 
   pd_confirm_hint_prefix: '次を入力：',
   pd_confirm_hint_suffix: 'ボタンを有効にするには。',
+
+  rate_prompt_zero: '評価をお願いします — すべて目を通します。',
+  rate_prompt_high: 'ありがとうございます — App Storeでも残していただけますか？',
+  rate_prompt_low: 'なるほど。もっと優しくできることは？',
+  sciatica_locked_unlock_day8: '8日目にロック解除',
+  pain_hist_trend_down: 'ゆるやかな改善傾向 — ストレッチの効果が出ています。',
+  pain_hist_trend_up: '上昇傾向。明日、症状チェックインを試してみましょう。',
+  pain_hist_trend_steady: '安定しています。続けることが効果を発揮しています。',
+  pain_hist_eb_14day_shift: '14日間の変化',
+  preview_load_error: 'ルーティンを読み込めませんでした：{error}',
+  preview_load_not_found: 'ルーティンが見つかりません。',
+  labor_step_laying_out: '最初の14日間を組み立て中',
+  mini_pw_perk_every: 'すべてのプログラム、すべての部位',
+  mini_pw_perk_sciatica: '坐骨神経痛と手根管症候群のケア',
+  mini_pw_perk_pain: '痛みのトラッキングと分析',
+  sciatica_feature_symptom: 'プログラムを調整する症状チェックイン',
+  sciatica_feature_redflag: '安全のためのレッドフラグスクリーニング',
+  paywall_feature_all_zones: 'すべての部位、すべてのプログラムをロック解除',
+  paywall_feature_sciatica: '坐骨神経痛プログラム + 症状チェックイン',
+  paywall_feature_pain_insights: '痛みのトラッキングと週次分析',
 
 };
 
@@ -2317,6 +2397,26 @@ const fr: Dict = {
   pd_confirm_hint_prefix: 'Tapez',
   pd_confirm_hint_suffix: 'pour activer le bouton.',
 
+  rate_prompt_zero: 'Donnez une note — nous lisons chaque retour.',
+  rate_prompt_high: 'Super — accepteriez-vous de le poster sur l\'App Store ?',
+  rate_prompt_low: 'Compris. Qu\'est-ce qui pourrait être plus doux ?',
+  sciatica_locked_unlock_day8: 'Débloqué au jour 8',
+  pain_hist_trend_down: 'Tendance à la baisse — les étirements donnent des résultats.',
+  pain_hist_trend_up: 'En hausse. Essayez un check-in symptômes demain.',
+  pain_hist_trend_steady: 'Stable. La régularité fait son travail.',
+  pain_hist_eb_14day_shift: 'ÉVOLUTION SUR 14 JOURS',
+  preview_load_error: 'Impossible de charger la routine : {error}',
+  preview_load_not_found: 'Routine introuvable.',
+  labor_step_laying_out: 'Construction de vos 14 premiers jours',
+  mini_pw_perk_every: 'Tous les programmes, toutes les zones',
+  mini_pw_perk_sciatica: 'Soins sciatique & canal carpien',
+  mini_pw_perk_pain: 'Suivi de la douleur et analyses',
+  sciatica_feature_symptom: 'Check-in symptômes qui adapte le programme',
+  sciatica_feature_redflag: 'Dépistage de signes d\'alerte pour la sécurité',
+  paywall_feature_all_zones: 'Toutes les zones, tous les programmes débloqués',
+  paywall_feature_sciatica: 'Programme sciatique + check-in symptômes',
+  paywall_feature_pain_insights: 'Suivi de la douleur et analyses hebdomadaires',
+
 };
 
 const ko: Dict = {
@@ -2766,6 +2866,26 @@ const ko: Dict = {
 
   pd_confirm_hint_prefix: '입력하세요:',
   pd_confirm_hint_suffix: '버튼을 활성화하려면.',
+
+  rate_prompt_zero: '평점을 매겨주세요 — 모두 읽고 있어요.',
+  rate_prompt_high: '감사합니다 — App Store에도 남겨주실 수 있나요?',
+  rate_prompt_low: '알겠습니다. 어떤 점을 더 부드럽게 할 수 있을까요?',
+  sciatica_locked_unlock_day8: '8일째에 잠금 해제',
+  pain_hist_trend_down: '점진적인 개선 추세 — 스트레칭의 효과가 보입니다.',
+  pain_hist_trend_up: '상승 추세. 내일 증상 체크인을 시도해보세요.',
+  pain_hist_trend_steady: '안정적 유지. 꾸준함이 효과를 내고 있어요.',
+  pain_hist_eb_14day_shift: '14일 변화',
+  preview_load_error: '루틴을 불러올 수 없습니다: {error}',
+  preview_load_not_found: '루틴을 찾을 수 없습니다.',
+  labor_step_laying_out: '첫 14일을 구성하는 중',
+  mini_pw_perk_every: '모든 프로그램, 모든 부위',
+  mini_pw_perk_sciatica: '좌골 신경통 & 손목 터널 케어',
+  mini_pw_perk_pain: '통증 추적 및 인사이트',
+  sciatica_feature_symptom: '프로그램을 조정하는 증상 체크인',
+  sciatica_feature_redflag: '안전을 위한 위험 신호 스크리닝',
+  paywall_feature_all_zones: '모든 부위, 모든 프로그램 잠금 해제',
+  paywall_feature_sciatica: '좌골 신경통 프로그램 + 증상 체크인',
+  paywall_feature_pain_insights: '통증 추적 및 주간 인사이트',
 
 };
 
@@ -3217,6 +3337,26 @@ const es: Dict = {
   pd_confirm_hint_prefix: 'Escribe',
   pd_confirm_hint_suffix: 'para activar el botón.',
 
+  rate_prompt_zero: 'Elige una valoración — leemos cada una.',
+  rate_prompt_high: 'Genial — ¿lo dejarías en la App Store?',
+  rate_prompt_low: 'Entendido. ¿Qué podría ser más suave?',
+  sciatica_locked_unlock_day8: 'Se desbloquea el día 8',
+  pain_hist_trend_down: 'Tendencia suave a la baja — los estiramientos están dando resultado.',
+  pain_hist_trend_up: 'Tendencia al alza. Prueba un check-in de síntomas mañana.',
+  pain_hist_trend_steady: 'Estable. La constancia hace su trabajo.',
+  pain_hist_eb_14day_shift: 'CAMBIO EN 14 DÍAS',
+  preview_load_error: 'No se pudo cargar la rutina: {error}',
+  preview_load_not_found: 'Rutina no encontrada.',
+  labor_step_laying_out: 'Organizando tus primeros 14 días',
+  mini_pw_perk_every: 'Cada programa, cada zona',
+  mini_pw_perk_sciatica: 'Cuidado de ciática y túnel carpiano',
+  mini_pw_perk_pain: 'Seguimiento del dolor e información',
+  sciatica_feature_symptom: 'Check-in de síntomas que adapta el programa',
+  sciatica_feature_redflag: 'Cribado de señales de alarma para tu seguridad',
+  paywall_feature_all_zones: 'Todas las zonas, todos los programas desbloqueados',
+  paywall_feature_sciatica: 'Programa de ciática + check-in de síntomas',
+  paywall_feature_pain_insights: 'Seguimiento del dolor e información semanal',
+
 };
 
 const it: Dict = {
@@ -3666,6 +3806,26 @@ const it: Dict = {
 
   pd_confirm_hint_prefix: 'Digita',
   pd_confirm_hint_suffix: 'per attivare il pulsante.',
+
+  rate_prompt_zero: 'Lascia una valutazione — leggiamo tutto.',
+  rate_prompt_high: 'Fantastico — lo lasceresti anche sull\'App Store?',
+  rate_prompt_low: 'Capito. Cosa potrebbe essere più delicato?',
+  sciatica_locked_unlock_day8: 'Si sblocca al giorno 8',
+  pain_hist_trend_down: 'Lieve calo della tensione — gli allungamenti stanno funzionando.',
+  pain_hist_trend_up: 'In aumento. Prova un check-in dei sintomi domani.',
+  pain_hist_trend_steady: 'Stabile. La costanza sta lavorando.',
+  pain_hist_eb_14day_shift: 'VARIAZIONE 14 GIORNI',
+  preview_load_error: 'Impossibile caricare la routine: {error}',
+  preview_load_not_found: 'Routine non trovata.',
+  labor_step_laying_out: 'Pianificazione dei primi 14 giorni',
+  mini_pw_perk_every: 'Ogni programma, ogni zona',
+  mini_pw_perk_sciatica: 'Cura per sciatalgia e tunnel carpale',
+  mini_pw_perk_pain: 'Monitoraggio del dolore e analisi',
+  sciatica_feature_symptom: 'Check-in dei sintomi che adatta il programma',
+  sciatica_feature_redflag: 'Screening dei segnali d\'allarme per la sicurezza',
+  paywall_feature_all_zones: 'Tutte le zone, ogni programma sbloccato',
+  paywall_feature_sciatica: 'Programma sciatalgia + check-in dei sintomi',
+  paywall_feature_pain_insights: 'Monitoraggio del dolore e analisi settimanali',
 
 };
 
@@ -4117,6 +4277,26 @@ const nl: Dict = {
   pd_confirm_hint_prefix: 'Typ',
   pd_confirm_hint_suffix: 'om de knop te activeren.',
 
+  rate_prompt_zero: 'Geef een beoordeling — we lezen alles.',
+  rate_prompt_high: 'Mooi — laat je dit op de App Store achter?',
+  rate_prompt_low: 'Begrepen. Wat zou zachter kunnen?',
+  sciatica_locked_unlock_day8: 'Wordt op dag 8 ontgrendeld',
+  pain_hist_trend_down: 'Lichte daling — stretchen werkt zichtbaar door.',
+  pain_hist_trend_up: 'Stijgend. Probeer morgen een symptoomcheck.',
+  pain_hist_trend_steady: 'Stabiel. Consistentie doet zijn werk.',
+  pain_hist_eb_14day_shift: '14-DAAGSE VERANDERING',
+  preview_load_error: 'Routine kan niet worden geladen: {error}',
+  preview_load_not_found: 'Routine niet gevonden.',
+  labor_step_laying_out: 'Je eerste 14 dagen worden uitgestippeld',
+  mini_pw_perk_every: 'Elk programma, elke zone',
+  mini_pw_perk_sciatica: 'Ischias- en carpaaltunnelzorg',
+  mini_pw_perk_pain: 'Pijnregistratie en inzichten',
+  sciatica_feature_symptom: 'Symptoomcheck die het programma aanpast',
+  sciatica_feature_redflag: 'Red-flag screening voor de veiligheid',
+  paywall_feature_all_zones: 'Alle zones, elk programma ontgrendeld',
+  paywall_feature_sciatica: 'Ischias-programma + symptoomcheck',
+  paywall_feature_pain_insights: 'Pijnregistratie en wekelijkse inzichten',
+
 };
 
 const sv: Dict = {
@@ -4567,6 +4747,26 @@ const sv: Dict = {
   pd_confirm_hint_prefix: 'Skriv',
   pd_confirm_hint_suffix: 'för att aktivera knappen.',
 
+  rate_prompt_zero: 'Sätt ett betyg — vi läser alla.',
+  rate_prompt_high: 'Underbart — vill du lämna det i App Store?',
+  rate_prompt_low: 'Förstått. Vad kunde ha varit mildare?',
+  sciatica_locked_unlock_day8: 'Låses upp dag 8',
+  pain_hist_trend_down: 'Lätt nedåtgående trend — stretching ger resultat.',
+  pain_hist_trend_up: 'Uppåt. Prova en symtomkoll i morgon.',
+  pain_hist_trend_steady: 'Stabilt. Regelbundenhet gör jobbet.',
+  pain_hist_eb_14day_shift: '14-DAGARS FÖRÄNDRING',
+  preview_load_error: 'Kunde inte ladda rutinen: {error}',
+  preview_load_not_found: 'Rutin hittades inte.',
+  labor_step_laying_out: 'Lägger upp dina första 14 dagar',
+  mini_pw_perk_every: 'Alla program, alla områden',
+  mini_pw_perk_sciatica: 'Ischias- och karpaltunnelvård',
+  mini_pw_perk_pain: 'Smärtspårning och insikter',
+  sciatica_feature_symptom: 'Symtomkoll som anpassar programmet',
+  sciatica_feature_redflag: 'Red flag-screening för säkerhet',
+  paywall_feature_all_zones: 'Alla områden, alla program upplåsta',
+  paywall_feature_sciatica: 'Ischiasprogram + symtomkoll',
+  paywall_feature_pain_insights: 'Smärtspårning och veckoinsikter',
+
 };
 
 const ptBR: Dict = {
@@ -5016,6 +5216,26 @@ const ptBR: Dict = {
 
   pd_confirm_hint_prefix: 'Digite',
   pd_confirm_hint_suffix: 'para ativar o botão.',
+
+  rate_prompt_zero: 'Dê uma nota — lemos todas.',
+  rate_prompt_high: 'Que ótimo — você deixaria isso na App Store?',
+  rate_prompt_low: 'Entendido. O que poderia ser mais suave?',
+  sciatica_locked_unlock_day8: 'Desbloqueia no dia 8',
+  pain_hist_trend_down: 'Tendência suave de queda — os alongamentos estão fazendo efeito.',
+  pain_hist_trend_up: 'Em alta. Tente um check-in de sintomas amanhã.',
+  pain_hist_trend_steady: 'Estável. A consistência está fazendo seu trabalho.',
+  pain_hist_eb_14day_shift: 'MUDANÇA EM 14 DIAS',
+  preview_load_error: 'Não foi possível carregar a rotina: {error}',
+  preview_load_not_found: 'Rotina não encontrada.',
+  labor_step_laying_out: 'Organizando seus primeiros 14 dias',
+  mini_pw_perk_every: 'Cada programa, cada zona',
+  mini_pw_perk_sciatica: 'Cuidado para ciática e túnel do carpo',
+  mini_pw_perk_pain: 'Acompanhamento da dor e análises',
+  sciatica_feature_symptom: 'Check-in de sintomas que adapta o programa',
+  sciatica_feature_redflag: 'Triagem de sinais de alerta para segurança',
+  paywall_feature_all_zones: 'Todas as zonas, todos os programas desbloqueados',
+  paywall_feature_sciatica: 'Programa de ciática + check-in de sintomas',
+  paywall_feature_pain_insights: 'Acompanhamento da dor e análises semanais',
 
 };
 

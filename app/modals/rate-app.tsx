@@ -37,10 +37,10 @@ export default function RateAppScreen() {
 
   const prompt =
     rating === 0
-      ? 'Pick a rating — we read every one.'
+      ? t('rate_prompt_zero')
       : rating >= 4
-      ? 'Lovely — would you leave this on the App Store?'
-      : 'Fair enough. What could be gentler?';
+      ? t('rate_prompt_high')
+      : t('rate_prompt_low');
 
   return (
     <AtmosphericBackground>

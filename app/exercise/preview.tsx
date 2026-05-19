@@ -72,7 +72,7 @@ export default function RoutinePreviewScreen() {
         ) : error || !routine ? (
           <View style={styles.statusWrap}>
             <Text style={styles.statusError}>
-              {error ? `Could not load routine: ${error}` : 'Routine not found.'}
+              {error ? t('preview_load_error', { error }) : t('preview_load_not_found')}
             </Text>
           </View>
         ) : (

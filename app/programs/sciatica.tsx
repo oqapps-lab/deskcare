@@ -30,8 +30,8 @@ interface PhaseRoutines {
 }
 
 const INSIDE = [
-  'Symptom check-in that adapts the program',
-  'Red-flag screener for safety',
+  t('sciatica_feature_symptom'),
+  t('sciatica_feature_redflag'),
   t('sciatica_feature_cautions'),
   t('sciatica_feature_weekly'),
 ];
@@ -186,7 +186,7 @@ export default function SciaticaProgramScreen() {
           meta={`DAYS 8–21 · ${maintPhase.routines.length} ROUTINES · ~5 MIN / DAY`}
           active={false}
           locked={!active}
-          lockedCopy={active ? 'Unlocks on day 8' : undefined}
+          lockedCopy={active ? t('sciatica_locked_unlock_day8') : undefined}
         />
 
         <Eyebrow>{t('sciatica_eb_inside')}</Eyebrow>

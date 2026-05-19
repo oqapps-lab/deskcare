@@ -167,15 +167,15 @@ export default function PainHistoryScreen() {
               <View style={styles.sep} />
               <View style={styles.summaryCol}>
                 <Text style={styles.summaryBig}>{delta <= 0 ? `↓ ${Math.abs(delta)}` : `↑ ${delta}`}</Text>
-                <Text style={styles.summaryLabel}>14-DAY SHIFT</Text>
+                <Text style={styles.summaryLabel}>{t('pain_hist_eb_14day_shift')}</Text>
               </View>
             </View>
             <Text style={styles.summaryBlurb}>
               {delta <= -1
-                ? 'Gentle downward trend — stretching is showing up in the data.'
+                ? t('pain_hist_trend_down')
                 : delta >= 1
-                ? 'Trending up. Try a symptom check-in tomorrow.'
-                : 'Hovering steady. Consistency is doing its job.'}
+                ? t('pain_hist_trend_up')
+                : t('pain_hist_trend_steady')}
             </Text>
           </GlassCard>
         </View>
