@@ -28,19 +28,20 @@ import type { GlyphName } from '../../../components/ui';
 import type { HaloTone } from '../../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../../constants/tokens';
 import { useOnboarding, type DeskHours } from '../../../lib/store/onboarding';
+import { t } from '../../../lib/i18n';
 
 type Goal = 'stop' | 'prevent' | 'energy';
 
 const GOALS: ReadonlyArray<{ id: Goal; title: string; icon: GlyphName; tone: HaloTone }> = [
-  { id: 'stop',    title: 'Make the pain stop',         icon: 'check',   tone: 'coral' },
-  { id: 'prevent', title: 'Prevent it coming back',     icon: 'refresh', tone: 'peach' },
-  { id: 'energy',  title: 'More energy through the day', icon: 'eye',     tone: 'lavender' },
+  { id: 'stop',    title: t('quiz_goal_stop_pain'),   icon: 'check',   tone: 'coral' },
+  { id: 'prevent', title: t('quiz_goal_prevent'),     icon: 'refresh', tone: 'peach' },
+  { id: 'energy',  title: t('quiz_goal_energy'),      icon: 'eye',     tone: 'lavender' },
 ];
 
 const HOUR_OPTIONS: readonly SizeCircleOption[] = [
-  { value: '4–6', label: 'Hours' },
-  { value: '6–8', label: 'Hours' },
-  { value: '8+',  label: 'Hours' },
+  { value: '4–6', label: t('quiz_work_hours') },
+  { value: '6–8', label: t('quiz_work_hours') },
+  { value: '8+',  label: t('quiz_work_hours') },
 ];
 
 export default function QuizGoalScreen() {
@@ -70,6 +71,7 @@ export default function QuizGoalScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/onboarding/welcome');
   };
   const ready = () => {
     if (!goal || !hours) return;
@@ -99,12 +101,12 @@ export default function QuizGoalScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.progressBlock}>
-            <Eyebrow>STEP 4 OF 4</Eyebrow>
+            <Eyebrow>{t('quiz_step_4_of_4')}</Eyebrow>
             <View style={{ height: spacing.sm }} />
-            <ProgressBar value={1.0} accessibilityLabel="Quiz progress: step 4 of 4" />
+            <ProgressBar value={1.0} accessibilityLabel={t('quiz_progress_step', {n: 4})} />
           </View>
 
-          <Text style={styles.title}>What are you{'\n'}hoping for?</Text>
+          <Text style={styles.title}>{t('quiz_goal_title')}</Text>
 
           <View style={styles.goals}>
             {GOALS.map((g) => {
@@ -166,9 +168,9 @@ export default function QuizGoalScreen() {
           onPress={ready}
           disabled={!canAdvance}
           breath={canAdvance}
-          accessibilityLabel={canAdvance ? 'Ready — continue to plan' : 'Pick a goal and hours'}
+          accessibilityLabel={canAdvance ? t('quiz_a11y_ready_plan') : t('quiz_a11y_pick_goal')}
         >
-          Ready
+          {t('quiz_goal_cta')}
         </PillCTA>
       </Animated.View>
     </AtmosphericBackground>

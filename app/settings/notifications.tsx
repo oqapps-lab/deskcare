@@ -32,6 +32,7 @@ import {
   cancelAllScheduledReminders,
   scheduleDailyReminder,
 } from '../../lib/notifications';
+import { t } from '../../lib/i18n';
 
 const TIMES = ['09:00', '12:00', '15:00', '18:00'];
 
@@ -59,8 +60,8 @@ async function applyReminderSchedule(
     hour,
     minute,
     sound
-      ? 'A short release for your shoulders.'
-      : 'Time to stretch.',
+      ? t('notif_stretch_body_sound')
+      : t('notif_stretch_body_silent'),
     'DeskCare',
   );
 
@@ -70,8 +71,8 @@ async function applyReminderSchedule(
     await scheduleDailyReminder(
       eyeHour,
       minute,
-      'Look 20 ft away for 20 seconds.',
-      'Eye break',
+      t('notif_eye_break_body'),
+      t('notif_eye_break_label'),
     );
   }
 }
@@ -200,6 +201,7 @@ export default function NotificationSettingsScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/profile');
   };
   const continueFlow = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -224,7 +226,7 @@ export default function NotificationSettingsScreen() {
       <BgPattern variant="waves" opacity={0.05} tone="coral" />
       <DecorativeArc position="top-right" tone="peach" size={220} opacity={0.20} />
 
-      <NavHeader title="Reminders" onBack={back} />
+      <NavHeader title={t('nav_reminders')} onBack={back} />
 
       <Animated.View style={[styles.wrap, contentStyle]}>
         <ScrollView
@@ -236,10 +238,8 @@ export default function NotificationSettingsScreen() {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.headerBlock}>
-            <Text style={styles.title}>When should we{'\n'}nudge you?</Text>
-            <Text style={styles.subtitle}>
-              Pick a time that fits your day —{'\n'}we'll adapt the rest
-            </Text>
+            <Text style={styles.title}>{t('sn_title')}</Text>
+            <Text style={styles.subtitle}>{t('sn_sub')}</Text>
           </View>
 
           <View style={styles.eyebrowRow}>
@@ -268,8 +268,8 @@ export default function NotificationSettingsScreen() {
               icon="eye"
               tone="lavender"
               tint="lavender"
-              title="20-20-20 for eyes"
-              sub="Every 20 min — 20 sec, 20 ft away"
+              title={t('ps_eyebreaks_title')}
+              sub={t('ps_eyebreaks_sub')}
               right={
                 <ToggleSwitch value={eyeTimer} onChange={setEyeTimer} />
               }
@@ -278,16 +278,16 @@ export default function NotificationSettingsScreen() {
               icon="speaker"
               tone="coral"
               tint="peach"
-              title="Notification sound"
-              sub="Soft tone, never sharp"
+              title={t('ps_notif_sound_title')}
+              sub={t('ps_notif_sound_sub')}
               right={<ToggleSwitch value={sound} onChange={setSound} />}
             />
             <GlassRow
               icon="crown"
               tone="coral"
               tint="coral"
-              title="Premium"
-              sub="Sciatica & carpal-tunnel programs"
+              title={t('ps_subscription_title')}
+              sub={t('ps_subscription_sub_free')}
               badge="PRO"
               innerGradient
               decorativeCorner
@@ -325,7 +325,7 @@ export default function NotificationSettingsScreen() {
             breath
             onPress={continueFlow}
           >
-            {fromSettings ? 'Save' : 'Continue'}
+            {fromSettings ? t('common_save') : t('common_continue')}
           </PillCTA>
         </Animated.View>
       </Animated.View>

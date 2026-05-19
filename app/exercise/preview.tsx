@@ -17,8 +17,10 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useRoutineWithItems } from '../../hooks/useContent';
+import { t, i18nField } from '../../lib/i18n';
+import { DEFAULT_ROUTINE_SLUG } from '../../constants/routines';
 
-const DEFAULT_ROUTINE = 'neck-quick-2min';
+const DEFAULT_ROUTINE = DEFAULT_ROUTINE_SLUG;
 
 const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch' => {
   if (!code) return 'neck-roll';
@@ -41,6 +43,7 @@ export default function RoutinePreviewScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/home');
   };
   const begin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -74,9 +77,9 @@ export default function RoutinePreviewScreen() {
           </View>
         ) : (
           <>
-            <Eyebrow variant="accent">TODAY'S ROUTINE</Eyebrow>
-            <Text style={styles.title}>{routine.title}</Text>
-            {routine.description && <Text style={styles.sub}>{routine.description}</Text>}
+            <Eyebrow variant="accent">{t('preview_eyebrow')}</Eyebrow>
+            <Text style={styles.title}>{i18nField(routine, 'title')}</Text>
+            {i18nField(routine, 'description') && <Text style={styles.sub}>{i18nField(routine, 'description')}</Text>}
 
             <View style={styles.heroWrap}>
               <ExerciseVideo
@@ -88,20 +91,22 @@ export default function RoutinePreviewScreen() {
             </View>
 
             <View style={styles.statsRow}>
-              <StatCol value={`${totalMin}`} unit="MIN" />
+              <StatCol value={`${totalMin}`} unit={t('preview_stat_min')} />
               <Sep />
-              <StatCol value={`${items.length}`} unit="MOVES" />
+              <StatCol value={`${items.length}`} unit={t('preview_stat_moves')} />
               <Sep />
               <StatCol
                 value={
-                  routine.routine_type.charAt(0).toUpperCase() +
-                  routine.routine_type.slice(1).replace('_', ' ')
+                  routine.routine_type === 'zone_based'
+                    ? t('preview_routine_type_zone_based')
+                    : routine.routine_type.charAt(0).toUpperCase() +
+                      routine.routine_type.slice(1).replace('_', ' ')
                 }
-                unit="TYPE"
+                unit={t('preview_stat_type')}
               />
             </View>
 
-            <Eyebrow>WHAT YOU'LL DO</Eyebrow>
+            <Eyebrow>{t('preview_whatyoulldo')}</Eyebrow>
             <View style={styles.list}>
               {items.map((it, i) => (
                 <View key={it.id} style={styles.row}>
@@ -110,7 +115,7 @@ export default function RoutinePreviewScreen() {
                   </View>
                   <VideoPlaceholder pose={poseFor(it.exercise?.code)} compact />
                   <View style={styles.rowText}>
-                    <Text style={styles.rowName}>{it.exercise?.title ?? it.exercise?.code}</Text>
+                    <Text style={styles.rowName}>{i18nField(it.exercise, 'title') || (it.exercise?.code ?? '')}</Text>
                     <Text style={styles.rowMeta}>
                       {it.exercise?.code} · {it.reps}× ({(it.exercise?.duration_seconds ?? 0) * it.reps}s)
                     </Text>
@@ -120,11 +125,8 @@ export default function RoutinePreviewScreen() {
             </View>
 
             <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
-              <Text style={styles.tipTitle}>Before you start</Text>
-              <Text style={styles.tipBody}>
-                Soften your shoulders. Breathe slowly through the nose. Stop at the
-                first hint of sharp pain.
-              </Text>
+              <Text style={styles.tipTitle}>{t('preview_tip_title')}</Text>
+              <Text style={styles.tipBody}>{t('preview_tip_body')}</Text>
             </GlassCard>
           </>
         )}
@@ -141,7 +143,7 @@ export default function RoutinePreviewScreen() {
           disabled={loading || !routine}
           onPress={begin}
         >
-          {routine ? `Begin · ${totalMin} min` : 'Loading…'}
+          {routine ? t('preview_cta_begin_min', { min: totalMin }) : t('common_loading')}
         </PillCTA>
       </View>
     </AtmosphericBackground>

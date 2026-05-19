@@ -60,7 +60,7 @@ export const useExercises = (
     setError(null);
 
     const baseSelect =
-      'id, code, slug, title, title_en, description, video_url, thumbnail_url, duration_seconds, reps_inside_atom, difficulty, exercise_type, is_premium, cautions, modifications';
+      'id, code, slug, title, title_en, title_i18n, description, description_i18n, video_url, thumbnail_url, duration_seconds, reps_inside_atom, difficulty, exercise_type, is_premium, cautions, modifications';
 
     const run = async () => {
       let query = supabase.from('exercises').select(baseSelect).order('code');
@@ -131,7 +131,7 @@ export const useRoutines = (zoneSlug?: BodyZoneSlug | 'all') => {
     const run = async () => {
       let query = supabase
         .from('routines')
-        .select('id, slug, title, description, body_zone_id, duration_seconds, is_premium, routine_type, sort_order')
+        .select('id, slug, title, title_i18n, description, description_i18n, body_zone_id, duration_seconds, is_premium, routine_type, sort_order')
         .order('sort_order');
       if (zoneSlug && zoneSlug !== 'all') {
         const zone = await supabase.from('body_zones').select('id').eq('slug', zoneSlug).single();
@@ -179,7 +179,7 @@ export const useRoutineWithItems = (routineSlug?: string) => {
     const run = async () => {
       const r = await supabase
         .from('routines')
-        .select('id, slug, title, description, body_zone_id, duration_seconds, is_premium, routine_type, sort_order')
+        .select('id, slug, title, title_i18n, description, description_i18n, body_zone_id, duration_seconds, is_premium, routine_type, sort_order')
         .eq('slug', routineSlug)
         .single();
       if (r.error) {
@@ -193,7 +193,7 @@ export const useRoutineWithItems = (routineSlug?: string) => {
         .from('routine_exercises')
         .select(
           'id, routine_id, exercise_id, sort_order, reps, overlay_text, rest_seconds, ' +
-            'exercise:exercises ( id, code, slug, title, title_en, description, video_url, thumbnail_url, duration_seconds, reps_inside_atom, difficulty, exercise_type, is_premium, cautions, modifications )',
+            'exercise:exercises ( id, code, slug, title, title_en, title_i18n, description, description_i18n, video_url, thumbnail_url, duration_seconds, reps_inside_atom, difficulty, exercise_type, is_premium, cautions, modifications )',
         )
         .eq('routine_id', r.data.id)
         .order('sort_order');

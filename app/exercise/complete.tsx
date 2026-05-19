@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
@@ -29,6 +29,7 @@ import {
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
+import { t } from '../../lib/i18n';
 
 /**
  * On signed-in completion: atomically insert a sessions row and bump the
@@ -52,26 +53,38 @@ const logCompletedSession = async (
   });
 };
 
-const STATS = [
-  { value: '2:15', label: 'TIME' },
-  { value: '3',    label: 'MOVES' },
-  { value: '7',    label: 'DAY STREAK' },
-];
+const formatDuration = (totalSec: number): string => {
+  const mm = Math.floor(totalSec / 60);
+  const ss = totalSec % 60;
+  return `${mm}:${String(ss).padStart(2, '0')}`;
+};
 
 export default function SessionCompleteScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
   const userId = useUserId();
   const writtenRef = React.useRef(false);
+  const params = useLocalSearchParams<{ duration?: string; moves?: string; streak?: string }>();
+  // Read real session metrics from the player. Fall back to zeros only when
+  // someone deep-links here directly without a session (shouldn't happen in
+  // normal flow, but better a clean "0:00 · 0" than fake demo numbers).
+  const durationSec = Math.max(0, parseInt(params.duration as string, 10) || 0);
+  const movesCount = Math.max(0, parseInt(params.moves as string, 10) || 0);
+  const streakCount = Math.max(0, parseInt(params.streak as string, 10) || 0);
+
+  const stats = [
+    { value: formatDuration(durationSec), label: t('ex_complete_stat_time') },
+    { value: String(movesCount),          label: t('ex_complete_stat_moves') },
+    { value: streakCount > 0 ? String(streakCount) : '—', label: t('ex_complete_stat_streak') },
+  ];
 
   useEffect(() => {
-    if (!userId || writtenRef.current) return;
+    if (!userId || writtenRef.current || durationSec === 0) return;
     writtenRef.current = true;
-    // Demo metadata: 2:15 = 135s, 3 moves. Stage 7 will compute from actual session.
-    logCompletedSession(135, 3).catch(() => {
+    logCompletedSession(durationSec, movesCount).catch(() => {
       // Best-effort; silent on RLS / network.
     });
-  }, [userId]);
+  }, [userId, durationSec, movesCount]);
 
   const burst = useSharedValue(0.9);
   const contentOpacity = useSharedValue(0);
@@ -186,21 +199,26 @@ export default function SessionCompleteScreen() {
         </View>
 
         <Animated.View style={contentStyle}>
-          <Eyebrow variant="accent">WELL DONE</Eyebrow>
-          <Text style={styles.title}>That's two minutes{'\n'}your neck didn't hold.</Text>
-          <Text style={styles.sub}>
-            Three small releases. Your shoulders should feel{'\n'}a little softer already.
-          </Text>
+          <Eyebrow variant="accent">{t('ex_complete_eyebrow')}</Eyebrow>
+          <Text style={styles.title}>{t('ex_complete_title')}</Text>
+          <Text style={styles.sub}>{t('ex_complete_sub')}</Text>
 
           <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient>
             <View style={styles.statsRow}>
-              {STATS.map((s, i) => (
+              {stats.map((s, i) => (
                 <React.Fragment key={s.label}>
                   <View style={styles.statCol}>
-                    <Text style={styles.statValue}>{s.value}</Text>
-                    <Text style={styles.statLabel}>{s.label}</Text>
+                    <Text
+                      style={styles.statValue}
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.7}
+                    >
+                      {s.value}
+                    </Text>
+                    <Text style={styles.statLabel} numberOfLines={1}>{s.label}</Text>
                   </View>
-                  {i < STATS.length - 1 && <View style={styles.statDivider} />}
+                  {i < stats.length - 1 && <View style={styles.statDivider} />}
                 </React.Fragment>
               ))}
             </View>
@@ -209,16 +227,16 @@ export default function SessionCompleteScreen() {
 
         <View style={styles.ctaBlock}>
           <PillCTA variant="primary" size="lg" breath onPress={done}>
-            Back to home
+            {t('ex_complete_back_cta')}
           </PillCTA>
           <Pressable
             onPress={rate}
             hitSlop={12}
             accessibilityRole="button"
-            accessibilityLabel="Rate your neck"
+            accessibilityLabel={t('ex_complete_rate_label')}
             style={{ marginTop: spacing.md }}
           >
-            <Text style={styles.rateLink}>Rate how your neck feels</Text>
+            <Text style={styles.rateLink}>{t('ex_complete_rate_link')}</Text>
           </Pressable>
         </View>
       </View>

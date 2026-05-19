@@ -31,6 +31,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useExercises } from '../../hooks/useContent';
+import { t } from '../../lib/i18n';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -95,6 +96,7 @@ export default function EyeProgramScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/programs');
   };
   const openExercise = (id: string) => {
     Haptics.selectionAsync();
@@ -118,7 +120,7 @@ export default function EyeProgramScreen() {
       <BgPattern variant="dots" opacity={0.04} tone="lavender" />
       <DecorativeArc position="top-right" tone="lavender" size={220} opacity={0.20} />
 
-      <NavHeader title="Eye Program" onBack={back} />
+      <NavHeader title={t('pe_title')} onBack={back} />
 
       <ScrollView
         contentContainerStyle={{
@@ -163,7 +165,7 @@ export default function EyeProgramScreen() {
               <Eyebrow variant="accent">SECONDS</Eyebrow>
             </View>
           </Animated.View>
-          <Text style={styles.caption}>Look 20 feet away</Text>
+          <Text style={styles.caption}>{t('pe_title')}</Text>
           <View style={styles.dotsRow}>
             {[0, 1, 2].map((i) => (
               <View key={i} style={[styles.dot, i === 0 && styles.dotActive]} />
@@ -171,29 +173,26 @@ export default function EyeProgramScreen() {
           </View>
         </View>
 
-        <Pressable onPress={restart} hitSlop={8} accessibilityRole="button" accessibilityLabel="Restart timer">
+        <Pressable onPress={restart} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('pe_cta_restart')}>
           <View style={styles.restartRow}>
             <Svg width={14} height={14} viewBox="0 0 14 14">
               <Path d="M4 4 Q7 1 10 4 L11 5 M11 2 L11 5 L8 5 M10 10 Q7 13 4 10 L3 9 M3 12 L3 9 L6 9" stroke={colors.primaryMid} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
             </Svg>
-            <Text style={styles.restartText}>Restart timer</Text>
+            <Text style={styles.restartText}>{t('pe_cta_restart')}</Text>
           </View>
         </Pressable>
 
         <View style={styles.ruleWrap}>
           <GlassCard tint="lavender" radius="xl" padding={spacing.xl} innerGradient>
             <Eyebrow>THE 20-20-20 RULE</Eyebrow>
-            <Text style={styles.ruleTitle}>Every 20 min · 20 seconds · 20 feet away.</Text>
-            <Text style={styles.ruleBody}>
-              Your near-focus muscles lock when you stare at a monitor. A
-              20-second far-focus lets them fully release.
-            </Text>
+            <Text style={styles.ruleTitle}>{t('pe_sub')}</Text>
+            <Text style={styles.ruleBody}>{t('pe_explain')}</Text>
           </GlassCard>
         </View>
 
         <View style={styles.routineCtaWrap}>
           <PillCTA variant="primary" size="lg" icon="play" iconBg onPress={startRoutine}>
-            Start 3-min eye routine
+            {t('pe_cta_routine')}
           </PillCTA>
         </View>
 
@@ -204,7 +203,7 @@ export default function EyeProgramScreen() {
           {exLoading && !exercises ? (
             <View style={styles.exerciseWrap}>
               <GlassCard tint="cream" radius="xl" padding={spacing.md}>
-                <Text style={styles.exerciseMeta}>Loading…</Text>
+                <Text style={styles.exerciseMeta}>{t('common_loading')}</Text>
               </GlassCard>
             </View>
           ) : (

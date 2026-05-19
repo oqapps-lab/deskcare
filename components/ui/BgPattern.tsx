@@ -4,7 +4,7 @@ import Svg, { Circle, Path } from 'react-native-svg';
 import { colors } from '../../constants/tokens';
 
 export type BgPatternVariant = 'waves' | 'dots' | 'arc';
-export type BgPatternTone = 'coral' | 'lavender' | 'ink';
+export type BgPatternTone = 'coral' | 'peach' | 'lavender' | 'ink';
 
 interface Props {
   variant?: BgPatternVariant;
@@ -14,6 +14,7 @@ interface Props {
 
 const TONE_COLOR: Record<BgPatternTone, string> = {
   coral: colors.primaryMid,
+  peach: colors.primaryLight,
   lavender: colors.tertiaryMid,
   ink: colors.ink,
 };

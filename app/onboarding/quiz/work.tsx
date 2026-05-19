@@ -24,13 +24,14 @@ import {
 } from '../../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../../constants/tokens';
 import { useOnboarding } from '../../../lib/store/onboarding';
+import { t } from '../../../lib/i18n';
 
 type Work = 'home' | 'office' | 'hybrid';
 
 const OPTIONS: ReadonlyArray<{ id: Work; label: string; svg: React.ReactNode }> = [
-  { id: 'home',   label: 'Home office', svg: <HomeSvg /> },
-  { id: 'office', label: 'In office',   svg: <OfficeSvg /> },
-  { id: 'hybrid', label: 'Hybrid',      svg: <HybridSvg /> },
+  { id: 'home',   label: t('quiz_work_home'),   svg: <HomeSvg /> },
+  { id: 'office', label: t('quiz_work_office'), svg: <OfficeSvg /> },
+  { id: 'hybrid', label: t('quiz_work_hybrid'), svg: <HybridSvg /> },
 ];
 
 export default function QuizWorkScreen() {
@@ -74,6 +75,7 @@ export default function QuizWorkScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/onboarding/welcome');
   };
   const next = () => {
     if (!choice) return;
@@ -91,9 +93,9 @@ export default function QuizWorkScreen() {
 
       <Animated.View style={[styles.root, contentStyle, { paddingBottom: insets.bottom + 160 }]}>
         <View style={styles.progressBlock}>
-          <Eyebrow>STEP 3 OF 4</Eyebrow>
+          <Eyebrow>{t('quiz_step_3_of_4')}</Eyebrow>
           <View style={{ height: spacing.sm }} />
-          <ProgressBar value={0.75} accessibilityLabel="Quiz progress: step 3 of 4" />
+          <ProgressBar value={0.75} accessibilityLabel={t('quiz_progress_step', {n: 3})} />
         </View>
 
         <View style={styles.statPool}>
@@ -107,7 +109,7 @@ export default function QuizWorkScreen() {
         </View>
 
         <View style={styles.copy}>
-          <Text style={styles.title}>Where do you work?</Text>
+          <Text style={styles.title}>{t('quiz_work_title')}</Text>
         </View>
 
         <View style={styles.options}>
@@ -157,9 +159,9 @@ export default function QuizWorkScreen() {
           onPress={next}
           disabled={!choice}
           breath={!!choice}
-          accessibilityLabel={choice ? 'Next step' : 'Pick a work type'}
+          accessibilityLabel={choice ? t('quiz_a11y_next') : t('quiz_a11y_pick_work')}
         >
-          Next
+          {t('common_next')}
         </PillCTA>
       </Animated.View>
     </AtmosphericBackground>

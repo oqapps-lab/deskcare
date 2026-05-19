@@ -28,6 +28,7 @@ import type { HaloTone } from '../../components/ui/IconHalo';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
+import { t } from '../../lib/i18n';
 
 // Map UI PainZone (selected on screen) → DB body_zones.slug.
 // We don't have separate "shoulder" / "chest" slugs in DB — fold them into 'back'.
@@ -50,10 +51,10 @@ interface ZoneDef {
 }
 
 const ZONES: ReadonlyArray<ZoneDef> = [
-  { id: 'neck', label: 'Neck', icon: 'infinity', tone: 'coral' },
-  { id: 'leftShoulder', label: 'Shoulders', icon: 'plus', tone: 'peach' },
-  { id: 'chest', label: 'Upper back', icon: 'plus', tone: 'lavender' },
-  { id: 'lowerBack', label: 'Lower back', icon: 'plus', tone: 'mint' },
+  { id: 'neck', label: t('pc_part_neck'), icon: 'infinity', tone: 'coral' },
+  { id: 'leftShoulder', label: t('pc_part_shoulders'), icon: 'plus', tone: 'peach' },
+  { id: 'chest', label: t('pc_part_upper_back'), icon: 'plus', tone: 'lavender' },
+  { id: 'lowerBack', label: t('pc_part_lower_back'), icon: 'plus', tone: 'mint' },
 ];
 
 // Slider value (0..1) → discrete severity level. Thresholds chosen so that
@@ -117,6 +118,7 @@ export default function PainCheckInScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/home');
   };
 
   const toggleZone = (z: PainZone) => {
@@ -172,7 +174,7 @@ export default function PainCheckInScreen() {
       <DecorativeArc position="top-right" tone="coral" size={240} opacity={0.20} />
       <DecorativeArc position="bottom-left" tone="lavender" size={200} opacity={0.15} />
 
-      <NavHeader title="How do you feel?" onBack={back} />
+      <NavHeader title={t('nav_how_feel')} onBack={back} />
 
       <Animated.View style={[styles.wrap, contentStyle]}>
         <ScrollView
@@ -183,10 +185,8 @@ export default function PainCheckInScreen() {
           }}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.title}>Where does it hurt?</Text>
-          <Text style={styles.subtitle}>
-            Tap the areas of discomfort — we'll tailor your routine
-          </Text>
+          <Text style={styles.title}>{t('pc_title')}</Text>
+          <Text style={styles.subtitle}>{t('pc_sub')}</Text>
 
           {/* Zone selector chips with IconHalo */}
           <View style={styles.zonesScrollWrap}>
@@ -247,8 +247,8 @@ export default function PainCheckInScreen() {
             <SeveritySlider value={severityPct} onChange={setSeverityPct} />
             <View style={{ height: spacing.sm }} />
             <View style={styles.severityLabels}>
-              <Text style={styles.severityLabelEnd}>No pain</Text>
-              <Text style={styles.severityLabelEnd}>Sharp</Text>
+              <Text style={styles.severityLabelEnd}>{t('pc_no_pain')}</Text>
+              <Text style={styles.severityLabelEnd}>{t('pph_pain_sharp')}</Text>
             </View>
           </GlassCard>
 
@@ -309,7 +309,7 @@ export default function PainCheckInScreen() {
             breath
             onPress={save}
           >
-            Save & continue
+            {t('pc_save_cta')}
           </PillCTA>
         </Animated.View>
       </Animated.View>

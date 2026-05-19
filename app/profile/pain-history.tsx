@@ -14,6 +14,7 @@ import {
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
+import { t } from '../../lib/i18n';
 
 const colorFor = (v: number) => {
   if (v >= 7) return colors.primary;
@@ -124,6 +125,7 @@ export default function PainHistoryScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/profile');
   };
 
   const avg = isEmpty
@@ -136,7 +138,7 @@ export default function PainHistoryScreen() {
       <BgPattern variant="waves" opacity={0.05} tone="coral" />
       <DecorativeArc position="top-right" tone="coral" size={240} opacity={0.20} />
 
-      <NavHeader title="Pain history" onBack={back} />
+      <NavHeader title={t('prof_pain_history')} onBack={back} />
 
       <ScrollView
         contentContainerStyle={{
@@ -149,12 +151,8 @@ export default function PainHistoryScreen() {
         {isEmpty ? (
           <View style={styles.emptyWrap}>
             <GlassCard tint="cream" radius="xl" padding={spacing.xl}>
-              <Text style={styles.emptyTitle}>No pain ratings yet</Text>
-              <Text style={styles.emptyBody}>
-                Tap the daily check-in on Home and rate your zones — the trend
-                line, 14-day shift and per-zone breakdown all show up here once
-                you have a few days of data.
-              </Text>
+              <Text style={styles.emptyTitle}>{t('pph_empty_title')}</Text>
+              <Text style={styles.emptyBody}>{t('pph_empty_sub')}</Text>
             </GlassCard>
           </View>
         ) : (
@@ -164,7 +162,7 @@ export default function PainHistoryScreen() {
             <View style={styles.summaryRow}>
               <View style={styles.summaryCol}>
                 <Text style={styles.summaryBig}>{avg}</Text>
-                <Text style={styles.summaryLabel}>AVG /10</Text>
+                <Text style={styles.summaryLabel}>{t('pph_avg_label')}</Text>
               </View>
               <View style={styles.sep} />
               <View style={styles.summaryCol}>
@@ -202,15 +200,15 @@ export default function PainHistoryScreen() {
             <View style={styles.stripLegend}>
               <View style={styles.legendItem}>
                 <View style={[styles.legendDot, { backgroundColor: colors.primarySoft }]} />
-                <Text style={styles.legendText}>Low</Text>
+                <Text style={styles.legendText}>{t('pph_pain_low')}</Text>
               </View>
               <View style={styles.legendItem}>
                 <View style={[styles.legendDot, { backgroundColor: colors.primaryMid }]} />
-                <Text style={styles.legendText}>Moderate</Text>
+                <Text style={styles.legendText}>{t('pph_pain_moderate')}</Text>
               </View>
               <View style={styles.legendItem}>
                 <View style={[styles.legendDot, { backgroundColor: colors.primary }]} />
-                <Text style={styles.legendText}>Sharp</Text>
+                <Text style={styles.legendText}>{t('pph_pain_sharp')}</Text>
               </View>
             </View>
           </GlassCard>
@@ -224,7 +222,7 @@ export default function PainHistoryScreen() {
                 <View style={[styles.zoneBadge, { backgroundColor: colorFor(z.avg * 2) }]} />
                 <View style={{ flex: 1 }}>
                   <Text style={styles.zoneName}>{z.zone}</Text>
-                  <Text style={styles.zoneMeta}>Average {z.avg}/10</Text>
+                  <Text style={styles.zoneMeta}>{t('pph_avg_z', { avg: String(z.avg) })}</Text>
                 </View>
                 <Text style={[styles.zoneTrend, z.trend === 'down' ? styles.zoneTrendDown : styles.zoneTrendFlat]}>
                   {z.trend === 'down' ? '↓ Easing' : '→ Steady'}

@@ -25,6 +25,7 @@ import type { GlyphName } from '../../components/ui';
 import type { HaloTone } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useOnboarding } from '../../lib/store/onboarding';
+import { t } from '../../lib/i18n';
 import { useUserId } from '../../lib/store/session';
 
 const ROUTINES: ReadonlyArray<{
@@ -39,9 +40,9 @@ const ROUTINES: ReadonlyArray<{
 ];
 
 const NUMBERS: ReadonlyArray<{ value: string; label: string }> = [
-  { value: '14', label: 'EXERCISES' },
-  { value: '2',  label: 'MINUTES A DAY' },
-  { value: '14', label: 'DAYS TO RESULTS' },
+  { value: '14', label: t('onb_plan_stat_exercises') },
+  { value: '2',  label: t('onb_plan_stat_min_per_day') },
+  { value: '14', label: t('onb_plan_stat_days_to_results') },
 ];
 
 export default function PlanScreen() {
@@ -91,6 +92,7 @@ export default function PlanScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/onboarding/welcome');
   };
   const cont = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -118,15 +120,12 @@ export default function PlanScreen() {
           showsVerticalScrollIndicator={false}
         >
           <Animated.View style={[styles.eyebrowRow, eyebrowStyle]}>
-            <Eyebrow variant="accent">BUILT FOR YOU</Eyebrow>
+            <Eyebrow variant="accent">{t('onb_plan_eyebrow')}</Eyebrow>
           </Animated.View>
 
           <Animated.View style={[styles.head, headStyle]}>
-            <Text style={styles.title}>Your program{'\n'}is ready.</Text>
-            <Text style={styles.sub}>
-              Three short routines, picked for the zones you{'\n'}
-              flagged. Gentle enough to do between tabs.
-            </Text>
+            <Text style={styles.title}>{t('onb_plan_title')}</Text>
+            <Text style={styles.sub}>{t('onb_plan_sub')}</Text>
           </Animated.View>
 
           <Animated.View style={[styles.routines, routinesStyle]}>
@@ -144,7 +143,7 @@ export default function PlanScreen() {
                     <View style={styles.routineText}>
                       <Text style={styles.routineName}>{r.name}</Text>
                       <Text style={styles.routineHint}>
-                        {i === 0 ? 'Based on your neck answers' : i === 1 ? 'Desk-posture counter' : 'Screen recovery'}
+                        {i === 0 ? t('plan_step_neck') : i === 1 ? t('plan_step_posture') : t('plan_step_recovery')}
                       </Text>
                     </View>
                     <View style={styles.durationPill}>
@@ -178,7 +177,7 @@ export default function PlanScreen() {
           pointerEvents="box-none"
         >
           <PillCTA variant="primary" size="lg" icon="check" iconBg breath onPress={cont}>
-            Continue
+            {t('onb_plan_cta')}
           </PillCTA>
         </Animated.View>
       </View>

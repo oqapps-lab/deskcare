@@ -53,3 +53,10 @@ icons/u7799383528_*.png
 # .p12 password.
 credentials.json
 credentials/
+
+# Local EAS build artifacts
+build-*.ipa
+build-*.apk
+build-*.aab
+*.ts.bak
+.claude/scheduled_tasks.lock

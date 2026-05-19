@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
@@ -28,10 +28,19 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 export default function MilestoneScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
+  // Real stats arrive as params from whoever triggered the milestone
+  // (typically the complete-screen + a streak >= 7 check). Fall back to
+  // generic "—" when deep-linked without context so we never claim fake
+  // numbers to the user.
+  const params = useLocalSearchParams<{ streak?: string; minutes?: string; moves?: string }>();
+  const streakStr = typeof params.streak === 'string' && params.streak ? params.streak : '—';
+  const minutesStr = typeof params.minutes === 'string' && params.minutes ? params.minutes : '—';
+  const movesStr = typeof params.moves === 'string' && params.moves ? params.moves : '—';
 
   const scale = useSharedValue(0.8);
   const opacity = useSharedValue(0);
@@ -93,36 +102,33 @@ export default function MilestoneScreen() {
             <Circle cx="110" cy="110" r="104" fill="url(#ms-burst)" />
           </Svg>
           <View style={styles.numberOverlay} pointerEvents="none">
-            <Text style={styles.bigNumber}>7</Text>
-            <Text style={styles.daysLabel}>DAYS</Text>
+            <Text style={styles.bigNumber}>{streakStr}</Text>
+            <Text style={styles.daysLabel}>{t('milestone_days_label')}</Text>
           </View>
         </Animated.View>
 
         <Animated.View style={contentStyle}>
-          <Eyebrow variant="accent">MILESTONE UNLOCKED</Eyebrow>
-          <Text style={styles.title}>A week of small{'\n'}releases.</Text>
-          <Text style={styles.sub}>
-            You've spent 14 minutes this week undoing desk tension.{'\n'}
-            That's exactly how habits start.
-          </Text>
+          <Eyebrow variant="accent">{t('milestone_eyebrow')}</Eyebrow>
+          <Text style={styles.title}>{t('milestone_title')}</Text>
+          <Text style={styles.sub}>{t('milestone_sub')}</Text>
 
           <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient decorativeCorner>
             <View style={styles.factsRow}>
-              <Fact v="7"  l="DAYS" />
+              <Fact v={streakStr}  l={t('milestone_stat_days')} />
               <Sep />
-              <Fact v="14" l="MINUTES" />
+              <Fact v={minutesStr} l={t('milestone_stat_minutes')} />
               <Sep />
-              <Fact v="21" l="MOVES" />
+              <Fact v={movesStr} l={t('milestone_stat_moves')} />
             </View>
           </GlassCard>
         </Animated.View>
 
         <View style={styles.ctaBlock}>
           <PillCTA variant="primary" size="lg" breath onPress={share}>
-            Share this
+            {t('milestone_cta_share')}
           </PillCTA>
           <Pressable hitSlop={12} onPress={close} style={{ marginTop: spacing.md }}>
-            <Text style={styles.closeLink}>Back to home</Text>
+            <Text style={styles.closeLink}>{t('milestone_cta_back')}</Text>
           </Pressable>
         </View>
       </View>

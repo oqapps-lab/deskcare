@@ -38,17 +38,18 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 type Plan = 'yearly' | 'monthly' | 'weekly';
 
 const TIMELINE = [
-  { marker: 'Today',  title: 'Full access',   sub: 'Every zone, every routine — start right now.' },
-  { marker: 'Day 5',  title: 'We remind you', sub: 'A gentle reminder before the trial ends. Never a surprise.' },
-  { marker: 'Day 7',  title: 'Billing begins', sub: 'Cancel any time in settings before day 7 and pay nothing.' },
+  { marker: t('pw_today_eyebrow'),  title: t('pw_today_title'),   sub: t('pw_today_body') },
+  { marker: t('pw_day5_eyebrow'),   title: t('pw_day5_title'),    sub: t('pw_day5_body') },
+  { marker: t('pw_day7_eyebrow'),   title: t('pw_day7_title'),    sub: t('pw_day7_body') },
 ];
 
 const BENEFITS = [
-  'Personal routines by your pain zones',
+  t('paywall_feature_zones'),
   'All zones, every program unlocked',
   'Sciatica program + symptom check-in',
   'Pain tracking & weekly insights',
@@ -164,7 +165,7 @@ export default function PaywallScreen() {
           onPress={close}
           hitSlop={12}
           accessibilityRole="button"
-          accessibilityLabel="Close paywall"
+          accessibilityLabel={t('pw_close_label')}
         >
           <View style={styles.closeBtn}>
             <Glyph name="close-x" size={16} color={colors.inkMuted} />
@@ -174,7 +175,9 @@ export default function PaywallScreen() {
 
       <View style={styles.wrap}>
         <ScrollView
-          contentContainerStyle={{
+          removeClippedSubviews={true}
+        scrollEventThrottle={16}
+        contentContainerStyle={{
             paddingTop: insets.top + spacing.xxxl + spacing.md,
             paddingBottom: insets.bottom + 260,
             paddingHorizontal: spacing.xxl,
@@ -182,10 +185,10 @@ export default function PaywallScreen() {
           showsVerticalScrollIndicator={false}
         >
           <Animated.View style={[styles.head, headStyle]}>
-            <Eyebrow variant="accent">YOUR 14-DAY PROGRAM</Eyebrow>
+            <Eyebrow variant="accent">{t('pw_eyebrow')}</Eyebrow>
             <View style={{ height: spacing.sm }} />
-            <Text style={styles.title}>Your program{'\n'}is waiting.</Text>
-            <Text style={styles.sub}>Keep going past day 7.</Text>
+            <Text style={styles.title}>{t('pw_title')}</Text>
+            <Text style={styles.sub}>{t('pw_hint')}</Text>
           </Animated.View>
 
           <Animated.View style={[styles.timelineWrap, contentStyle]}>
@@ -233,7 +236,7 @@ export default function PaywallScreen() {
           </Animated.View>
 
           <Animated.View style={[styles.plansWrap, contentStyle]}>
-            <Pressable onPress={() => pickPlan('yearly')} accessibilityRole="button" accessibilityLabel="Yearly — $2.49 per month">
+            <Pressable onPress={() => pickPlan('yearly')} accessibilityRole="button" accessibilityLabel={t('pw_plan_yearly')}>
               <View style={[styles.planYearly, plan === 'yearly' && styles.planYearlyActive]}>
                 {plan === 'yearly' && (
                   <LinearGradient
@@ -248,11 +251,11 @@ export default function PaywallScreen() {
                     {plan === 'yearly' && <View style={styles.planRadioDot} />}
                   </View>
                   <View style={styles.planMain}>
-                    <Text style={styles.planTitle}>Yearly — $2.49 / month</Text>
-                    <Text style={styles.planSub}>$29.99 billed once a year</Text>
+                    <Text style={styles.planTitle}>{t('pw_plan_yearly')}</Text>
+                    <Text style={styles.planSub}>{t('pw_plan_yearly_billed')}</Text>
                   </View>
                   <View style={styles.savingBadge}>
-                    <Text style={styles.savingBadgeText}>SAVE 58%</Text>
+                    <Text style={styles.savingBadgeText}>{t('pw_save_badge')}</Text>
                   </View>
                 </View>
               </View>
@@ -260,15 +263,15 @@ export default function PaywallScreen() {
 
             <View style={{ height: spacing.sm }} />
 
-            <Pressable onPress={() => pickPlan('monthly')} accessibilityRole="button" accessibilityLabel="Monthly — $4.99 per month">
+            <Pressable onPress={() => pickPlan('monthly')} accessibilityRole="button" accessibilityLabel={t('pw_plan_monthly')}>
               <View style={[styles.planMonthly, plan === 'monthly' && styles.planMonthlyActive]}>
                 <View style={styles.planRow}>
                   <View style={styles.planRadio}>
                     {plan === 'monthly' && <View style={styles.planRadioDot} />}
                   </View>
                   <View style={styles.planMain}>
-                    <Text style={[styles.planTitle, styles.planTitleMonthly]}>Monthly — $4.99 / month</Text>
-                    <Text style={styles.planSub}>Cancel any time.</Text>
+                    <Text style={[styles.planTitle, styles.planTitleMonthly]}>{t('pw_plan_monthly')}</Text>
+                    <Text style={styles.planSub}>{t('pw_plan_monthly_billed')}</Text>
                   </View>
                 </View>
               </View>
@@ -276,15 +279,15 @@ export default function PaywallScreen() {
 
             <View style={{ height: spacing.sm }} />
 
-            <Pressable onPress={() => pickPlan('weekly')} accessibilityRole="button" accessibilityLabel="Weekly — $1.99 per week">
+            <Pressable onPress={() => pickPlan('weekly')} accessibilityRole="button" accessibilityLabel={t('pw_plan_weekly')}>
               <View style={[styles.planMonthly, plan === 'weekly' && styles.planMonthlyActive]}>
                 <View style={styles.planRow}>
                   <View style={styles.planRadio}>
                     {plan === 'weekly' && <View style={styles.planRadioDot} />}
                   </View>
                   <View style={styles.planMain}>
-                    <Text style={[styles.planTitle, styles.planTitleMonthly]}>Weekly — $1.99 / week</Text>
-                    <Text style={styles.planSub}>Try a week, cancel any time.</Text>
+                    <Text style={[styles.planTitle, styles.planTitleMonthly]}>{t('pw_plan_weekly')}</Text>
+                    <Text style={styles.planSub}>{t('pw_plan_weekly_billed')}</Text>
                   </View>
                 </View>
               </View>
@@ -305,9 +308,9 @@ export default function PaywallScreen() {
               hitSlop={10}
               onPress={restore}
               accessibilityRole="button"
-              accessibilityLabel="Restore purchase"
+              accessibilityLabel={t('common_restore_purchase')}
             >
-              <Text style={styles.legalLink}>Restore purchase</Text>
+              <Text style={styles.legalLink}>{t('common_restore_purchase')}</Text>
             </Pressable>
             <View style={styles.legalDotDivider} />
             <Pressable
@@ -317,9 +320,9 @@ export default function PaywallScreen() {
                 Linking.openURL(LEGAL_URLS.terms);
               }}
               accessibilityRole="button"
-              accessibilityLabel="Terms of service"
+              accessibilityLabel={t('common_terms_of_service')}
             >
-              <Text style={styles.legalLink}>Terms</Text>
+              <Text style={styles.legalLink}>{t('common_terms')}</Text>
             </Pressable>
             <View style={styles.legalDotDivider} />
             <Pressable
@@ -329,9 +332,9 @@ export default function PaywallScreen() {
                 Linking.openURL(LEGAL_URLS.privacy);
               }}
               accessibilityRole="button"
-              accessibilityLabel="Privacy policy"
+              accessibilityLabel={t('common_privacy_policy')}
             >
-              <Text style={styles.legalLink}>Privacy</Text>
+              <Text style={styles.legalLink}>{t('common_privacy')}</Text>
             </Pressable>
           </Animated.View>
         </ScrollView>
@@ -351,15 +354,15 @@ export default function PaywallScreen() {
             pointerEvents="none"
           />
           <PillCTA variant="primary" size="lg" breath onPress={begin}>
-            Begin 7 days free
+            {t('pw_cta')}
           </PillCTA>
           <View style={{ height: spacing.xs }} />
           <Text style={styles.afterText}>
             {plan === 'yearly'
-              ? 'Then $29.99 / year · cancel anytime'
+              ? t('pw_cta_sub')
               : plan === 'monthly'
-                ? 'Then $4.99 / month · cancel anytime'
-                : 'Then $1.99 / week · cancel anytime'}
+                ? t('pw_cta_sub_monthly')
+                : t('pw_cta_sub_weekly')}
           </Text>
         </Animated.View>
       </View>

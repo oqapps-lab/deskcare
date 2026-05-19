@@ -1,6 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Circle, Defs, Path, RadialGradient as SvgRadialGradient, Rect, Stop } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -12,16 +12,24 @@ import {
   Glyph,
 } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
-const TARGETS = [
-  { id: 'story',     label: 'Instagram Story' },
-  { id: 'feed',      label: 'Instagram Feed' },
-  { id: 'message',   label: 'Messages' },
-  { id: 'more',      label: 'More...' },
+const TARGETS: { id: string; labelKey: 'share_instagram_story' | 'share_instagram_feed' | 'share_messages' | 'share_more' }[] = [
+  { id: 'story',     labelKey: 'share_instagram_story' },
+  { id: 'feed',      labelKey: 'share_instagram_feed' },
+  { id: 'message',   labelKey: 'share_messages' },
+  { id: 'more',      labelKey: 'share_more' },
 ];
 
 export default function ShareScreen() {
   const insets = useSafeAreaInsets();
+  // Real stats from caller. Fall back to "—" when deep-linked without
+  // context so we don't fake numbers in the share poster.
+  const params = useLocalSearchParams<{ streak?: string; minutes?: string; moves?: string; week?: string }>();
+  const streakStr = typeof params.streak === 'string' && params.streak ? params.streak : '—';
+  const minutesStr = typeof params.minutes === 'string' && params.minutes ? params.minutes : '—';
+  const movesStr = typeof params.moves === 'string' && params.moves ? params.moves : '—';
+  const weekStr = typeof params.week === 'string' && params.week ? params.week : '1';
 
   const close = () => {
     Haptics.selectionAsync();
@@ -40,7 +48,7 @@ export default function ShareScreen() {
       <BgPattern variant="dots" opacity={0.04} tone="coral" />
 
       <View style={[styles.closeWrap, { top: insets.top + spacing.sm }]}>
-        <Pressable onPress={close} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close share sheet">
+        <Pressable onPress={close} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('common_close')}>
           <View style={styles.closeBtn}>
             <Glyph name="close-x" size={16} color={colors.inkMuted} />
           </View>
@@ -48,8 +56,8 @@ export default function ShareScreen() {
       </View>
 
       <View style={[styles.root, { paddingTop: insets.top + spacing.huge, paddingBottom: insets.bottom + spacing.xxxl }]}>
-        <Eyebrow variant="accent">SHARE YOUR WEEK</Eyebrow>
-        <Text style={styles.title}>A little proof, for{'\n'}the record.</Text>
+        <Eyebrow variant="accent">{t('share_eyebrow')}</Eyebrow>
+        <Text style={styles.title}>{t('share_title')}</Text>
 
         {/* Poster preview card */}
         <View style={styles.posterWrap}>
@@ -67,15 +75,15 @@ export default function ShareScreen() {
               <Circle cx="60"  cy="290" r="56" fill={colors.primaryLight} opacity="0.28" />
             </Svg>
             <View style={styles.posterContent} pointerEvents="none">
-              <Text style={styles.posterEyebrow}>DESKCARE · WEEK 1</Text>
-              <Text style={styles.posterNumber}>7</Text>
-              <Text style={styles.posterSub}>days of small releases</Text>
+              <Text style={styles.posterEyebrow}>{t('share_poster_eyebrow', { n: weekStr })}</Text>
+              <Text style={styles.posterNumber}>{streakStr}</Text>
+              <Text style={styles.posterSub}>{t('share_poster_sub')}</Text>
               <View style={styles.posterFacts}>
-                <PosterFact v="14" l="MIN" />
+                <PosterFact v={minutesStr} l={t('share_stat_min')} />
                 <PosterSep />
-                <PosterFact v="21" l="MOVES" />
+                <PosterFact v={movesStr} l={t('share_stat_moves')} />
                 <PosterSep />
-                <PosterFact v="6"  l="STREAK" />
+                <PosterFact v={streakStr}  l={t('share_stat_streak')} />
               </View>
             </View>
           </View>
@@ -83,23 +91,23 @@ export default function ShareScreen() {
 
         <Pressable onPress={copy} hitSlop={8} style={({ pressed }) => [styles.copyLink, pressed && styles.pressed]}>
           <Glyph name="check" size={14} color={colors.primaryMid} />
-          <Text style={styles.copyLinkText}>Copy link</Text>
+          <Text style={styles.copyLinkText}>{t('share_copy_link')}</Text>
         </Pressable>
 
         {/* Target grid */}
         <View style={styles.targetsRow}>
-          {TARGETS.map((t) => (
+          {TARGETS.map((target) => (
             <Pressable
-              key={t.id}
-              onPress={() => pickTarget(t.id)}
+              key={target.id}
+              onPress={() => pickTarget(target.id)}
               accessibilityRole="button"
-              accessibilityLabel={t.label}
+              accessibilityLabel={t(target.labelKey)}
               style={({ pressed }) => [styles.target, pressed && styles.pressed]}
             >
               <View style={styles.targetCircle}>
-                <TargetGlyph id={t.id} />
+                <TargetGlyph id={target.id} />
               </View>
-              <Text style={styles.targetLabel}>{t.label}</Text>
+              <Text style={styles.targetLabel}>{t(target.labelKey)}</Text>
             </Pressable>
           ))}
         </View>

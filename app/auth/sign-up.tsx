@@ -17,6 +17,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useAuth } from '../../hooks/useAuth';
+import { t } from '../../lib/i18n';
 
 export default function SignUpScreen() {
   const insets = useSafeAreaInsets();
@@ -35,6 +36,7 @@ export default function SignUpScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/onboarding/welcome');
   };
   const create = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -83,15 +85,15 @@ export default function SignUpScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <Eyebrow variant="accent">CREATE AN ACCOUNT</Eyebrow>
-          <Text style={styles.title}>Save your plan{'\n'}across devices.</Text>
-          <Text style={styles.sub}>Your streak, pain history, and unlocked programs stay with you.</Text>
+          <Text style={styles.title}>{t('auth_signup_title')}</Text>
+          <Text style={styles.sub}>{t('auth_signup_sub')}</Text>
 
           <View style={styles.form}>
             <Label>EMAIL</Label>
             <TextInput
               value={email}
               onChangeText={setEmail}
-              placeholder="you@example.com"
+              placeholder={t('auth_placeholder_email')}
               placeholderTextColor={colors.inkSubtle}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -99,12 +101,13 @@ export default function SignUpScreen() {
               style={styles.input}
             />
 
+
             <View style={{ height: spacing.md }} />
             <Label>PASSWORD</Label>
             <TextInput
               value={password}
               onChangeText={setPassword}
-              placeholder="6+ characters"
+              placeholder={t('auth_placeholder_password')}
               placeholderTextColor={colors.inkSubtle}
               secureTextEntry
               autoCapitalize="none"
@@ -116,19 +119,19 @@ export default function SignUpScreen() {
             <TextInput
               value={confirm}
               onChangeText={setConfirm}
-              placeholder="Match the password above"
+              placeholder={t('auth_signup_pwd_match_hint')}
               placeholderTextColor={colors.inkSubtle}
               secureTextEntry
               autoCapitalize="none"
               style={[styles.input, mismatch && styles.inputError]}
             />
-            {mismatch && <Text style={styles.errorText}>Passwords don't match yet.</Text>}
+            {mismatch && <Text style={styles.errorText}>{t('auth_signup_pwd_mismatch')}</Text>}
           </View>
 
           <View style={styles.marketingRow}>
             <View style={{ flex: 1 }}>
-              <Text style={styles.marketingTitle}>Gentle updates</Text>
-              <Text style={styles.marketingSub}>Research recaps and new routines — weekly, never daily.</Text>
+              <Text style={styles.marketingTitle}>{t('auth_signup_marketing_title')}</Text>
+              <Text style={styles.marketingSub}>{t('auth_signup_marketing_sub')}</Text>
             </View>
             <ToggleSwitch value={marketing} onChange={setMarketing} />
           </View>
@@ -143,7 +146,7 @@ export default function SignUpScreen() {
             loading={loading}
             onPress={create}
           >
-            Create account
+            {t('auth_signup_btn')}
           </PillCTA>
           {error && <Text style={styles.authError}>{error}</Text>}
 
@@ -163,7 +166,7 @@ export default function SignUpScreen() {
           {!!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID && (
             <Pressable onPress={google} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
               <GoogleGlyph />
-              <Text style={styles.oauthLabel}>Sign up with Google</Text>
+              <Text style={styles.oauthLabel}>{t('auth_signup_btn_google')}</Text>
             </Pressable>
           )}
 
@@ -176,7 +179,7 @@ export default function SignUpScreen() {
                 Linking.openURL(LEGAL_URLS.terms);
               }}
             >
-              Terms
+              {t('common_terms')}
             </Text>
             {' '}and{' '}
             <Text
@@ -186,14 +189,14 @@ export default function SignUpScreen() {
                 Linking.openURL(LEGAL_URLS.privacy);
               }}
             >
-              Privacy Policy
+              {t('common_privacy_policy')}
             </Text>
             .
           </Text>
 
           <Pressable onPress={signIn} hitSlop={10} style={styles.switchRow}>
             <Text style={styles.switchText}>
-              Already have an account? <Text style={styles.switchAccent}>Sign in</Text>
+              Already have an account? <Text style={styles.switchAccent}>{t('auth_signup_existing_link')}</Text>
             </Text>
           </Pressable>
         </ScrollView>

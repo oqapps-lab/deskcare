@@ -13,6 +13,7 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 export default function RateAppScreen() {
   const insets = useSafeAreaInsets();
@@ -49,7 +50,7 @@ export default function RateAppScreen() {
       <View style={[styles.root, { paddingTop: insets.top + spacing.huge, paddingBottom: insets.bottom + spacing.xxxl }]}>
         <View>
           <Eyebrow variant="accent">QUICK FAVOR</Eyebrow>
-          <Text style={styles.title}>How are we doing?</Text>
+          <Text style={styles.title}>{t('rate_title')}</Text>
           <Text style={styles.sub}>
             A few taps — it shapes what we build next. No popups, we promise.
           </Text>
@@ -75,11 +76,11 @@ export default function RateAppScreen() {
 
         <View style={styles.ctaBlock}>
           <PillCTA variant="primary" size="lg" breath={rating > 0} onPress={submit}>
-            {rating === 0 ? 'Maybe later' : rating >= 4 ? 'Rate on the App Store' : 'Send feedback'}
+            {rating === 0 ? t('rate_app_cta_maybe_later') : rating >= 4 ? t('rate_app_cta_rate') : t('rate_app_cta_feedback')}
           </PillCTA>
           {rating > 0 && (
             <Pressable hitSlop={12} onPress={later} style={{ marginTop: spacing.md }}>
-              <Text style={styles.laterLink}>Later</Text>
+              <Text style={styles.laterLink}>{t('rate_later')}</Text>
             </Pressable>
           )}
         </View>

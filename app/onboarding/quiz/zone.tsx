@@ -25,20 +25,21 @@ import {
 } from '../../../components/ui';
 import { colors, spacing, typeScale } from '../../../constants/tokens';
 import { useOnboarding } from '../../../lib/store/onboarding';
+import { t } from '../../../lib/i18n';
 
 type Zone = 'neck' | 'back' | 'eyes' | 'wrists';
 
-const TILES: ReadonlyArray<{
+const buildTiles = (): ReadonlyArray<{
   id: Zone;
   label: string;
   tone: 'coral' | 'peach' | 'lavender' | 'mint';
   tint: 'coral' | 'peach' | 'lavender' | 'mint';
   icon: React.ReactNode;
-}> = [
-  { id: 'neck',   label: 'Neck',            tone: 'coral',    tint: 'coral',    icon: <NeckIcon /> },
-  { id: 'back',   label: 'Back & lower',    tone: 'peach',    tint: 'peach',    icon: <BackIcon /> },
-  { id: 'eyes',   label: 'Eyes',            tone: 'lavender', tint: 'lavender', icon: <EyesIcon /> },
-  { id: 'wrists', label: 'Wrists',          tone: 'mint',     tint: 'mint',     icon: <WristIcon /> },
+}> => [
+  { id: 'neck',   label: t('zone_neck'),   tone: 'coral',    tint: 'coral',    icon: <NeckIcon /> },
+  { id: 'back',   label: t('zone_back'),   tone: 'peach',    tint: 'peach',    icon: <BackIcon /> },
+  { id: 'eyes',   label: t('zone_eyes'),   tone: 'lavender', tint: 'lavender', icon: <EyesIcon /> },
+  { id: 'wrists', label: t('zone_wrists'), tone: 'mint',     tint: 'mint',     icon: <WristIcon /> },
 ];
 
 export default function QuizZoneScreen() {
@@ -80,6 +81,7 @@ export default function QuizZoneScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/onboarding/welcome');
   };
   const next = () => {
     if (selected.size === 0 && !everything) return;
@@ -94,6 +96,7 @@ export default function QuizZoneScreen() {
   };
 
   const hasAny = selected.size > 0 || everything;
+  const TILES = buildTiles();
 
   return (
     <AtmosphericBackground>
@@ -104,14 +107,14 @@ export default function QuizZoneScreen() {
 
       <Animated.View style={[styles.root, contentStyle, { paddingBottom: insets.bottom + 160 }]}>
         <View style={styles.progressBlock}>
-          <Eyebrow>STEP 1 OF 4</Eyebrow>
+          <Eyebrow>{t('quiz_step_1_of_4')}</Eyebrow>
           <View style={{ height: spacing.sm }} />
-          <ProgressBar value={0.25} accessibilityLabel="Quiz progress: step 1 of 4" />
+          <ProgressBar value={0.25} accessibilityLabel={t('quiz_step_1_of_4')} />
         </View>
 
         <View style={styles.copy}>
-          <Text style={styles.title}>Where does it{'\n'}hurt most?</Text>
-          <Text style={styles.sub}>You can choose more than one.</Text>
+          <Text style={styles.title}>{t('quiz_zone_title')}</Text>
+          <Text style={styles.sub}>{t('quiz_zone_sub')}</Text>
         </View>
 
         <View style={styles.grid}>
@@ -145,7 +148,7 @@ export default function QuizZoneScreen() {
           </View>
           <View style={styles.everythingRow}>
             <PillChip active={everything} onPress={toggleEverything} size="md">
-              Everything, honestly
+              {t('zone_all')}
             </PillChip>
           </View>
         </View>
@@ -161,13 +164,13 @@ export default function QuizZoneScreen() {
           onPress={next}
           disabled={!hasAny}
           breath={hasAny}
-          accessibilityLabel={hasAny ? 'Next step' : 'Pick at least one zone'}
+          accessibilityLabel={t('quiz_next')}
         >
-          Next
+          {t('quiz_next')}
         </PillCTA>
         <View style={{ height: spacing.sm }} />
         <Text style={styles.skip} onPress={skip}>
-          Skip for now
+          {t('quiz_skip')}
         </Text>
       </Animated.View>
     </AtmosphericBackground>

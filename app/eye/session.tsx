@@ -28,6 +28,7 @@ import { ProgressDots } from '../../components/ui/ProgressDots';
 import { PillCTA } from '../../components/ui/PillCTA';
 import { IconHalo } from '../../components/ui/IconHalo';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -92,6 +93,7 @@ export default function EyeSessionScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/home');
   };
 
   const finish = () => {
@@ -104,7 +106,7 @@ export default function EyeSessionScreen() {
       <BgPattern variant="dots" opacity={0.05} tone="lavender" />
       <DecorativeArc position="top-right" tone="lavender" size={240} opacity={0.18} />
 
-      <NavHeader title="Eye exercise" onBack={back} />
+      <NavHeader title={t('nav_eye_exercise')} onBack={back} />
 
       <View
         style={[
@@ -115,7 +117,7 @@ export default function EyeSessionScreen() {
         <View style={styles.topCluster}>
           <Eyebrow>STEP 1 OF 5</Eyebrow>
           <View style={{ height: spacing.sm }} />
-          <Text style={styles.stepTitle}>Distance focus</Text>
+          <Text style={styles.stepTitle}>{t('eye_session_label')}</Text>
           <View style={{ height: spacing.sm }} />
           <View style={styles.dotsCluster}>
             <ProgressDots count={5} active={0} />
@@ -186,9 +188,7 @@ export default function EyeSessionScreen() {
         </View>
 
         <View style={styles.hintCluster}>
-          <Text style={styles.hint}>
-            Look at an object{'\n'}20 ft away from you
-          </Text>
+          <Text style={styles.hint}>{t('eye_session_title')}</Text>
         </View>
 
         <View style={styles.transportRow}>
@@ -198,7 +198,7 @@ export default function EyeSessionScreen() {
               setElapsed((e) => Math.max(0, e - 10));
             }}
             accessibilityRole="button"
-            accessibilityLabel="Rewind 10 seconds"
+            accessibilityLabel={t('eye_session_rewind')}
             style={({ pressed }) => [pressed && styles.sideBtnPressed]}
           >
             <IconHalo icon="skip-back" size="md" tone="coral" variant="glass" glow={false} />
@@ -211,12 +211,12 @@ export default function EyeSessionScreen() {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
               setPaused((p) => !p);
             }}
-            accessibilityLabel={paused ? 'Resume' : 'Pause'}
+            accessibilityLabel={paused ? t('player_a11y_resume') : t('player_a11y_pause')}
           />
           <Pressable
             onPress={finish}
             accessibilityRole="button"
-            accessibilityLabel="Finish exercise"
+            accessibilityLabel={t('eye_session_finish')}
             style={({ pressed }) => [pressed && styles.sideBtnPressed]}
           >
             <IconHalo icon="check" size="md" tone="coral" variant="glass" glow={false} />

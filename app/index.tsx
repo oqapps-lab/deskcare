@@ -14,6 +14,7 @@ import { AtmosphericBackground } from '../components/ui/AtmosphericBackground';
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
 import { supabase } from '../lib/supabase';
+import { t } from '../lib/i18n';
 
 /**
  * Splash screen — animated brand mark → auto-routes to the onboarding flow
@@ -128,7 +129,7 @@ export default function Splash() {
         <Animated.Text style={[styles.wordmark, wordStyle]}>DeskCare</Animated.Text>
         <View style={{ height: spacing.sm }} />
         <Animated.Text style={[styles.tagline, taglineStyle]}>
-          Micro-stretches at your desk
+          {t('splash_tagline')}
         </Animated.Text>
       </View>
     </AtmosphericBackground>

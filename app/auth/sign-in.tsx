@@ -15,6 +15,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useAuth } from '../../hooks/useAuth';
+import { t } from '../../lib/i18n';
 
 export default function SignInScreen() {
   const insets = useSafeAreaInsets();
@@ -32,6 +33,7 @@ export default function SignInScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/onboarding/welcome');
   };
   const signIn = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -79,15 +81,15 @@ export default function SignInScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <Eyebrow variant="accent">WELCOME BACK</Eyebrow>
-          <Text style={styles.title}>Good to see you{'\n'}again.</Text>
-          <Text style={styles.sub}>Your plan, streak, and pain history — right where you left them.</Text>
+          <Text style={styles.title}>{t('auth_signin_title')}</Text>
+          <Text style={styles.sub}>{t('auth_signin_sub')}</Text>
 
           <View style={styles.form}>
             <Label>EMAIL</Label>
             <TextInput
               value={email}
               onChangeText={setEmail}
-              placeholder="you@example.com"
+              placeholder={t('auth_placeholder_email')}
               placeholderTextColor={colors.inkSubtle}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -102,7 +104,7 @@ export default function SignInScreen() {
               <TextInput
                 value={password}
                 onChangeText={setPassword}
-                placeholder="6+ characters"
+                placeholder={t('auth_signup_pwd_match_hint')}
                 placeholderTextColor={colors.inkSubtle}
                 secureTextEntry={!showPw}
                 autoCapitalize="none"
@@ -110,12 +112,12 @@ export default function SignInScreen() {
                 style={[styles.input, { flex: 1 }]}
               />
               <Pressable hitSlop={10} onPress={() => setShowPw((s) => !s)} style={styles.pwToggle}>
-                <Text style={styles.pwToggleText}>{showPw ? 'Hide' : 'Show'}</Text>
+                <Text style={styles.pwToggleText}>{showPw ? t('common_close') : 'Show'}</Text>
               </Pressable>
             </View>
 
             <Pressable hitSlop={10} style={styles.forgot} onPress={() => Haptics.selectionAsync()}>
-              <Text style={styles.forgotText}>Forgot password?</Text>
+              <Text style={styles.forgotText}>{t('auth_signin_forgot')}</Text>
             </Pressable>
           </View>
 
@@ -129,7 +131,7 @@ export default function SignInScreen() {
             loading={loading}
             onPress={signIn}
           >
-            Sign in
+            {t('auth_signin_btn')}
           </PillCTA>
           {error && <Text style={styles.authError}>{error}</Text>}
 
@@ -149,13 +151,13 @@ export default function SignInScreen() {
           {!!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID && (
             <Pressable onPress={google} style={({ pressed }) => [styles.oauthBtn, pressed && styles.pressed]}>
               <GoogleGlyph />
-              <Text style={styles.oauthLabel}>Continue with Google</Text>
+              <Text style={styles.oauthLabel}>{t('auth_signin_btn_google')}</Text>
             </Pressable>
           )}
 
           <Pressable onPress={signUp} hitSlop={10} style={styles.switchRow}>
             <Text style={styles.switchText}>
-              New here? <Text style={styles.switchAccent}>Create an account</Text>
+              New here? <Text style={styles.switchAccent}>{t('auth_signin_create_account')}</Text>
             </Text>
           </Pressable>
         </ScrollView>

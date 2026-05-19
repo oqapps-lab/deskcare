@@ -27,6 +27,7 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 /**
  * Welcome — the first screen after splash. Quiet sell: a promise + CTA.
@@ -99,7 +100,7 @@ export default function WelcomeScreen() {
         ]}
       >
         <Animated.View style={[styles.eyebrowRow]}>
-          <Eyebrow variant="accent">DESKCARE</Eyebrow>
+          <Eyebrow variant="accent">{t('brand_eyebrow')}</Eyebrow>
         </Animated.View>
 
         <Animated.View style={[styles.illoWrap, illoStyle]}>
@@ -107,26 +108,24 @@ export default function WelcomeScreen() {
         </Animated.View>
 
         <Animated.View style={[styles.copy, headStyle]}>
-          <Text style={styles.title}>Two minutes a day.{'\n'}Your neck stops aching.</Text>
-          <Text style={styles.sub}>
-            Micro-stretches right at your desk.{'\n'}No mat. No changing clothes.
-          </Text>
+          <Text style={styles.title}>{t('welcome_title')}</Text>
+          <Text style={styles.sub}>{t('welcome_sub')}</Text>
         </Animated.View>
 
         <Animated.View style={[styles.ctaBlock, ctaStyle]}>
           <PillCTA variant="primary" size="lg" breath onPress={begin}>
-            Begin
+            {t('welcome_cta_begin')}
           </PillCTA>
           <View style={{ height: spacing.md }} />
           <Pressable
             onPress={signIn}
             hitSlop={12}
             accessibilityRole="button"
-            accessibilityLabel="Already have an account? Sign in"
+            accessibilityLabel={`${t('welcome_signin_q')} ${t('welcome_signin_link')}`}
           >
             <Text style={styles.signInLink}>
-              Already have an account?{' '}
-              <Text style={styles.signInLinkAccent}>Sign in</Text>
+              {t('welcome_signin_q')}{' '}
+              <Text style={styles.signInLinkAccent}>{t('welcome_signin_link')}</Text>
             </Text>
           </Pressable>
         </Animated.View>

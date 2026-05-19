@@ -12,6 +12,7 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 export default function StreakFreezeScreen() {
   const insets = useSafeAreaInsets();
@@ -19,6 +20,7 @@ export default function StreakFreezeScreen() {
   const use = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     if (router.canGoBack()) router.back();
+    else router.replace('/main/home');
   };
   const skip = () => {
     Haptics.selectionAsync();
@@ -50,36 +52,33 @@ export default function StreakFreezeScreen() {
 
         <View>
           <Eyebrow variant="accent">MISSED YESTERDAY?</Eyebrow>
-          <Text style={styles.title}>Protect your{'\n'}6-day streak.</Text>
-          <Text style={styles.sub}>
-            Use a freeze to pause one day without breaking the streak.{'\n'}
-            You have 2 freezes left this month.
-          </Text>
+          <Text style={styles.title}>{t('sf_title')}</Text>
+          <Text style={styles.sub}>{t('sf_body')}</Text>
 
           <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
             <View style={styles.infoRow}>
               <View style={styles.dotCoral} />
-              <Text style={styles.infoText}>Your streak stays 6 days.</Text>
+              <Text style={styles.infoText}>{t('sf_outcome_freeze')}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.infoRow}>
               <View style={styles.dotCoral} />
-              <Text style={styles.infoText}>Tomorrow picks up where you left off.</Text>
+              <Text style={styles.infoText}>{t('sf_outcome_reset')}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.infoRow}>
               <View style={styles.dotMuted} />
-              <Text style={styles.infoMuted}>Freezes reset on the 1st of next month.</Text>
+              <Text style={styles.infoMuted}>{t('sf_freezes_info')}</Text>
             </View>
           </GlassCard>
         </View>
 
         <View style={styles.ctaBlock}>
           <PillCTA variant="primary" size="lg" breath onPress={use}>
-            Use a freeze
+            {t('sf_cta')}
           </PillCTA>
           <Pressable hitSlop={12} onPress={skip} style={{ marginTop: spacing.md }}>
-            <Text style={styles.skipLink}>Let it reset</Text>
+            <Text style={styles.skipLink}>{t('sf_skip')}</Text>
           </Pressable>
         </View>
       </View>

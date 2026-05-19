@@ -17,14 +17,15 @@ import {
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
+import { t } from '../../lib/i18n';
 
 const SYMPTOMS = [
-  { id: 'shooting',   label: 'Sharp shooting down my leg',   redFlag: false },
-  { id: 'ache',       label: 'Dull ache in the lower back',  redFlag: false },
-  { id: 'standing',   label: 'Worse when I stand up',        redFlag: false },
-  { id: 'morning',    label: 'Stiff first thing in morning', redFlag: false },
-  { id: 'numb',       label: 'Numb in the foot',             redFlag: true },
-  { id: 'none',       label: 'None of these today',          redFlag: false },
+  { id: 'shooting',   label: t('pscc_opt_sharp'),        redFlag: false },
+  { id: 'ache',       label: t('pscc_opt_dull'),         redFlag: false },
+  { id: 'standing',   label: t('pscc_opt_worse_stand'),  redFlag: false },
+  { id: 'morning',    label: t('pscc_opt_stiff'),        redFlag: false },
+  { id: 'numb',       label: t('pscc_opt_numb'),         redFlag: true },
+  { id: 'none',       label: t('pscc_opt_none'),         redFlag: false },
 ];
 
 export default function SymptomCheckerScreen() {
@@ -48,6 +49,7 @@ export default function SymptomCheckerScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/programs');
   };
   const adapt = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -99,7 +101,7 @@ export default function SymptomCheckerScreen() {
       <BgPattern variant="dots" opacity={0.05} tone="coral" />
       <DecorativeArc position="top-right" tone="coral" size={220} opacity={0.18} />
 
-      <NavHeader title="Symptom check-in" onBack={back} />
+      <NavHeader title={t('nav_symptom_checkin')} onBack={back} />
 
       <ScrollView
         contentContainerStyle={{
@@ -109,8 +111,8 @@ export default function SymptomCheckerScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.title}>How is it today?</Text>
-        <Text style={styles.sub}>Pick all that apply — we'll tune today's phase.</Text>
+        <Text style={styles.title}>{t('pscc_title')}</Text>
+        <Text style={styles.sub}>{t('pscc_sub')}</Text>
 
         <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
           <View style={styles.list}>
@@ -148,18 +150,12 @@ export default function SymptomCheckerScreen() {
           <View style={styles.redFlagWrap}>
             <GlassCard tint="coral" radius="xl" padding={spacing.lg} innerGradient>
               <Eyebrow variant="accent">PLEASE PAUSE</Eyebrow>
-              <Text style={styles.redFlagTitle}>Numbness deserves a doctor's eye.</Text>
-              <Text style={styles.redFlagBody}>
-                We'll pause the program for today. If the numbness continues for
-                more than 48 hours, book a GP — it's the safest call.
-              </Text>
+              <Text style={styles.redFlagTitle}>{t('pscc_numb_warn_title')}</Text>
+              <Text style={styles.redFlagBody}>{t('pscc_numb_warn_body')}</Text>
             </GlassCard>
           </View>
         ) : (
-          <Text style={styles.footnote}>
-            We'll use your answers to choose gentler or more progressive work
-            for today. Pick honestly.
-          </Text>
+          <Text style={styles.footnote}>{t('pscc_pick_help')}</Text>
         )}
       </ScrollView>
 
@@ -171,9 +167,9 @@ export default function SymptomCheckerScreen() {
           breath={canAdapt}
           disabled={!canAdapt}
           onPress={adapt}
-          accessibilityLabel={redFlagActive ? 'Pause program' : canAdapt ? 'Adapt today' : 'Pick at least one'}
+          accessibilityLabel={redFlagActive ? t('symptom_a11y_pause') : canAdapt ? t('symptom_a11y_adapt') : t('symptom_a11y_pick')}
         >
-          {redFlagActive ? 'Pause the program' : 'Adapt today'}
+          {redFlagActive ? t('symptom_cta_pause') : t('symptom_cta_adapt')}
         </PillCTA>
       </View>
     </AtmosphericBackground>

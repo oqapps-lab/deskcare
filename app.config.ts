@@ -35,6 +35,7 @@ const config: ExpoConfig = {
   plugins: [
     'expo-router',
     'expo-apple-authentication',
+    'expo-image',
     'expo-video',
     [
       'expo-notifications',
@@ -43,7 +44,7 @@ const config: ExpoConfig = {
       },
     ],
     ...(googleIosUrlScheme
-      ? [['@react-native-google-signin/google-signin', { iosUrlScheme: googleIosUrlScheme }]]
+      ? [['@react-native-google-signin/google-signin', { iosUrlScheme: googleIosUrlScheme }] as [string, Record<string, unknown>]]
       : []),
   ],
   experiments: {

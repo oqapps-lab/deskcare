@@ -15,6 +15,7 @@ import {
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useSession } from '../../lib/store/session';
+import { t } from '../../lib/i18n';
 
 const CONFIRM_PHRASE = 'DELETE';
 
@@ -28,6 +29,7 @@ export default function DeleteAccountScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/profile');
   };
 
   const canSubmit = confirm.trim().toUpperCase() === CONFIRM_PHRASE && !loading;
@@ -38,9 +40,9 @@ export default function DeleteAccountScreen() {
       'Delete account?',
       "This permanently deletes your profile, streak, pain history, sessions, and subscription state. This can't be undone.",
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common_cancel'), style: 'cancel' },
         {
-          text: 'Delete forever',
+          text: t('common_delete_forever'),
           style: 'destructive',
           onPress: async () => {
             setLoading(true);
@@ -68,7 +70,7 @@ export default function DeleteAccountScreen() {
       <BgPattern variant="dots" opacity={0.04} tone="coral" />
       <DecorativeArc position="top-right" tone="peach" size={220} opacity={0.18} />
 
-      <NavHeader title="Delete account" onBack={back} />
+      <NavHeader title={t('ps_delete_title')} onBack={back} />
 
       <ScrollView
         contentContainerStyle={{
@@ -79,21 +81,21 @@ export default function DeleteAccountScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Eyebrow variant="accent">PERMANENT</Eyebrow>
-        <Text style={styles.title}>This deletes{'\n'}everything.</Text>
+        <Text style={styles.title}>{t('pd_title')}</Text>
         <Text style={styles.body}>
-          You're about to permanently remove:
+          {t('pd_body')}
         </Text>
 
         <GlassCard tint="cream" radius="xl" padding={spacing.lg} style={{ marginVertical: spacing.lg }}>
-          <Bullet>Your profile and onboarding answers</Bullet>
-          <Bullet>Streak, sessions, total minutes</Bullet>
-          <Bullet>Pain history (all 14-day check-ins)</Bullet>
-          <Bullet>Subscription state in our database</Bullet>
-          <Bullet>Notification reminders</Bullet>
+          <Bullet>{t('pd_bullet_profile')}</Bullet>
+          <Bullet>{t('pd_bullet_streak')}</Bullet>
+          <Bullet>{t('pd_bullet_pain')}</Bullet>
+          <Bullet>{t('pd_bullet_subscription')}</Bullet>
+          <Bullet>{t('pd_bullet_notif')}</Bullet>
         </GlassCard>
 
         <Text style={styles.body}>
-          Apple's billing isn't affected — if you have an active subscription, manage or cancel it in Settings → Apple ID → Subscriptions. We can't cancel it for you.
+          {t('pd_apple_notice')}
         </Text>
 
         <View style={{ height: spacing.lg }} />
@@ -123,13 +125,13 @@ export default function DeleteAccountScreen() {
           loading={loading}
           onPress={submit}
         >
-          Delete forever
+          {t('pd_cta_delete')}
         </PillCTA>
 
         <View style={{ height: spacing.md }} />
 
         <PillCTA variant="ghost" size="md" onPress={back}>
-          Cancel
+          {t('common_cancel')}
         </PillCTA>
       </ScrollView>
     </AtmosphericBackground>

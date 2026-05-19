@@ -27,7 +27,9 @@ export interface Exercise {
   slug: string;
   title: string;
   title_en: string | null;
+  title_i18n: Record<string, string> | null;
   description: string | null;
+  description_i18n: Record<string, string> | null;
   video_url: string | null;
   thumbnail_url: string | null;
   duration_seconds: number;
@@ -43,7 +45,9 @@ export interface Routine {
   id: string;
   slug: string;
   title: string;
+  title_i18n: Record<string, string> | null;
   description: string | null;
+  description_i18n: Record<string, string> | null;
   body_zone_id: string;
   duration_seconds: number;
   is_premium: boolean;

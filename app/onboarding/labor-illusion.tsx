@@ -24,6 +24,7 @@ import {
   Eyebrow,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -33,8 +34,8 @@ const RING_STROKE = 10;
 const CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 const STAGES = [
-  'Reading your answers',
-  'Matching exercises to your shoulders',
+  t('labor_step_reading'),
+  t('labor_step_matching'),
   'Laying out your first 14 days',
 ];
 

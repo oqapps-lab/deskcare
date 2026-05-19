@@ -17,6 +17,7 @@ import { ClayIllustration } from '../../components/ui/ClayIllustration';
 import { PillCTA } from '../../components/ui/PillCTA';
 import { Eyebrow } from '../../components/ui/Eyebrow';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 /**
  * Offline error. Terminal screen of the demo flow — "Попробовать снова"
@@ -95,10 +96,8 @@ export default function NoConnectionScreen() {
           </Animated.View>
 
           <Animated.View style={textStyle}>
-            <Text style={styles.title}>No network{'\n'}connection</Text>
-            <Text style={styles.subtitle}>
-              Check your connection or hang tight —{'\n'}we'll retry automatically
-            </Text>
+            <Text style={styles.title}>{t('nc_title')}</Text>
+            <Text style={styles.subtitle}>{t('nc_body')}</Text>
           </Animated.View>
         </View>
 
@@ -110,16 +109,16 @@ export default function NoConnectionScreen() {
             breath
             onPress={retry}
           >
-            Try again
+            {t('nc_cta_retry')}
           </PillCTA>
           <View style={{ height: spacing.md }} />
           <Pressable
             onPress={offline}
             hitSlop={12}
             accessibilityRole="button"
-            accessibilityLabel="Continue offline"
+            accessibilityLabel={t('nc_cta_offline')}
           >
-            <Text style={styles.ghostLink}>Work offline</Text>
+            <Text style={styles.ghostLink}>{t('nc_work_offline')}</Text>
           </Pressable>
         </Animated.View>
       </View>

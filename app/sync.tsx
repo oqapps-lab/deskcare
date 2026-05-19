@@ -17,6 +17,7 @@ import { PulseRings } from '../components/ui/PulseRings';
 import { Eyebrow } from '../components/ui/Eyebrow';
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { supabase } from '../lib/supabase';
+import { t } from '../lib/i18n';
 
 /**
  * Loading / sync screen. Shown briefly between Pain Check-in and home so
@@ -113,10 +114,8 @@ export default function SyncScreen() {
         </View>
 
         <View style={styles.stackBottom}>
-          <Text style={styles.title}>Syncing{'\n'}your data</Text>
-          <Text style={styles.subtitle}>
-            Saving your stretch progress and{'\n'}reminder preferences
-          </Text>
+          <Text style={styles.title}>{t('sync_title')}</Text>
+          <Text style={styles.subtitle}>{t('sync_sub')}</Text>
         </View>
       </Animated.View>
     </AtmosphericBackground>

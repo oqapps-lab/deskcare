@@ -8,7 +8,6 @@ import {
   AtmosphericBackground,
   BgPattern,
   DecorativeArc,
-  GlassCard,
   PillChip,
   PremiumLock,
   TabBar,
@@ -18,6 +17,7 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useExercises } from '../../hooks/useContent';
 import { useIsPremium } from '../../lib/premium';
 import type { BodyZoneSlug } from '../../lib/types/db';
+import { t, i18nField } from '../../lib/i18n';
 
 interface Filter {
   label: string;
@@ -25,12 +25,12 @@ interface Filter {
 }
 
 const FILTERS: ReadonlyArray<Filter> = [
-  { label: 'All',       zone: 'all' },
-  { label: 'Neck',      zone: 'neck' },
-  { label: 'Back',      zone: 'back' },
-  { label: 'Eyes',      zone: 'eyes' },
-  { label: 'Wrists',    zone: 'wrists' },
-  { label: 'Full body', zone: 'full_body' },
+  { label: t('mlib_filter_all'),  zone: 'all' },
+  { label: t('zone_neck'),        zone: 'neck' },
+  { label: t('zone_back'),        zone: 'back' },
+  { label: t('zone_eyes'),        zone: 'eyes' },
+  { label: t('zone_wrists'),      zone: 'wrists' },
+  { label: t('mlib_filter_full'), zone: 'full_body' },
 ];
 
 const poseFor = (code: string): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch' => {
@@ -56,7 +56,7 @@ export default function LibraryScreen() {
     const q = query.toLowerCase();
     return exercises.filter(
       (e) =>
-        e.title.toLowerCase().includes(q) ||
+        i18nField(e, 'title').toLowerCase().includes(q) ||
         (e.title_en?.toLowerCase().includes(q) ?? false) ||
         e.code.toLowerCase().includes(q),
     );
@@ -80,8 +80,8 @@ export default function LibraryScreen() {
           },
         ]}
       >
-        <Text style={styles.title}>Library</Text>
-        <Text style={styles.sub}>Short exercises by zone — {exercises?.length ?? '…'} atoms.</Text>
+        <Text style={styles.title}>{t('mlib_title')}</Text>
+        <Text style={styles.sub}>{t('mlib_sub_count', { count: String(exercises?.length ?? '…') })}</Text>
 
         <View style={styles.searchRow}>
           <Svg width={18} height={18} viewBox="0 0 18 18">
@@ -96,7 +96,7 @@ export default function LibraryScreen() {
           <TextInput
             value={query}
             onChangeText={setQuery}
-            placeholder="Search by name, code, or zone"
+            placeholder={t('mlib_search_placeholder')}
             placeholderTextColor={colors.inkSubtle}
             style={styles.searchInput}
           />
@@ -122,7 +122,7 @@ export default function LibraryScreen() {
 
         {error && (
           <View style={styles.statusWrap}>
-            <Text style={styles.statusError}>Could not load exercises: {error}</Text>
+            <Text style={styles.statusError}>{t('mlib_error_prefix')} {error}</Text>
           </View>
         )}
 
@@ -138,35 +138,31 @@ export default function LibraryScreen() {
               </View>
             ) : list.length === 0 ? (
               <View style={styles.emptyWrap}>
-                <Text style={styles.emptyTitle}>Nothing matches that.</Text>
-                <Text style={styles.emptySub}>Try another zone or clear filters.</Text>
+                <Text style={styles.emptyTitle}>{t('mlib_empty_title')}</Text>
+                <Text style={styles.emptySub}>{t('mlib_empty_sub')}</Text>
               </View>
             ) : (
-              list.map((e) => (
+              list.map((e, i) => (
                 <Pressable
                   key={e.id}
                   onPress={() => open(e.slug, !!e.is_premium && !isPremium)}
                   accessibilityRole="button"
-                  accessibilityLabel={`${e.title}, ${formatDuration(e.duration_seconds)}, ${e.code}${e.is_premium ? ', premium' : ''}`}
+                  accessibilityLabel={`${i18nField(e, 'title')}, ${formatDuration(e.duration_seconds)}, ${e.code}${e.is_premium ? ', premium' : ''}`}
                   style={({ pressed }) => [pressed && styles.pressed]}
                 >
-                  <View style={styles.rowWrap}>
-                    <GlassCard tint={e.is_premium ? 'peach' : 'cream'} radius="xl" padding={spacing.md}>
-                      <View style={styles.row}>
-                        <VideoPlaceholder pose={poseFor(e.code)} compact />
-                        <View style={styles.rowText}>
-                          <View style={styles.rowTitleRow}>
-                            <Text style={styles.rowName} numberOfLines={2}>
-                              {e.title}
-                            </Text>
-                            {e.is_premium && !isPremium && <PremiumLock size="sm" />}
-                          </View>
-                          <Text style={styles.rowMeta}>
-                            {e.code} · {formatDuration(e.duration_seconds)} · {e.exercise_type}
-                          </Text>
-                        </View>
+                  <View style={[styles.row, i > 0 && styles.rowDivider]}>
+                    <VideoPlaceholder pose={poseFor(e.code)} circle />
+                    <View style={styles.rowText}>
+                      <View style={styles.rowTitleRow}>
+                        <Text style={styles.rowName} numberOfLines={2}>
+                          {i18nField(e, 'title')}
+                        </Text>
+                        {e.is_premium && !isPremium && <PremiumLock size="sm" />}
                       </View>
-                    </GlassCard>
+                      <Text style={styles.rowMeta}>
+                        {e.code} · {formatDuration(e.duration_seconds)} · {e.exercise_type}
+                      </Text>
+                    </View>
                   </View>
                 </Pressable>
               ))
@@ -230,16 +226,16 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.85,
-    transform: [{ scale: 0.99 }],
-  },
-  rowWrap: {
-    marginBottom: spacing.sm,
-    marginTop: spacing.md,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
+    paddingVertical: spacing.md,
+  },
+  rowDivider: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.inkHairline,
   },
   rowText: {
     flex: 1,

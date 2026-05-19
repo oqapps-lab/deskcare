@@ -87,7 +87,7 @@ const GLASS_TINT_MAP: Record<HaloTone, string> = {
  *
  * Sizes: sm=36, md=52, lg=72, xl=96. Border-radius = size/2.
  */
-export const IconHalo: React.FC<Props> = ({
+const IconHaloImpl: React.FC<Props> = ({
   icon,
   size = 'md',
   tone = 'coral',
@@ -287,6 +287,11 @@ export const IconHalo: React.FC<Props> = ({
     </View>
   );
 };
+
+// Memoized — used multiple times per screen (every Quick Break row, every
+// Program card). Without memo it re-renders on every parent scroll-driven
+// re-render, restarting the breathing animation and forcing fresh blur passes.
+export const IconHalo = React.memo(IconHaloImpl);
 
 const styles = StyleSheet.create({
   wrap: {

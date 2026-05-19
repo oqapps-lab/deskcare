@@ -21,6 +21,7 @@ import { Eyebrow } from '../../components/ui/Eyebrow';
 import { PillCTA } from '../../components/ui/PillCTA';
 import { IconHalo } from '../../components/ui/IconHalo';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 /**
  * 30-Second Eye Break — intro screen to the 20-20-20 rule exercise.
@@ -76,6 +77,7 @@ export default function EyeBreakScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/home');
   };
 
   return (
@@ -94,7 +96,7 @@ export default function EyeBreakScreen() {
       >
         <Animated.View style={[styles.heroWrap, heroStyle]}>
           <View style={styles.eyebrowRow}>
-            <Eyebrow variant="onPeach">EYE BREAK</Eyebrow>
+            <Eyebrow variant="onPeach">{t('eye_break_eyebrow')}</Eyebrow>
           </View>
           <View style={{ height: spacing.md }} />
           <Animated.View style={haloStyle}>
@@ -104,16 +106,14 @@ export default function EyeBreakScreen() {
           </Animated.View>
           <View style={{ marginTop: -spacing.md }}>
             <Eyebrow variant="accent" size="md">
-              SECONDS
+              {t('eye_break_seconds_label')}
             </Eyebrow>
           </View>
         </Animated.View>
 
         <Animated.View style={[styles.infoCluster, infoStyle]}>
-          <Text style={styles.title}>Rest{'\n'}your eyes</Text>
-          <Text style={styles.subtitle}>
-            Look at a point 20 ft away —{'\n'}let your eye muscles relax
-          </Text>
+          <Text style={styles.title}>{t('eye_break_title')}</Text>
+          <Text style={styles.subtitle}>{t('eye_break_sub')}</Text>
           <View style={{ height: spacing.lg }} />
           <View style={styles.ruleRow}>
             <IconHalo
@@ -123,9 +123,7 @@ export default function EyeBreakScreen() {
               variant="tinted"
               glow={false}
             />
-            <Text style={styles.ruleInline}>
-              20 min · 20 sec · 20 ft
-            </Text>
+            <Text style={styles.ruleInline}>{t('eye_break_meta')}</Text>
           </View>
         </Animated.View>
 
@@ -138,16 +136,16 @@ export default function EyeBreakScreen() {
             breath
             onPress={start}
           >
-            Start break
+            {t('eye_break_cta_start')}
           </PillCTA>
           <View style={{ height: spacing.md }} />
           <Pressable
             onPress={skip}
             hitSlop={12}
             accessibilityRole="button"
-            accessibilityLabel="Skip break"
+            accessibilityLabel={t('eye_break_skip_btn')}
           >
-            <Text style={styles.ghostLink}>Skip</Text>
+            <Text style={styles.ghostLink}>{t('eye_break_cta_skip')}</Text>
           </Pressable>
         </Animated.View>
       </View>

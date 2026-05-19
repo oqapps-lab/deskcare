@@ -27,6 +27,7 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 export default function MaintenanceScreen() {
   const insets = useSafeAreaInsets();
@@ -77,33 +78,30 @@ export default function MaintenanceScreen() {
 
         <View>
           <Eyebrow variant="accent">WE'LL BE RIGHT BACK</Eyebrow>
-          <Text style={styles.title}>Caring for the{'\n'}servers for a minute.</Text>
-          <Text style={styles.sub}>
-            Nothing urgent — a quick update to keep things quiet and
-            private. Back shortly.
-          </Text>
+          <Text style={styles.title}>{t('mt_title')}</Text>
+          <Text style={styles.sub}>{t('mt_body')}</Text>
 
           <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
             <View style={styles.row}>
               <View style={styles.dot} />
-              <Text style={styles.rowText}>Your streak and plan are safe on your device.</Text>
+              <Text style={styles.rowText}>{t('mt_safe')}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.row}>
               <View style={styles.dot} />
-              <Text style={styles.rowText}>Eye break timer still works offline.</Text>
+              <Text style={styles.rowText}>{t('mt_eye_note')}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.row}>
               <View style={styles.dotMuted} />
-              <Text style={styles.rowMuted}>Status: Expected back in ~10 minutes.</Text>
+              <Text style={styles.rowMuted}>{t('mt_status')}</Text>
             </View>
           </GlassCard>
         </View>
 
         <View style={styles.ctaBlock}>
           <PillCTA variant="primary" size="lg" icon="refresh" onPress={retry}>
-            Try again
+            {t('mt_cta')}
           </PillCTA>
           <Text style={styles.statusLink}>status.deskcare.app</Text>
         </View>

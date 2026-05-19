@@ -7,6 +7,7 @@ import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Svg, { Path } from 'react-native-svg';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 export type TabId = 'home' | 'library' | 'programs' | 'profile';
 
@@ -14,11 +15,11 @@ interface Props {
   current: TabId;
 }
 
-const TABS: ReadonlyArray<{ id: TabId; label: string; route: string }> = [
-  { id: 'home',     label: 'Home',     route: '/main/home' },
-  { id: 'library',  label: 'Library',  route: '/main/library' },
-  { id: 'programs', label: 'Programs', route: '/main/programs' },
-  { id: 'profile',  label: 'Profile',  route: '/main/profile' },
+const buildTabs = (): ReadonlyArray<{ id: TabId; label: string; route: string }> => [
+  { id: 'home',     label: t('tab_home'),     route: '/main/home' },
+  { id: 'library',  label: t('tab_library'),  route: '/main/library' },
+  { id: 'programs', label: t('tab_programs'), route: '/main/programs' },
+  { id: 'profile',  label: t('tab_profile'),  route: '/main/profile' },
 ];
 
 /**
@@ -60,7 +61,7 @@ export const TabBar: React.FC<Props> = ({ current }) => {
       >
         <View style={styles.barOuter}>
           {Platform.OS === 'ios' ? (
-            <BlurView intensity={75} tint="light" style={styles.blur}>
+            <BlurView intensity={30} tint="light" style={styles.blur}>
               <View style={styles.fill} pointerEvents="none" />
               {/* Subtle warm sheen along the top — reads as "warm glass". */}
               <LinearGradient
@@ -88,24 +89,24 @@ const TabRow: React.FC<{ current: TabId; onPress: (id: TabId, r: string) => void
   onPress,
 }) => (
   <View style={styles.row}>
-    {TABS.map((t) => {
-      const active = t.id === current;
+    {buildTabs().map((tab) => {
+      const active = tab.id === current;
       return (
         <Pressable
-          key={t.id}
-          onPress={() => onPress(t.id, t.route)}
+          key={tab.id}
+          onPress={() => onPress(tab.id, tab.route)}
           hitSlop={8}
           accessibilityRole="tab"
-          accessibilityLabel={t.label}
+          accessibilityLabel={tab.label}
           accessibilityState={{ selected: active }}
           style={styles.tab}
         >
           <TabIcon
-            id={t.id}
+            id={tab.id}
             color={active ? colors.primaryDeep : colors.inkSubtle}
             active={active}
           />
-          <Text style={[styles.label, active && styles.labelActive]}>{t.label}</Text>
+          <Text style={[styles.label, active && styles.labelActive]}>{tab.label}</Text>
           {active && <View style={styles.dot} />}
         </Pressable>
       );

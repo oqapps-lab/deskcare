@@ -18,13 +18,14 @@ import {
 } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { useIsPremium } from '../../lib/premium';
+import { t } from '../../lib/i18n';
 
-const PROGRAMS = [
+const buildPrograms = () => [
   {
     id: 'sciatica',
-    title: 'Sciatica Relief',
-    blurb: 'Starts with a 6-question check-in.',
-    meta: '2 PHASES · 14 EXERCISES · CLINICIAN-REVIEWED',
+    title: t('prog_sciatica_title'),
+    blurb: t('prog_sciatica_blurb'),
+    meta: t('prog_sciatica_meta'),
     tone: 'peach' as const,
     icon: 'refresh' as const,
     premium: true,
@@ -32,9 +33,9 @@ const PROGRAMS = [
   },
   {
     id: 'eye',
-    title: 'Eye Program',
-    blurb: '20-20-20 timer plus 5 gentle routines.',
-    meta: '20-20-20 TIMER · 5 EYE EXERCISES · FREE',
+    title: t('prog_eye_title'),
+    blurb: t('prog_eye_blurb'),
+    meta: t('prog_eye_meta'),
     tone: 'lavender' as const,
     icon: 'eye' as const,
     premium: false,
@@ -42,14 +43,12 @@ const PROGRAMS = [
   },
   {
     id: 'carpal',
-    title: 'Carpal Tunnel Care',
-    blurb: 'Median-nerve glides and wrist resets.',
-    meta: '3 PHASES · 9 EXERCISES · CLINICIAN-REVIEWED',
+    title: t('prog_carpal_title'),
+    blurb: t('prog_carpal_blurb'),
+    meta: t('prog_carpal_meta'),
     tone: 'mint' as const,
     icon: 'plus' as const,
     premium: true,
-    // Detail screen ships in a later batch — for now, premium-gate
-    // routes to the paywall, where the user converts before unlocking.
     route: '/onboarding/paywall',
   },
 ];
@@ -57,6 +56,7 @@ const PROGRAMS = [
 export default function ProgramsScreen() {
   const insets = useSafeAreaInsets();
   const isPremium = useIsPremium();
+  const PROGRAMS = buildPrograms();
 
   const open = (route: string, premium: boolean) => {
     Haptics.selectionAsync();
@@ -83,9 +83,9 @@ export default function ProgramsScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <Eyebrow variant="accent">PROGRAMS FOR REAL CONDITIONS</Eyebrow>
-        <Text style={styles.title}>Structured, not random.</Text>
-        <Text style={styles.sub}>Multi-week curricula with check-ins, contraindications, and red-flag screening.</Text>
+        <Eyebrow variant="accent">{t('programs_eyebrow')}</Eyebrow>
+        <Text style={styles.title}>{t('programs_title')}</Text>
+        <Text style={styles.sub}>{t('programs_sub')}</Text>
 
         <View style={styles.list}>
           {PROGRAMS.map((p) => (
@@ -99,7 +99,7 @@ export default function ProgramsScreen() {
                   <IconHalo icon={p.icon} size="md" tone={p.tone} variant="tinted" />
                   <View style={styles.rowText}>
                     <View style={styles.rowTitleRow}>
-                      <Text style={styles.rowTitle} numberOfLines={1}>
+                      <Text style={styles.rowTitle} numberOfLines={2}>
                         {p.title}
                       </Text>
                       {p.premium && !isPremium ? <PremiumLock size="sm" /> : <FreeDot />}
@@ -160,7 +160,7 @@ const OpenProgramPill: React.FC = () => (
     />
     <View style={styles.ctaPillBorder} pointerEvents="none" />
     <View style={styles.ctaPillContent}>
-      <Text style={styles.ctaText}>Open program</Text>
+      <Text style={styles.ctaText}>{t('programs_open')}</Text>
       <Svg width={14} height={14} viewBox="0 0 14 14">
         <Path
           d="M5 3 L9 7 L5 11"

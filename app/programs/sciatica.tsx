@@ -20,6 +20,7 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
 import type { Routine } from '../../lib/types/db';
+import { t } from '../../lib/i18n';
 
 interface PhaseRoutines {
   title: string;
@@ -31,8 +32,8 @@ interface PhaseRoutines {
 const INSIDE = [
   'Symptom check-in that adapts the program',
   'Red-flag screener for safety',
-  'Every exercise with contraindications',
-  'Weekly progress summary',
+  t('sciatica_feature_cautions'),
+  t('sciatica_feature_weekly'),
 ];
 
 const formatMin = (s: number) => `${Math.round(s / 60)} MIN`;
@@ -103,6 +104,7 @@ export default function SciaticaProgramScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/programs');
   };
   const unlock = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -128,7 +130,7 @@ export default function SciaticaProgramScreen() {
       <BgPattern variant="waves" opacity={0.05} tone="coral" />
       <DecorativeArc position="top-right" tone="peach" size={240} opacity={0.20} />
 
-      <NavHeader title="Sciatica Relief" onBack={back} />
+      <NavHeader title={t('nav_sciatica_relief')} onBack={back} />
 
       <ScrollView
         contentContainerStyle={{
@@ -146,26 +148,23 @@ export default function SciaticaProgramScreen() {
           <Text style={styles.heroMeta}>2 PHASES · 14 EXERCISES · CLINICIAN-REVIEWED</Text>
           {active && (
             <View style={{ marginTop: spacing.md }}>
-              <ProgressBar value={4 / 7} accessibilityLabel="Program progress: day 4 of 7" />
+              <ProgressBar value={4 / 7} accessibilityLabel={t('psc_progress_label', { day: 4, total: 7 })} />
             </View>
           )}
-          <Text style={styles.disclaimer}>
-            This does not replace medical advice. If you have red-flag symptoms,
-            see a doctor.
-          </Text>
+          <Text style={styles.disclaimer}>{t('psc_disclaimer')}</Text>
         </GlassCard>
 
         <Pressable
           onPress={openCheckIn}
           style={({ pressed }) => [styles.checkInRow, pressed && styles.pressed]}
           accessibilityRole="button"
-          accessibilityLabel="Open symptom check-in"
+          accessibilityLabel={t('psc_check_cta')}
         >
           <GlassCard tint="coral" radius="xl" padding={spacing.lg} innerGradient>
             <View style={styles.row}>
               <IconHalo icon="infinity" size="md" tone="coral" variant="gradient" glow />
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={styles.rowTitle}>How is it today?</Text>
+                <Text style={styles.rowTitle}>{t('psc_check_title')}</Text>
                 <Text style={styles.rowSub}>6-question check-in · adapts today's routine</Text>
               </View>
               <Svg width={16} height={16} viewBox="0 0 16 16">
@@ -209,15 +208,15 @@ export default function SciaticaProgramScreen() {
         <FloatingScrim />
         {active ? (
           <PillCTA variant="primary" size="lg" icon="play" iconBg breath onPress={todaysSession}>
-            Begin today's session · 3 min
+            {t('psc_cta_today')}
           </PillCTA>
         ) : (
           <>
             <PillCTA variant="primary" size="lg" breath onPress={unlock}>
-              Unlock with 7-day free trial
+              {t('libd_cta_unlock')}
             </PillCTA>
-            <Pressable hitSlop={8} onPress={() => router.push('/onboarding/paywall')} accessibilityRole="button" accessibilityLabel="Learn more">
-              <Text style={styles.learnMore}>Learn more about sciatica care</Text>
+            <Pressable hitSlop={8} onPress={() => router.push('/onboarding/paywall')} accessibilityRole="button" accessibilityLabel={t('psc_learn_more_label')}>
+              <Text style={styles.learnMore}>{t('psc_learn_more_label')}</Text>
             </Pressable>
           </>
         )}
@@ -265,7 +264,7 @@ const PhaseCard: React.FC<{
             </View>
           ))}
           {phase.routines.length === 0 && (
-            <Text style={styles.lockedCopy}>Routines load momentarily…</Text>
+            <Text style={styles.lockedCopy}>{t('psc_loading')}</Text>
           )}
         </View>
       ) : lockedCopy ? (

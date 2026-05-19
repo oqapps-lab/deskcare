@@ -20,6 +20,7 @@ import { PillCTA } from '../../components/ui/PillCTA';
 import { Eyebrow } from '../../components/ui/Eyebrow';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { requestNotificationPermissions } from '../../lib/notifications';
+import { t } from '../../lib/i18n';
 
 /**
  * Permission Prompt — the app's first interactive screen after splash.
@@ -101,10 +102,8 @@ export default function PermissionPromptScreen() {
         <Animated.View style={[styles.head, headStyle]}>
           <Eyebrow>REMINDERS</Eyebrow>
           <View style={{ height: spacing.md }} />
-          <Text style={styles.title}>Allow gentle{'\n'}nudges</Text>
-          <Text style={styles.subtitle}>
-            We'll softly remind you when it's time{'\n'}to roll your shoulders or look away.{'\n'}No spam, ever.
-          </Text>
+          <Text style={styles.title}>{t('onb_perm_title')}</Text>
+          <Text style={styles.subtitle}>{t('onb_perm_body')}</Text>
         </Animated.View>
 
         <Animated.View style={[styles.benefits, benefitsStyle]}>
@@ -118,22 +117,22 @@ export default function PermissionPromptScreen() {
             <BenefitRow
               icon="clock"
               tone="coral"
-              title="Every 2 hours"
-              sub="A short 2-minute stretch"
+              title={t('ps_gentle_title')}
+              sub={t('ps_gentle_sub')}
             />
             <Divider />
             <BenefitRow
               icon="eye"
               tone="lavender"
-              title="20-20-20 for your eyes"
-              sub="A break every 20 minutes"
+              title={t('ps_eyebreaks_title')}
+              sub={t('ps_eyebreaks_sub')}
             />
             <Divider />
             <BenefitRow
               icon="settings"
               tone="mint"
-              title="Full control"
-              sub="Snooze, tune, turn off"
+              title={t('perm_fullctl_title')}
+              sub={t('perm_fullctl_sub')}
             />
           </GlassCard>
         </Animated.View>
@@ -146,18 +145,18 @@ export default function PermissionPromptScreen() {
             iconBg
             breath
             onPress={enable}
-            accessibilityLabel="Turn on reminders"
+            accessibilityLabel={t('onb_perm_cta')}
           >
-            Turn on reminders
+            {t('onb_perm_cta')}
           </PillCTA>
           <View style={{ height: spacing.md }} />
           <Pressable
             onPress={later}
             hitSlop={12}
             accessibilityRole="button"
-            accessibilityLabel="Not now, set up later"
+            accessibilityLabel={t('onb_perm_skip')}
           >
-            <Text style={styles.ghostLink}>Not now</Text>
+            <Text style={styles.ghostLink}>{t('common_not_now')}</Text>
           </Pressable>
         </Animated.View>
       </ScrollView>

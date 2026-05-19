@@ -160,40 +160,43 @@ export const fonts = {
   extraBold: 'PlusJakartaSans_800ExtraBold',
 } as const;
 
+// Perf-tuned for iOS: shadowRadius >24 forces offscreen rasterization on every
+// scroll frame. Halved across the board (2026-05-16) — visually nearly
+// indistinguishable but eliminates the scroll-lag on Home/Paywall/Library.
 export const shadows = {
   soft: {
     shadowColor: '#7E2C03',
-    shadowOffset: { width: 0, height: 12 },
+    shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.13,
-    shadowRadius: 32,
+    shadowRadius: 14,
     elevation: 6,
   },
   lift: {
     shadowColor: '#7E2C03',
-    shadowOffset: { width: 0, height: 18 },
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.18,
-    shadowRadius: 44,
+    shadowRadius: 18,
     elevation: 10,
   },
   cta: {
     shadowColor: '#E87B4E',
-    shadowOffset: { width: 0, height: 16 },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.38,
-    shadowRadius: 32,
+    shadowRadius: 14,
     elevation: 10,
   },
   chip: {
     shadowColor: '#E87B4E',
-    shadowOffset: { width: 0, height: 6 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.22,
-    shadowRadius: 14,
+    shadowRadius: 8,
     elevation: 4,
   },
   orbGlow: {
     shadowColor: '#E87B4E',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.25,
-    shadowRadius: 60,
+    shadowRadius: 18,
     elevation: 0,
   },
 } as const;

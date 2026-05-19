@@ -29,6 +29,7 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 export default function ForceUpdateScreen() {
   const insets = useSafeAreaInsets();
@@ -90,32 +91,29 @@ export default function ForceUpdateScreen() {
 
         <View>
           <Eyebrow variant="accent">UPDATE REQUIRED</Eyebrow>
-          <Text style={styles.title}>Please update{'\n'}to continue.</Text>
-          <Text style={styles.sub}>
-            We've shipped some quiet improvements to keep your streak and
-            pain data safe. It's a quick one.
-          </Text>
+          <Text style={styles.title}>{t('fu_title')}</Text>
+          <Text style={styles.sub}>{t('fu_body')}</Text>
 
           <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
-            <Text style={styles.whatsNewTitle}>In this update</Text>
+            <Text style={styles.whatsNewTitle}>{t('fu_changelog_eyebrow')}</Text>
             <View style={styles.line}>
               <View style={styles.dot} />
-              <Text style={styles.lineText}>Faster session loading</Text>
+              <Text style={styles.lineText}>{t('fu_change_3')}</Text>
             </View>
             <View style={styles.line}>
               <View style={styles.dot} />
-              <Text style={styles.lineText}>Two new eye routines</Text>
+              <Text style={styles.lineText}>{t('fu_change_1')}</Text>
             </View>
             <View style={styles.line}>
               <View style={styles.dot} />
-              <Text style={styles.lineText}>Reliability fixes for Sciatica check-in</Text>
+              <Text style={styles.lineText}>{t('fu_change_2')}</Text>
             </View>
           </GlassCard>
         </View>
 
         <View style={styles.ctaBlock}>
           <PillCTA variant="primary" size="lg" breath onPress={update}>
-            Update in App Store
+            {t('fu_cta')}
           </PillCTA>
           <Text style={styles.versionText}>{`You are on DeskCare ${Constants.expoConfig?.version ?? '—'} · Required latest`}</Text>
         </View>

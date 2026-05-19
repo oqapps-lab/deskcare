@@ -22,10 +22,12 @@ import {
 import type { HaloTone } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { useHomeSnapshot } from '../../hooks/useUserData';
+import { t } from '../../lib/i18n';
+import { ROUTINE_SLUGS } from '../../constants/routines';
 
 type HomeState = 'first' | 'active' | 'premium' | 'reengage';
 
-const STATE_CONFIG: Record<HomeState, {
+type StateCfg = {
   greeting: string;
   streakValue: string;
   streakSubLine: string;
@@ -34,47 +36,23 @@ const STATE_CONFIG: Record<HomeState, {
   routineCta: string;
   showPainCheckIn: boolean;
   tone: 'default' | 'dusk';
-}> = {
-  first: {
-    greeting: 'Good afternoon, Marina.',
-    streakValue: '0',
-    streakSubLine: 'Your first stretch is waiting',
-    routineName: 'Neck Unwind · first step',
-    routineHint: '2 MIN · 2 EXERCISES',
-    routineCta: 'Begin',
-    showPainCheckIn: false,
-    tone: 'default',
-  },
-  active: {
-    greeting: 'Welcome back, Marina.',
-    streakValue: '6',
-    streakSubLine: 'Day 6 of a quiet 14-day program',
-    routineName: 'Shoulder Release',
-    routineHint: 'Based on your last session · 3 MIN',
-    routineCta: 'Begin',
-    showPainCheckIn: true,
-    tone: 'default',
-  },
-  premium: {
-    greeting: 'Welcome back, Marina.',
-    streakValue: '6',
-    streakSubLine: 'Day 6 · all zones unlocked',
-    routineName: 'Shoulder Release',
-    routineHint: 'Based on your last session · 3 MIN',
-    routineCta: 'Begin',
-    showPainCheckIn: true,
-    tone: 'default',
-  },
-  reengage: {
-    greeting: "It's been a moment.",
-    streakValue: '6',
-    streakSubLine: 'Streak paused — here when you\'re ready',
-    routineName: 'Start small today · 90 seconds',
-    routineHint: 'A single gentle neck exercise',
-    routineCta: 'Just 90 seconds',
-    showPainCheckIn: false,
-    tone: 'dusk',
-  },
+};
+
+// Built per render so t() picks up the active device locale. Demo-state
+// copy (the `?state=` preview path); real signed-in values arrive via the
+// `liveAvailable` override below.
+const buildStateConfig = (state: HomeState): StateCfg => {
+  const k = (suffix: string) => t(`home_state_${state}_${suffix}` as never);
+  return {
+    greeting: k('greeting'),
+    streakValue: state === 'first' ? '0' : '6',
+    streakSubLine: k('streak_sub'),
+    routineName: k('routine_name'),
+    routineHint: k('routine_hint'),
+    routineCta: k('routine_cta'),
+    showPainCheckIn: state === 'active' || state === 'premium',
+    tone: state === 'reengage' ? 'dusk' : 'default',
+  };
 };
 
 export default function HomeScreen() {
@@ -104,23 +82,26 @@ export default function HomeScreen() {
         : 'active'
     : explicitState ?? 'active';
 
-  const baseCfg = STATE_CONFIG[inferredState];
-  const cfg = liveAvailable
+  const baseCfg = buildStateConfig(inferredState);
+  const cfg: StateCfg = liveAvailable
     ? {
         ...baseCfg,
         greeting: snap.profile?.display_name
-          ? `Welcome back, ${snap.profile.display_name}.`
+          ? t('home_live_greeting_named', { name: snap.profile.display_name })
           : (snap.streak?.current_streak ?? 0) === 0
-            ? 'Good afternoon.'
-            : 'Welcome back.',
+            ? t('home_live_greeting_afternoon')
+            : t('home_live_greeting_back'),
         streakValue: String(snap.streak?.current_streak ?? 0),
         streakSubLine:
           (snap.streak?.current_streak ?? 0) === 0
-            ? 'Your first stretch is waiting'
-            : `Day ${snap.streak?.current_streak} of your DeskCare habit`,
+            ? t('home_state_first_streak_sub')
+            : t('home_live_streak_sub_n', { n: snap.streak?.current_streak ?? 0 }),
         routineName: snap.recommendedRoutine?.title ?? baseCfg.routineName,
         routineHint: snap.recommendedRoutine
-          ? `${Math.round(snap.recommendedRoutine.duration_seconds / 60)} MIN · for your ${snap.onboardingData.pain_zones?.[0] ?? 'neck'}`
+          ? t('home_live_routine_hint_zone', {
+              min: Math.round(snap.recommendedRoutine.duration_seconds / 60),
+              zone: t(`zone_${snap.onboardingData.pain_zones?.[0] ?? 'neck'}` as never),
+            })
           : baseCfg.routineHint,
       }
     : baseCfg;
@@ -163,8 +144,8 @@ export default function HomeScreen() {
   const quickBreaks: QuickBreak[] = [
     {
       id: 'eyes',
-      title: 'Eyes tired?',
-      sub: '30 seconds · 20 ft away',
+      title: t('home_quickbreak_eyes_title'),
+      sub: t('home_quickbreak_eyes_meta'),
       tone: 'lavender',
       icon: 'eye',
       onPress: openEyeBreak,
@@ -173,11 +154,11 @@ export default function HomeScreen() {
       ? [
           {
             id: 'neck',
-            title: 'Neck reset',
-            sub: '60 seconds · slow side-tilt',
+            title: t('home_quickbreak_neck_title'),
+            sub: t('home_quickbreak_neck_meta'),
             tone: 'coral' as const,
             icon: 'refresh' as const,
-            onPress: () => openQuickRoutine('neck-quick-2min'),
+            onPress: () => openQuickRoutine(ROUTINE_SLUGS.NECK_QUICK_2MIN),
           },
         ]
       : []),
@@ -185,11 +166,11 @@ export default function HomeScreen() {
       ? [
           {
             id: 'wrists',
-            title: 'Wrist break',
-            sub: '45 seconds · open close',
+            title: t('home_quickbreak_wrist_title'),
+            sub: t('home_quickbreak_wrist_meta'),
             tone: 'peach' as const,
             icon: 'plus' as const,
-            onPress: () => openQuickRoutine('wrists-quick-2min'),
+            onPress: () => openQuickRoutine(ROUTINE_SLUGS.WRISTS_QUICK_2MIN),
           },
         ]
       : []),
@@ -197,11 +178,11 @@ export default function HomeScreen() {
       ? [
           {
             id: 'back',
-            title: 'Back release',
-            sub: '60 seconds · gentle twist',
+            title: t('home_quickbreak_back_title'),
+            sub: t('home_quickbreak_back_meta'),
             tone: 'mint' as const,
             icon: 'plus' as const,
-            onPress: () => openQuickRoutine('back-quick-3min'),
+            onPress: () => openQuickRoutine(ROUTINE_SLUGS.BACK_QUICK_3MIN),
           },
         ]
       : []),
@@ -216,6 +197,8 @@ export default function HomeScreen() {
       )}
 
       <ScrollView
+        removeClippedSubviews={true}
+        scrollEventThrottle={16}
         contentContainerStyle={{
           paddingTop: insets.top + spacing.lg,
           paddingBottom: insets.bottom + 200,
@@ -225,7 +208,7 @@ export default function HomeScreen() {
       >
         <View style={styles.greetRow}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.greetSmall}>{state === 'premium' ? 'PRO · TODAY' : 'TODAY'}</Text>
+            <Text style={styles.greetSmall}>{state === 'premium' ? t('home_eyebrow_pro') : t('home_eyebrow_today')}</Text>
             <Text style={styles.greetTitle}>{cfg.greeting}</Text>
           </View>
         </View>
@@ -237,7 +220,7 @@ export default function HomeScreen() {
             <View style={styles.streakHero}>
               <StreakArc value={parseInt(cfg.streakValue, 10) || 0} total={14} />
               <View style={styles.streakMeta}>
-                <Eyebrow>DAY STREAK</Eyebrow>
+                <Eyebrow>{t('home_streak_label')}</Eyebrow>
                 <Text style={styles.streakSub}>{cfg.streakSubLine}</Text>
               </View>
             </View>
@@ -246,7 +229,7 @@ export default function HomeScreen() {
 
         {/* For you today */}
         <View style={styles.forYouRow}>
-          <Eyebrow>FOR YOU TODAY</Eyebrow>
+          <Eyebrow>{t('home_foryou_eyebrow')}</Eyebrow>
         </View>
 
         <Pressable onPress={beginRoutine} style={({ pressed }) => [pressed && styles.pressed]}>
@@ -266,7 +249,7 @@ export default function HomeScreen() {
 
         {/* Quick breaks — Eye + contextual prompts for user's pain zones */}
         <View style={styles.eyeRowWrap}>
-          <Eyebrow>QUICK BREAKS</Eyebrow>
+          <Eyebrow>{t('home_quickbreaks_eyebrow')}</Eyebrow>
         </View>
         {quickBreaks.map((qb, idx) => (
           <Pressable
@@ -296,9 +279,9 @@ export default function HomeScreen() {
 
         {/* Body zone selector */}
         <View style={styles.zoneRowWrap}>
-          <Eyebrow>YOUR ZONES</Eyebrow>
+          <Eyebrow>{t('home_zones_eyebrow')}</Eyebrow>
           <View style={styles.zoneRow}>
-            {ZONES.map((z) => (
+            {buildZones().map((z) => (
               <ZoneCircle
                 key={z.id}
                 label={z.label}
@@ -318,8 +301,8 @@ export default function HomeScreen() {
             <GlassCard tint="peach" radius="xl" padding={spacing.lg}>
               <View style={styles.painRow}>
                 <View style={{ flex: 1, minWidth: 0 }}>
-                  <Text style={styles.painTitle}>How's your neck today?</Text>
-                  <Text style={styles.painSub}>Rate it — we'll adjust tomorrow's plan</Text>
+                  <Text style={styles.painTitle}>{t('home_paincheck_title')}</Text>
+                  <Text style={styles.painSub}>{t('home_paincheck_sub')}</Text>
                 </View>
                 <View style={styles.painArrow}>
                   <Svg width={16} height={16} viewBox="0 0 16 16">
@@ -336,9 +319,9 @@ export default function HomeScreen() {
           <View style={styles.programsWrap}>
             <Eyebrow>YOUR PROGRAMS</Eyebrow>
             <View style={styles.programsRow}>
-              <ProgramTile label="Sciatica" subtitle="Week 2" tone="coral" />
-              <ProgramTile label="Carpal" subtitle="Week 1" tone="mint" />
-              <ProgramTile label="Eye Yoga" subtitle="Active" tone="lavender" />
+              <ProgramTile label={t('home_prog_sciatica')} subtitle={t('home_prog_week_n', {n: 2})} tone="coral" />
+              <ProgramTile label={t('home_prog_carpal')} subtitle={t('home_prog_week_n', {n: 1})} tone="mint" />
+              <ProgramTile label={t('home_prog_eyeyoga')} subtitle={t('home_prog_active')} tone="lavender" />
             </View>
           </View>
         )}
@@ -358,11 +341,11 @@ export default function HomeScreen() {
   );
 }
 
-const ZONES = [
-  { id: 'neck',    label: 'Neck',    duration: '3 MIN',  icon: 'infinity' as const, tone: 'coral'    as HaloTone, free: true },
-  { id: 'back',    label: 'Back',    duration: '4 MIN',  icon: 'refresh'  as const, tone: 'peach'    as HaloTone, free: false },
-  { id: 'eyes',    label: 'Eyes',    duration: '30 SEC', icon: 'eye'      as const, tone: 'lavender' as HaloTone, free: true },
-  { id: 'wrists',  label: 'Wrists',  duration: '2 MIN',  icon: 'plus'     as const, tone: 'mint'     as HaloTone, free: false },
+const buildZones = () => [
+  { id: 'neck',    label: t('zone_neck'),   duration: '3 MIN',  icon: 'infinity' as const, tone: 'coral'    as HaloTone, free: true },
+  { id: 'back',    label: t('zone_back'),   duration: '4 MIN',  icon: 'refresh'  as const, tone: 'peach'    as HaloTone, free: false },
+  { id: 'eyes',    label: t('zone_eyes'),   duration: '30 SEC', icon: 'eye'      as const, tone: 'lavender' as HaloTone, free: true },
+  { id: 'wrists',  label: t('zone_wrists'), duration: '2 MIN',  icon: 'plus'     as const, tone: 'mint'     as HaloTone, free: false },
 ];
 
 const ZoneCircle: React.FC<{
@@ -537,6 +520,7 @@ const styles = StyleSheet.create({
   },
   eyeRowWrap: {
     marginTop: spacing.md,
+    marginBottom: spacing.sm,
   },
   eyeRow: {
     flexDirection: 'row',

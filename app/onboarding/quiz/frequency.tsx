@@ -26,6 +26,7 @@ import type { GlyphName } from '../../../components/ui';
 import type { HaloTone } from '../../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../../constants/tokens';
 import { useOnboarding } from '../../../lib/store/onboarding';
+import { t } from '../../../lib/i18n';
 
 type Frequency = 'sometimes' | 'weekly' | 'daily';
 
@@ -36,9 +37,9 @@ const OPTIONS: ReadonlyArray<{
   icon: GlyphName;
   tone: HaloTone;
 }> = [
-  { id: 'sometimes', title: 'Sometimes',            sub: 'A few times a month', icon: 'clock',    tone: 'lavender' },
-  { id: 'weekly',    title: 'A few times a week',    sub: 'Background tension',  icon: 'refresh',  tone: 'peach' },
-  { id: 'daily',     title: 'Every single day',      sub: 'Can\'t ignore it',    icon: 'eye',      tone: 'coral' },
+  { id: 'sometimes', title: t('quiz_freq_sometimes'),    sub: t('quiz_freq_few_month'), icon: 'clock',    tone: 'lavender' },
+  { id: 'weekly',    title: t('quiz_freq_few_week'),     sub: t('quiz_freq_background'), icon: 'refresh',  tone: 'peach' },
+  { id: 'daily',     title: t('quiz_freq_daily'),        sub: 'Can\'t ignore it',        icon: 'eye',      tone: 'coral' },
 ];
 
 export default function QuizFrequencyScreen() {
@@ -66,6 +67,7 @@ export default function QuizFrequencyScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/onboarding/welcome');
   };
   const next = () => {
     if (!choice) return;
@@ -83,13 +85,13 @@ export default function QuizFrequencyScreen() {
 
       <Animated.View style={[styles.root, contentStyle, { paddingBottom: insets.bottom + 160 }]}>
         <View style={styles.progressBlock}>
-          <Eyebrow>STEP 2 OF 4</Eyebrow>
+          <Eyebrow>{t('quiz_step_2_of_4')}</Eyebrow>
           <View style={{ height: spacing.sm }} />
-          <ProgressBar value={0.5} accessibilityLabel="Quiz progress: step 2 of 4" />
+          <ProgressBar value={0.5} accessibilityLabel={t('quiz_progress_step', {n: 2})} />
         </View>
 
         <View style={styles.copy}>
-          <Text style={styles.title}>How often does it{'\n'}bother you?</Text>
+          <Text style={styles.title}>{t('quiz_freq_title')}</Text>
         </View>
 
         <View style={styles.options}>
@@ -149,9 +151,9 @@ export default function QuizFrequencyScreen() {
           onPress={next}
           disabled={!choice}
           breath={!!choice}
-          accessibilityLabel={choice ? 'Next step' : 'Pick an option'}
+          accessibilityLabel={choice ? t('quiz_a11y_next') : t('quiz_a11y_pick_option')}
         >
-          Next
+          {t('common_next')}
         </PillCTA>
       </Animated.View>
     </AtmosphericBackground>

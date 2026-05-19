@@ -23,6 +23,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { requestNotificationPermissions } from '../../lib/notifications';
+import { t } from '../../lib/i18n';
 
 export default function PushPrimerScreen() {
   const insets = useSafeAreaInsets();
@@ -83,12 +84,9 @@ export default function PushPrimerScreen() {
         </View>
 
         <View>
-          <Eyebrow variant="accent">ONE MORE THING</Eyebrow>
-          <Text style={styles.title}>Gentle nudges{'\n'}keep the streak.</Text>
-          <Text style={styles.sub}>
-            A handful of reminders a day — tuned to your schedule.{'\n'}
-            No spam. Silence one tap away.
-          </Text>
+          <Eyebrow variant="accent">{t('pushp_eyebrow')}</Eyebrow>
+          <Text style={styles.title}>{t('pushp_title')}</Text>
+          <Text style={styles.sub}>{t('pushp_body')}</Text>
 
           <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
             <View style={styles.factRow}>
@@ -103,17 +101,17 @@ export default function PushPrimerScreen() {
             <View style={styles.divider} />
             <View style={styles.factRow}>
               <View style={styles.coralDot} />
-              <Text style={styles.factText}>Tweak or silence in Settings, anytime.</Text>
+              <Text style={styles.factText}>{t('pushp_fact_settings')}</Text>
             </View>
           </GlassCard>
         </View>
 
         <View style={styles.ctaBlock}>
           <PillCTA variant="primary" size="lg" icon="bell" iconBg breath onPress={enable}>
-            Enable reminders
+            {t('pushp_cta')}
           </PillCTA>
           <Pressable hitSlop={12} onPress={later} style={{ marginTop: spacing.md }}>
-            <Text style={styles.laterLink}>Not right now</Text>
+            <Text style={styles.laterLink}>{t('pushp_skip')}</Text>
           </Pressable>
         </View>
       </View>

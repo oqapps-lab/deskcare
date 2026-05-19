@@ -29,6 +29,8 @@ interface Props {
   height?: number;
   /** If true, render a compact 80x80 thumbnail layout. */
   compact?: boolean;
+  /** If true, render as a circle (square aspect, fully rounded). Useful for list rows. */
+  circle?: boolean;
 }
 
 /**
@@ -42,22 +44,28 @@ export const VideoPlaceholder: React.FC<Props> = ({
   width,
   height,
   compact = false,
+  circle = false,
 }) => {
   const reduceMotion = useReducedMotion();
   const breath = useSharedValue(1);
   // Defaults match the 3:4 portrait shooting spec for real videos. Compact
   // mode stays small for in-list use; full mode is the screen-hero size.
-  const w = width ?? (compact ? 64 : 300);
-  const h = height ?? (compact ? 86 : 400);
+  // Circle mode squares the aspect for clean row-thumbnails.
+  const w = width ?? (circle ? 64 : compact ? 64 : 300);
+  const h = height ?? (circle ? 64 : compact ? 86 : 400);
 
   useEffect(() => {
     if (reduceMotion) return;
+    // Perf: breathing animation only on the hero (full-size) variant. Lists
+    // with several compact/circle thumbs (Home Quick Breaks, Library list)
+    // would otherwise pay for N infinite worklets on every scroll frame.
+    if (compact || circle) return;
     breath.value = withRepeat(
       withTiming(1.04, { duration: 2200, easing: Easing.inOut(Easing.quad) }),
       -1,
       true,
     );
-  }, [reduceMotion, breath]);
+  }, [reduceMotion, compact, circle, breath]);
 
   const figureStyle = useAnimatedStyle(() => ({
     transform: [{ scale: breath.value }],
@@ -70,7 +78,7 @@ export const VideoPlaceholder: React.FC<Props> = ({
         {
           width: w,
           height: h,
-          borderRadius: compact ? radii.md : radii.xl,
+          borderRadius: circle ? w / 2 : compact ? radii.md : radii.xl,
         },
       ]}
     >

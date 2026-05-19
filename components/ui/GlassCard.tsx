@@ -89,7 +89,7 @@ const TINT_DECOR: Record<Tint, string> = {
  * CRITICAL: don't `flex:1` a child inside — BlurView collapses height. Use
  * explicit padding or `width:'100%'` inner View.
  */
-export const GlassCard: React.FC<Props> = ({
+const GlassCardImpl: React.FC<Props> = ({
   children,
   radius = 'lg',
   padding = spacing.xxl,
@@ -141,7 +141,7 @@ export const GlassCard: React.FC<Props> = ({
     return (
       <View style={[{ borderRadius: r }, shadowStyle, style]}>
         <BlurView
-          intensity={88}
+          intensity={30}
           tint="light"
           style={[styles.blur, { borderRadius: r, padding }]}
         >
@@ -211,6 +211,10 @@ export const GlassCard: React.FC<Props> = ({
     </View>
   );
 };
+
+// Memoized — children change but the card chrome (blur/shadow/borders) recomputes
+// only when tint/radius/padding actually change. Cuts per-scroll re-renders.
+export const GlassCard = React.memo(GlassCardImpl);
 
 const styles = StyleSheet.create({
   blur: {

@@ -20,6 +20,7 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useIsPremium } from '../../lib/premium';
 import { supabase } from '../../lib/supabase';
 import type { Exercise } from '../../lib/types/db';
+import { t, i18nField } from '../../lib/i18n';
 
 const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch' => {
   if (!code) return 'neck-roll';
@@ -31,7 +32,8 @@ const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-res
 };
 
 const formatDuration = (s: number): string => (s < 60 ? `${s} SEC` : `${Math.round(s / 60)} MIN`);
-const difficultyLabel = (d: 1 | 2 | 3): string => (d === 1 ? 'GENTLE' : d === 2 ? 'MODERATE' : 'ADVANCED');
+const difficultyLabel = (d: 1 | 2 | 3): string =>
+  d === 1 ? t('libd_difficulty_gentle') : d === 2 ? t('libd_difficulty_moderate') : t('libd_difficulty_advanced');
 
 const useExercise = (slug: string | undefined) => {
   const [exercise, setExercise] = useState<Exercise | null>(null);
@@ -85,18 +87,28 @@ export default function ExerciseDetailScreen() {
   const { exercise, loading, notFound, error } = useExercise(params.exerciseId as string | undefined);
   const isPremium = useIsPremium();
   const locked = !isPremium && (params.locked === '1' || !!exercise?.is_premium);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/library');
   };
   const begin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.push('/exercise/preview');
+    // Pass the exercise slug — player builds a synthetic 1-step routine
+    // around it so users actually run THIS exercise, not the default neck
+    // routine the previous parameter-less push fell into.
+    if (!exercise) return;
+    router.push({ pathname: '/exercise/player', params: { exercise: exercise.slug } } as never);
   };
   const unlock = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     router.push('/onboarding/paywall');
+  };
+  const toggleFavorite = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setIsFavorite((v) => !v);
   };
 
   return (
@@ -107,6 +119,8 @@ export default function ExerciseDetailScreen() {
       <NavHeader onBack={back} />
 
       <ScrollView
+        removeClippedSubviews={true}
+        scrollEventThrottle={16}
         contentContainerStyle={{
           paddingTop: spacing.md,
           paddingBottom: insets.bottom + 160,
@@ -120,26 +134,22 @@ export default function ExerciseDetailScreen() {
           </View>
         ) : notFound ? (
           <View style={styles.statusWrap}>
-            <Eyebrow variant="accent">NOT FOUND</Eyebrow>
-            <Text style={styles.notFoundTitle}>This move isn't{'\n'}in our library.</Text>
-            <Text style={styles.notFoundSub}>
-              The link may be outdated or the exercise was removed.
-            </Text>
+            <Eyebrow variant="accent">{t('libd_not_found_eyebrow')}</Eyebrow>
+            <Text style={styles.notFoundTitle}>{t('libd_not_found_title')}</Text>
+            <Text style={styles.notFoundSub}>{t('libd_not_found_body')}</Text>
             <View style={{ height: spacing.lg }} />
             <PillCTA variant="primary" size="md" onPress={back}>
-              Back
+              {t('common_back')}
             </PillCTA>
           </View>
         ) : error || !exercise ? (
           <View style={styles.statusWrap}>
-            <Eyebrow variant="accent">SOMETHING WENT WRONG</Eyebrow>
-            <Text style={styles.notFoundTitle}>Couldn't load{'\n'}this exercise.</Text>
-            <Text style={styles.notFoundSub}>
-              Check your connection and try again.
-            </Text>
+            <Eyebrow variant="accent">{t('libd_error_eyebrow')}</Eyebrow>
+            <Text style={styles.notFoundTitle}>{t('libd_error_title')}</Text>
+            <Text style={styles.notFoundSub}>{t('libd_error_body')}</Text>
             <View style={{ height: spacing.lg }} />
             <PillCTA variant="primary" size="md" onPress={back}>
-              Back
+              {t('common_back')}
             </PillCTA>
           </View>
         ) : (
@@ -154,23 +164,23 @@ export default function ExerciseDetailScreen() {
               />
               {locked && (
                 <View style={styles.lockOverlay} pointerEvents="none">
-                  <PremiumLock size="md" label="Premium" />
+                  <PremiumLock size="md" label={t('libd_premium_label')} />
                 </View>
               )}
             </View>
 
-            <Text style={[styles.name, locked && styles.nameLocked]}>{exercise.title}</Text>
+            <Text style={[styles.name, locked && styles.nameLocked]}>{i18nField(exercise, 'title')}</Text>
             <Text style={styles.meta}>
               {exercise.code} · {formatDuration(exercise.duration_seconds)} · {exercise.exercise_type.toUpperCase()} · {difficultyLabel(exercise.difficulty)}
             </Text>
 
-            {exercise.description && <Text style={styles.desc}>{exercise.description}</Text>}
+            {i18nField(exercise, 'description') && <Text style={styles.desc}>{i18nField(exercise, 'description')}</Text>}
 
             <View style={styles.sections}>
               {exercise.reps_inside_atom && (
                 <>
                   <View style={styles.section}>
-                    <Eyebrow>REPETITIONS PER ATOM</Eyebrow>
+                    <Eyebrow>{t('libd_rep_label')}</Eyebrow>
                     <Text style={styles.sectionBody}>{exercise.reps_inside_atom}</Text>
                   </View>
                   <View style={styles.sectionDivider} />
@@ -179,7 +189,7 @@ export default function ExerciseDetailScreen() {
               {exercise.cautions && (
                 <>
                   <View style={styles.section}>
-                    <Eyebrow>CAUTIONS</Eyebrow>
+                    <Eyebrow>{t('libd_caution_label')}</Eyebrow>
                     <Text style={styles.sectionBody}>{exercise.cautions}</Text>
                   </View>
                   <View style={styles.sectionDivider} />
@@ -188,7 +198,7 @@ export default function ExerciseDetailScreen() {
               {exercise.modifications && (
                 <>
                   <View style={styles.section}>
-                    <Eyebrow>MODIFY</Eyebrow>
+                    <Eyebrow>{t('libd_modify_label')}</Eyebrow>
                     <Text style={styles.sectionBody}>{exercise.modifications}</Text>
                   </View>
                   <View style={styles.sectionDivider} />
@@ -199,10 +209,8 @@ export default function ExerciseDetailScreen() {
             {!exercise.video_url && (
               <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
                 <View style={styles.tipRow}>
-                  <Text style={styles.tipTitle}>Coming soon</Text>
-                  <Text style={styles.tipBody}>
-                    Real video shoots are in production — once they land you'll see the guided video right here.
-                  </Text>
+                  <Text style={styles.tipTitle}>{t('libd_coming_soon_title')}</Text>
+                  <Text style={styles.tipBody}>{t('libd_coming_soon_body')}</Text>
                 </View>
               </GlassCard>
             )}
@@ -219,7 +227,7 @@ export default function ExerciseDetailScreen() {
         {locked ? (
           <>
             <PillCTA variant="primary" size="lg" breath onPress={unlock}>
-              Unlock with 7-day free trial
+              {t('libd_cta_unlock')}
             </PillCTA>
             <Pressable
               onPress={() => {
@@ -228,28 +236,39 @@ export default function ExerciseDetailScreen() {
               }}
               hitSlop={10}
               accessibilityRole="button"
-              accessibilityLabel="See what's included"
+              accessibilityLabel={t('libd_cta_seewhat')}
               style={{ marginTop: spacing.sm }}
             >
-              <Text style={styles.seeLink}>See what's included</Text>
+              <Text style={styles.seeLink}>{t('libd_cta_seewhat')}</Text>
             </Pressable>
           </>
         ) : (
           <View style={styles.beginRow}>
-            <View style={styles.heartSlot}>
+            <Pressable
+              onPress={toggleFavorite}
+              hitSlop={10}
+              accessibilityRole="button"
+              accessibilityState={{ selected: isFavorite }}
+              accessibilityLabel={isFavorite ? t('libd_fav_remove') : t('libd_fav_save')}
+              style={({ pressed }) => [
+                styles.heartSlot,
+                isFavorite && styles.heartSlotActive,
+                pressed && { transform: [{ scale: 0.94 }] },
+              ]}
+            >
               <Svg width={22} height={22} viewBox="0 0 20 20">
                 <Path
                   d="M10 17 C 3 12 1 9 3 6 C 5 3 8.5 4 10 7 C 11.5 4 15 3 17 6 C 19 9 17 12 10 17 Z"
-                  stroke={colors.primaryMid}
+                  stroke={isFavorite ? colors.primaryDeep : colors.primaryMid}
                   strokeWidth="1.6"
-                  fill="none"
+                  fill={isFavorite ? colors.primaryDeep : 'none'}
                   strokeLinejoin="round"
                 />
               </Svg>
-            </View>
+            </Pressable>
             <View style={{ flex: 1 }}>
               <PillCTA variant="primary" size="lg" icon="play" iconBg breath onPress={begin}>
-                Begin
+                {t('libd_cta_begin')}
               </PillCTA>
             </View>
           </View>
@@ -364,6 +383,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  heartSlotActive: {
+    backgroundColor: colors.primaryLight,
   },
   seeLink: {
     ...typeScale.bodySm,

@@ -14,6 +14,7 @@ import {
   PillCTA,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
+import { t } from '../../lib/i18n';
 
 const PERKS = [
   'Every program, every zone',
@@ -31,6 +32,7 @@ export default function MiniPaywallScreen() {
   const close = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/home');
   };
 
   return (
@@ -39,7 +41,7 @@ export default function MiniPaywallScreen() {
       <DecorativeArc position="top-right" tone="coral" size={240} opacity={0.22} />
 
       <View style={[styles.closeWrap, { top: insets.top + spacing.sm }]}>
-        <Pressable onPress={close} hitSlop={12} accessibilityRole="button" accessibilityLabel="Close">
+        <Pressable onPress={close} hitSlop={12} accessibilityRole="button" accessibilityLabel={t('mini_pw_close')}>
           <View style={styles.closeBtn}>
             <Glyph name="close-x" size={16} color={colors.inkMuted} />
           </View>
@@ -59,8 +61,8 @@ export default function MiniPaywallScreen() {
           </View>
 
           <Eyebrow variant="accent">PREMIUM FEATURE</Eyebrow>
-          <Text style={styles.title}>Unlock every zone{'\n'}and program.</Text>
-          <Text style={styles.sub}>7-day free trial, then $2.49/month billed yearly.</Text>
+          <Text style={styles.title}>{t('mini_pw_title')}</Text>
+          <Text style={styles.sub}>{t('pw_cta_sub')}</Text>
 
           <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
             {PERKS.map((p, i) => (
@@ -81,11 +83,11 @@ export default function MiniPaywallScreen() {
 
         <View style={styles.ctaBlock}>
           <PillCTA variant="primary" size="lg" breath onPress={unlock}>
-            Begin 7 days free
+            {t('mini_pw_cta')}
           </PillCTA>
-          <Text style={styles.afterText}>Cancel anytime · No charge during trial</Text>
+          <Text style={styles.afterText}>{t('mini_pw_sub')}</Text>
           <Pressable hitSlop={12} onPress={close} style={{ marginTop: spacing.md }}>
-            <Text style={styles.notNowLink}>Not right now</Text>
+            <Text style={styles.notNowLink}>{t('mini_pw_skip')}</Text>
           </Pressable>
         </View>
       </View>

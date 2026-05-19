@@ -8,7 +8,7 @@ export type ArcPosition =
   | 'top-left'
   | 'bottom-right'
   | 'bottom-left';
-export type ArcTone = 'coral' | 'peach' | 'lavender';
+export type ArcTone = 'coral' | 'peach' | 'lavender' | 'mint';
 
 interface Props {
   position: ArcPosition;
@@ -21,6 +21,7 @@ const TONE_COLOR: Record<ArcTone, string> = {
   coral: colors.primaryMid,
   peach: colors.primaryLight,
   lavender: colors.tertiaryMid,
+  mint: colors.mintMid,
 };
 
 // Relative circle placement inside the SVG viewbox (3 merged circles for organic blob).

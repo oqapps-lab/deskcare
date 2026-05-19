@@ -15,11 +15,12 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
 import type { Streak } from '../../lib/types/db';
+import { t } from '../../lib/i18n';
 
 // Empty week — 7 zero bars with the right day labels. Used when the user
 // hasn't logged a session yet so the chart still renders structurally.
 const buildEmptyWeek = (): { day: string; min: number }[] => {
-  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const labels = DAY_LABELS;
   const now = new Date();
   const out: { day: string; min: number }[] = [];
   for (let i = 6; i >= 0; i--) {
@@ -51,12 +52,20 @@ const formatDateLabel = (iso: string): string => {
   const dDay = new Date(d);
   dDay.setHours(0, 0, 0, 0);
   const diffDays = Math.round((today.getTime() - dDay.getTime()) / 86_400_000);
-  if (diffDays === 0) return 'Today';
-  if (diffDays === 1) return 'Yesterday';
+  if (diffDays === 0) return t('common_date_today');
+  if (diffDays === 1) return t('common_date_yesterday');
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
 };
 
-const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAY_LABELS = [
+  t('common_day_sun'),
+  t('common_day_mon'),
+  t('common_day_tue'),
+  t('common_day_wed'),
+  t('common_day_thu'),
+  t('common_day_fri'),
+  t('common_day_sat'),
+];
 
 export default function ProgressScreen() {
   const insets = useSafeAreaInsets();
@@ -90,7 +99,7 @@ export default function ProgressScreen() {
     ]).then(([s, list]) => {
       if (cancelled) return;
       setStreak((s.data as Streak) ?? null);
-      setSessions((list.data as SessionRow[]) ?? []);
+      setSessions((list.data as unknown as SessionRow[]) ?? []);
       setLoading(false);
     });
     return () => {
@@ -128,7 +137,7 @@ export default function ProgressScreen() {
     if (!sessions || sessions.length === 0) return [];
     return sessions.slice(0, 5).map((s) => ({
       date: formatDateLabel(s.started_at),
-      routine: s.routine?.title ?? 'Quick session',
+      routine: s.routine?.title ?? t('common_session_fallback'),
       dur: formatDur(s.duration_seconds),
       zone: s.body_zone?.name ?? '—',
     }));
@@ -137,6 +146,7 @@ export default function ProgressScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/profile');
   };
 
   const maxMin = Math.max(1, ...weekChart.map((d) => d.min));
@@ -150,7 +160,7 @@ export default function ProgressScreen() {
       <BgPattern variant="dots" opacity={0.04} tone="coral" />
       <DecorativeArc position="top-right" tone="peach" size={220} opacity={0.18} />
 
-      <NavHeader title="Progress" onBack={back} />
+      <NavHeader title={t('prof_progress')} onBack={back} />
 
       <ScrollView
         contentContainerStyle={{
@@ -165,12 +175,12 @@ export default function ProgressScreen() {
             <View style={styles.topStatsRow}>
               <View style={styles.topStatCol}>
                 <Text style={styles.bigNumber}>{totalSessions}</Text>
-                <Text style={styles.bigLabel}>SESSIONS</Text>
+                <Text style={styles.bigLabel}>{t('prof_stats_sessions')}</Text>
               </View>
               <View style={styles.sep} />
               <View style={styles.topStatCol}>
                 <Text style={styles.bigNumber}>{currentStreak}</Text>
-                <Text style={styles.bigLabel}>DAY STREAK</Text>
+                <Text style={styles.bigLabel}>{t('prof_stats_streak')}</Text>
               </View>
             </View>
             <View style={styles.weekDotsRow}>
@@ -219,10 +229,8 @@ export default function ProgressScreen() {
         <View style={styles.history}>
           {recentList.length === 0 ? (
             <View style={styles.historyEmpty}>
-              <Text style={styles.historyEmptyTitle}>No sessions yet.</Text>
-              <Text style={styles.historyEmptyBody}>
-                Finish a routine and it'll show up here, oldest releases at the bottom.
-              </Text>
+              <Text style={styles.historyEmptyTitle}>{t('pp_empty_title')}</Text>
+              <Text style={styles.historyEmptyBody}>{t('pp_empty_sub')}</Text>
             </View>
           ) : (
             recentList.map((h, i) => (

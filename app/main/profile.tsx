@@ -19,6 +19,7 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useHomeSnapshot } from '../../hooks/useUserData';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
+import { t } from '../../lib/i18n';
 
 interface RowDef {
   key: string;
@@ -46,19 +47,18 @@ const formatRowSub = (
   const sessions = snap.streak?.total_sessions ?? 0;
   const streakDays = snap.streak?.current_streak ?? 0;
   if (key === 'progress') {
-    if (sessions === 0) return 'Your first session is waiting';
-    return `${sessions} session${sessions === 1 ? '' : 's'} · ${streakDays}-day streak`;
+    if (sessions === 0) return t('prof_progress_sub_empty');
+    return t('prof_progress_sub_n_streak', { n: sessions, days: streakDays });
   }
   if (key === 'pain') {
-    if (!earliestPainDate) return 'No ratings yet — start any time';
+    if (!earliestPainDate) return t('prof_pain_history_sub_empty');
     const d = new Date(earliestPainDate);
-    return `Daily ratings since ${d.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-    })}`;
+    return t('prof_pain_history_sub_since', {
+      date: d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+    });
   }
   if (key === 'sub') {
-    if (!sub) return 'Free · all zones via shorts';
+    if (!sub) return t('prof_subscription_sub_free');
     if (sub.status === 'trialing' && sub.trial_end) {
       const days = Math.max(
         0,
@@ -69,8 +69,8 @@ const formatRowSub = (
       return `Trial · ${days} day${days === 1 ? '' : 's'} remaining`;
     }
     if (sub.status === 'active') return `${sub.plan.replace('_', ' ')} · billed automatically`;
-    if (sub.status === 'expired' || sub.status === 'cancelled') return 'Plan ended — reactivate any time';
-    return 'Free · all zones via shorts';
+    if (sub.status === 'expired' || sub.status === 'cancelled') return t('ps_subscription_sub_expired');
+    return t('prof_subscription_sub_free');
   }
   return '';
 };
@@ -92,7 +92,7 @@ const headerSubFor = (snap: ReturnType<typeof useHomeSnapshot>): string => {
   const zones = snap.onboardingData.pain_zones ?? [];
   const focusLabel =
     zones.length === 0
-      ? 'Building habits'
+      ? t('prof_handle_sub')
       : zones.length === 1
         ? `${capitalize(zones[0])} focus`
         : `${capitalize(zones[0])} & ${capitalize(zones[1])} focus`;
@@ -139,7 +139,7 @@ export default function ProfileScreen() {
       key: 'progress',
       icon: 'check',
       tone: 'coral',
-      title: 'Progress',
+      title: t('prof_progress'),
       sub: formatRowSub('progress', snap, sub, earliestPain),
       route: '/profile/progress',
     },
@@ -147,7 +147,7 @@ export default function ProfileScreen() {
       key: 'pain',
       icon: 'infinity',
       tone: 'peach',
-      title: 'Pain history',
+      title: t('prof_pain_history'),
       sub: formatRowSub('pain', snap, sub, earliestPain),
       route: '/profile/pain-history',
     },
@@ -155,15 +155,15 @@ export default function ProfileScreen() {
       key: 'settings',
       icon: 'settings',
       tone: 'lavender',
-      title: 'Settings',
-      sub: 'Reminders, account, privacy',
+      title: t('prof_settings'),
+      sub: t('prof_settings_sub'),
       route: '/profile/settings',
     },
     {
       key: 'sub',
       icon: 'crown',
       tone: 'coral',
-      title: 'Subscription',
+      title: t('prof_subscription'),
       sub: formatRowSub('sub', snap, sub, earliestPain),
       route: '/onboarding/paywall',
       badge: rowBadgeFor(sub?.status),
@@ -175,7 +175,7 @@ export default function ProfileScreen() {
     if (r.route) router.push(r.route as never);
   };
 
-  const displayName = snap.profile?.display_name ?? 'Friend';
+  const displayName = snap.profile?.display_name ?? t('prof_handle_default');
   const initial = (displayName[0] ?? 'F').toUpperCase();
   const tierBadge = tierBadgeFor(sub?.status, snap.isPremium);
   const sessionsValue = String(snap.streak?.total_sessions ?? 0);
@@ -213,16 +213,16 @@ export default function ProfileScreen() {
         <View style={styles.statsWrap}>
           <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
             <View style={styles.statsRow}>
-              <StatCol value={sessionsValue} label="SESSIONS" />
+              <StatCol value={sessionsValue} label={t('prof_stats_sessions')} />
               <StatDivider />
-              <StatCol value={streakValue} label="DAY STREAK" />
+              <StatCol value={streakValue} label={t('prof_stats_streak')} />
               <StatDivider />
-              <StatCol value={minutesValue} label="MINUTES" />
+              <StatCol value={minutesValue} label={t('prof_stats_minutes')} />
             </View>
           </GlassCard>
         </View>
 
-        <Eyebrow>MANAGE</Eyebrow>
+        <Eyebrow>{t('prof_manage_eyebrow')}</Eyebrow>
         <View style={styles.rows}>
           {ROWS.map((r) => (
             <Pressable

@@ -20,6 +20,7 @@ import type { HaloTone } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useSession, useUserId } from '../../lib/store/session';
+import { t } from '../../lib/i18n';
 
 interface SubInfo {
   status: string;
@@ -28,7 +29,7 @@ interface SubInfo {
 }
 
 const formatSubRow = (sub: SubInfo | null): { sub: string; badge?: string } => {
-  if (!sub) return { sub: 'Free · all zones via shorts' };
+  if (!sub) return { sub: t('ps_subscription_sub_free') };
   if (sub.status === 'trialing' && sub.trial_end) {
     const days = Math.max(
       0,
@@ -40,9 +41,9 @@ const formatSubRow = (sub: SubInfo | null): { sub: string; badge?: string } => {
     return { sub: `${sub.plan.replace('_', ' ')} · billed automatically`, badge: 'PRO' };
   }
   if (sub.status === 'expired' || sub.status === 'cancelled') {
-    return { sub: 'Plan ended — reactivate any time' };
+    return { sub: t('ps_subscription_sub_expired') };
   }
-  return { sub: 'Free · all zones via shorts' };
+  return { sub: t('ps_subscription_sub_free') };
 };
 
 interface SwitchRowDef {
@@ -67,24 +68,24 @@ interface NavRowDef {
 }
 
 const REMINDERS: ReadonlyArray<SwitchRowDef> = [
-  { key: 'nudges',  icon: 'bell',    tone: 'coral',    title: 'Gentle nudges',  sub: 'A handful of reminders a day' },
-  { key: 'eye',     icon: 'eye',     tone: 'lavender', title: 'Eye breaks',     sub: 'Every 20 minutes · 20-20-20' },
-  { key: 'sound',   icon: 'speaker', tone: 'peach',    title: 'Notification sound', sub: 'Soft tone, never sharp' },
+  { key: 'nudges',  icon: 'bell',    tone: 'coral',    title: t('ps_gentle_title'),       sub: t('ps_gentle_sub') },
+  { key: 'eye',     icon: 'eye',     tone: 'lavender', title: t('ps_eyebreaks_title'),    sub: t('ps_eyebreaks_sub') },
+  { key: 'sound',   icon: 'speaker', tone: 'peach',    title: t('ps_notif_sound_title'),  sub: t('ps_notif_sound_sub') },
 ];
 
 const ACCOUNT_TPL: ReadonlyArray<NavRowDef> = [
-  { key: 'sub',     icon: 'crown',    tone: 'coral',    title: 'Subscription',    sub: '', route: '/onboarding/paywall' },
-  { key: 'profile', icon: 'settings', tone: 'lavender', title: 'Profile details', sub: 'Name, age, pain zones',     route: '/onboarding/quiz/zone' },
-  { key: 'restore', icon: 'refresh',  tone: 'mint',     title: 'Restore purchase', sub: 'Re-sync from App Store or Play', route: '/onboarding/paywall' },
+  { key: 'sub',     icon: 'crown',    tone: 'coral',    title: t('ps_subscription_title'),    sub: '', route: '/onboarding/paywall' },
+  { key: 'profile', icon: 'settings', tone: 'lavender', title: t('ps_profile_details_title'), sub: t('ps_profile_details_sub'),     route: '/onboarding/quiz/zone' },
+  { key: 'restore', icon: 'refresh',  tone: 'mint',     title: t('ps_restore_title'),         sub: t('ps_restore_sub'), route: '/onboarding/paywall' },
 ];
 
 const PRIVACY: ReadonlyArray<NavRowDef> = [
-  { key: 'data',     icon: 'settings', tone: 'lavender', title: 'Data & analytics', sub: 'What we collect and why', url: LEGAL_URLS.privacy },
-  { key: 'terms',    icon: 'plus',     tone: 'peach',    title: 'Terms of use',     sub: '',                         url: LEGAL_URLS.terms },
-  { key: 'privacy',  icon: 'plus',     tone: 'peach',    title: 'Privacy policy',   sub: '',                         url: LEGAL_URLS.privacy },
-  { key: 'contact',  icon: 'plus',     tone: 'coral',    title: 'Contact support',  sub: SUPPORT_EMAIL,              url: `mailto:${SUPPORT_EMAIL}` },
-  { key: 'delete',   icon: 'close-x',  tone: 'coral',    title: 'Delete account',   sub: 'Permanent. Deletes data.', route: '/profile/delete-account' },
-  { key: 'signout',  icon: 'close-x',  tone: 'coral',    title: 'Sign out',         sub: '',                         route: '/auth/sign-in', accent: true },
+  { key: 'data',     icon: 'settings', tone: 'lavender', title: t('ps_data_title'),    sub: t('ps_data_sub'),    url: LEGAL_URLS.privacy },
+  { key: 'terms',    icon: 'plus',     tone: 'peach',    title: t('common_terms_of_use'),     sub: '',                         url: LEGAL_URLS.terms },
+  { key: 'privacy',  icon: 'plus',     tone: 'peach',    title: t('common_privacy_policy'),   sub: '',                         url: LEGAL_URLS.privacy },
+  { key: 'contact',  icon: 'plus',     tone: 'coral',    title: t('ps_contact_title'),  sub: SUPPORT_EMAIL,              url: `mailto:${SUPPORT_EMAIL}` },
+  { key: 'delete',   icon: 'close-x',  tone: 'coral',    title: t('ps_delete_title'),   sub: t('ps_delete_sub'), route: '/profile/delete-account' },
+  { key: 'signout',  icon: 'close-x',  tone: 'coral',    title: t('ps_signout'),        sub: '',                         route: '/auth/sign-in', accent: true },
 ];
 
 export default function SettingsScreen() {
@@ -126,6 +127,7 @@ export default function SettingsScreen() {
   const back = () => {
     Haptics.selectionAsync();
     if (router.canGoBack()) router.back();
+    else router.replace('/main/profile');
   };
   const nav = async (r: NavRowDef) => {
     Haptics.selectionAsync();
@@ -148,7 +150,7 @@ export default function SettingsScreen() {
       <BgPattern variant="dots" opacity={0.04} tone="coral" />
       <DecorativeArc position="top-right" tone="peach" size={220} opacity={0.18} />
 
-      <NavHeader title="Settings" onBack={back} />
+      <NavHeader title={t('prof_settings')} onBack={back} />
 
       <ScrollView
         contentContainerStyle={{
@@ -158,7 +160,7 @@ export default function SettingsScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <Eyebrow>REMINDERS</Eyebrow>
+        <Eyebrow>{t('ps_reminders_eyebrow')}</Eyebrow>
         <View style={styles.group}>
           {REMINDERS.map((r) => (
             <GlassCard key={r.key} tint="cream" radius="xl" padding={spacing.lg}>
@@ -174,7 +176,7 @@ export default function SettingsScreen() {
           ))}
         </View>
 
-        <Eyebrow>ACCOUNT</Eyebrow>
+        <Eyebrow>{t('ps_account_eyebrow')}</Eyebrow>
         <View style={styles.group}>
           {ACCOUNT.map((r) => (
             <Pressable
@@ -198,7 +200,7 @@ export default function SettingsScreen() {
           ))}
         </View>
 
-        <Eyebrow>PRIVACY · SUPPORT</Eyebrow>
+        <Eyebrow>{t('ps_privacy_support_eyebrow')}</Eyebrow>
         <View style={styles.group}>
           {PRIVACY.map((r) => (
             <Pressable
@@ -222,7 +224,7 @@ export default function SettingsScreen() {
           ))}
         </View>
 
-        <Text style={styles.version}>DeskCare v1.0.0 · pre-TF</Text>
+        <Text style={styles.version}>{t('ps_version')}</Text>
       </ScrollView>
     </AtmosphericBackground>
   );
