@@ -118,7 +118,7 @@ export default function LaborIllusionScreen() {
         ]}
       >
         <View style={styles.eyebrowWrap}>
-          <Eyebrow variant="accent">BUILDING YOUR PROGRAM</Eyebrow>
+          <Eyebrow variant="accent">{t('labor_eb_building')}</Eyebrow>
         </View>
 
         <View style={styles.ringWrap}>
@@ -172,7 +172,7 @@ export default function LaborIllusionScreen() {
           {/* Percent number, centered */}
           <View style={styles.percentOverlay} pointerEvents="none">
             <Text style={styles.percent}>{percentText}</Text>
-            <Text style={styles.percentSub}>COMPLETE</Text>
+            <Text style={styles.percentSub}>{t('labor_eb_complete')}</Text>
           </View>
         </View>
 

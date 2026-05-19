@@ -60,7 +60,7 @@ export default function MiniPaywallScreen() {
             </Svg>
           </View>
 
-          <Eyebrow variant="accent">PREMIUM FEATURE</Eyebrow>
+          <Eyebrow variant="accent">{t('mini_pw_eb_premium_feature')}</Eyebrow>
           <Text style={styles.title}>{t('mini_pw_title')}</Text>
           <Text style={styles.sub}>{t('pw_cta_sub')}</Text>
 

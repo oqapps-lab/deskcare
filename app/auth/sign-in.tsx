@@ -80,12 +80,12 @@ export default function SignInScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <Eyebrow variant="accent">WELCOME BACK</Eyebrow>
+          <Eyebrow variant="accent">{t('auth_eb_welcome_back')}</Eyebrow>
           <Text style={styles.title}>{t('auth_signin_title')}</Text>
           <Text style={styles.sub}>{t('auth_signin_sub')}</Text>
 
           <View style={styles.form}>
-            <Label>EMAIL</Label>
+            <Label>{t('auth_lbl_email')}</Label>
             <TextInput
               value={email}
               onChangeText={setEmail}
@@ -99,7 +99,7 @@ export default function SignInScreen() {
 
             <View style={{ height: spacing.md }} />
 
-            <Label>PASSWORD</Label>
+            <Label>{t('auth_lbl_password')}</Label>
             <View style={styles.pwRow}>
               <TextInput
                 value={password}
@@ -137,7 +137,7 @@ export default function SignInScreen() {
 
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR</Text>
+            <Text style={styles.dividerText}>{t('common_or')}</Text>
             <View style={styles.dividerLine} />
           </View>
 

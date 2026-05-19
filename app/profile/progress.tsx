@@ -198,7 +198,7 @@ export default function ProgressScreen() {
           </GlassCard>
         </View>
 
-        <Eyebrow>THIS WEEK</Eyebrow>
+        <Eyebrow>{t('progress_eb_this_week')}</Eyebrow>
         <View style={styles.chartWrap}>
           <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
             <View style={styles.chartRow}>
@@ -225,7 +225,7 @@ export default function ProgressScreen() {
           </GlassCard>
         </View>
 
-        <Eyebrow>RECENT SESSIONS</Eyebrow>
+        <Eyebrow>{t('progress_eb_recent_sessions')}</Eyebrow>
         <View style={styles.history}>
           {recentList.length === 0 ? (
             <View style={styles.historyEmpty}>

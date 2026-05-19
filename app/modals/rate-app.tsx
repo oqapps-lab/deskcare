@@ -49,7 +49,7 @@ export default function RateAppScreen() {
 
       <View style={[styles.root, { paddingTop: insets.top + spacing.huge, paddingBottom: insets.bottom + spacing.xxxl }]}>
         <View>
-          <Eyebrow variant="accent">QUICK FAVOR</Eyebrow>
+          <Eyebrow variant="accent">{t('rate_eb_quick_favor')}</Eyebrow>
           <Text style={styles.title}>{t('rate_title')}</Text>
           <Text style={styles.sub}>
             A few taps — it shapes what we build next. No popups, we promise.

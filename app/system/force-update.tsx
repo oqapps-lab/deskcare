@@ -90,7 +90,7 @@ export default function ForceUpdateScreen() {
         </Animated.View>
 
         <View>
-          <Eyebrow variant="accent">UPDATE REQUIRED</Eyebrow>
+          <Eyebrow variant="accent">{t('force_update_eb_required')}</Eyebrow>
           <Text style={styles.title}>{t('fu_title')}</Text>
           <Text style={styles.sub}>{t('fu_body')}</Text>
 

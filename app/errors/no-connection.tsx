@@ -87,7 +87,7 @@ export default function NoConnectionScreen() {
         ]}
       >
         <View style={styles.eyebrowRow}>
-          <Eyebrow>OFFLINE</Eyebrow>
+          <Eyebrow>{t('no_conn_eb_offline')}</Eyebrow>
         </View>
 
         <View style={styles.center}>

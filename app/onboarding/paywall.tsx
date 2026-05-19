@@ -214,7 +214,7 @@ export default function PaywallScreen() {
           </Animated.View>
 
           <Animated.View style={[styles.benefitsWrap, contentStyle]}>
-            <Eyebrow>EVERYTHING INCLUDED</Eyebrow>
+            <Eyebrow>{t('pw_eb_everything_included')}</Eyebrow>
             <View style={{ height: spacing.md }} />
             {BENEFITS.map((b) => (
               <View key={b} style={styles.benefitRow}>

@@ -84,12 +84,12 @@ export default function SignUpScreen() {
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
         >
-          <Eyebrow variant="accent">CREATE AN ACCOUNT</Eyebrow>
+          <Eyebrow variant="accent">{t('auth_eb_create_account')}</Eyebrow>
           <Text style={styles.title}>{t('auth_signup_title')}</Text>
           <Text style={styles.sub}>{t('auth_signup_sub')}</Text>
 
           <View style={styles.form}>
-            <Label>EMAIL</Label>
+            <Label>{t('auth_lbl_email')}</Label>
             <TextInput
               value={email}
               onChangeText={setEmail}
@@ -103,7 +103,7 @@ export default function SignUpScreen() {
 
 
             <View style={{ height: spacing.md }} />
-            <Label>PASSWORD</Label>
+            <Label>{t('auth_lbl_password')}</Label>
             <TextInput
               value={password}
               onChangeText={setPassword}
@@ -115,7 +115,7 @@ export default function SignUpScreen() {
             />
 
             <View style={{ height: spacing.md }} />
-            <Label>CONFIRM PASSWORD</Label>
+            <Label>{t('auth_lbl_confirm_password')}</Label>
             <TextInput
               value={confirm}
               onChangeText={setConfirm}
@@ -152,7 +152,7 @@ export default function SignUpScreen() {
 
           <View style={styles.divider}>
             <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR</Text>
+            <Text style={styles.dividerText}>{t('common_or')}</Text>
             <View style={styles.dividerLine} />
           </View>
 

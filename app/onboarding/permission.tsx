@@ -100,7 +100,7 @@ export default function PermissionPromptScreen() {
         </Animated.View>
 
         <Animated.View style={[styles.head, headStyle]}>
-          <Eyebrow>REMINDERS</Eyebrow>
+          <Eyebrow>{t('perm_eb_reminders')}</Eyebrow>
           <View style={{ height: spacing.md }} />
           <Text style={styles.title}>{t('onb_perm_title')}</Text>
           <Text style={styles.subtitle}>{t('onb_perm_body')}</Text>

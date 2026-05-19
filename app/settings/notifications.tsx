@@ -243,7 +243,7 @@ export default function NotificationSettingsScreen() {
           </View>
 
           <View style={styles.eyebrowRow}>
-            <Eyebrow>DAILY SCHEDULE</Eyebrow>
+            <Eyebrow>{t('notif_eb_daily_schedule')}</Eyebrow>
           </View>
 
           <Animated.View style={[styles.chipRow, chipsStyle]}>
@@ -260,7 +260,7 @@ export default function NotificationSettingsScreen() {
           </Animated.View>
 
           <View style={styles.eyebrowRow}>
-            <Eyebrow>MORE OPTIONS</Eyebrow>
+            <Eyebrow>{t('notif_eb_more_options')}</Eyebrow>
           </View>
 
           <Animated.View style={[styles.rows, rowsStyle]}>

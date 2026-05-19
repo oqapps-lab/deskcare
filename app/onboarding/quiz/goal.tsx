@@ -151,7 +151,7 @@ export default function QuizGoalScreen() {
           </View>
 
           <View style={styles.hoursBlock}>
-            <Eyebrow>AND HOW MANY HOURS AT YOUR DESK?</Eyebrow>
+            <Eyebrow>{t('quiz_eb_hours_at_desk')}</Eyebrow>
             <View style={{ height: spacing.lg }} />
             <SizeCircleRow options={HOUR_OPTIONS} value={hours} onChange={setHours} />
           </View>

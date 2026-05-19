@@ -149,7 +149,7 @@ export default function SymptomCheckerScreen() {
         {redFlagActive ? (
           <View style={styles.redFlagWrap}>
             <GlassCard tint="coral" radius="xl" padding={spacing.lg} innerGradient>
-              <Eyebrow variant="accent">PLEASE PAUSE</Eyebrow>
+              <Eyebrow variant="accent">{t('symp_eb_please_pause')}</Eyebrow>
               <Text style={styles.redFlagTitle}>{t('pscc_numb_warn_title')}</Text>
               <Text style={styles.redFlagBody}>{t('pscc_numb_warn_body')}</Text>
             </GlassCard>

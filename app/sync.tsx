@@ -93,7 +93,7 @@ export default function SyncScreen() {
         ]}
       >
         <View style={styles.stackTop}>
-          <Eyebrow>PLEASE WAIT</Eyebrow>
+          <Eyebrow>{t('sync_eb_please_wait')}</Eyebrow>
         </View>
 
         <View style={styles.ringsCluster}>

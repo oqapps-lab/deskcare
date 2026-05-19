@@ -317,7 +317,7 @@ export default function HomeScreen() {
         {/* Premium: programs row */}
         {state === 'premium' && (
           <View style={styles.programsWrap}>
-            <Eyebrow>YOUR PROGRAMS</Eyebrow>
+            <Eyebrow>{t('home_eb_your_programs')}</Eyebrow>
             <View style={styles.programsRow}>
               <ProgramTile label={t('home_prog_sciatica')} subtitle={t('home_prog_week_n', {n: 2})} tone="coral" />
               <ProgramTile label={t('home_prog_carpal')} subtitle={t('home_prog_week_n', {n: 1})} tone="mint" />

@@ -238,7 +238,7 @@ export default function PainCheckInScreen() {
             decorativeCorner
           >
             <View style={styles.severityHeader}>
-              <Eyebrow>INTENSITY</Eyebrow>
+              <Eyebrow>{t('pain_eb_intensity')}</Eyebrow>
               <Text style={styles.severityValue}>
                 {Math.round(severityPct * 10)}/10
               </Text>
@@ -255,7 +255,7 @@ export default function PainCheckInScreen() {
           <View style={{ height: spacing.lg }} />
 
           <View style={styles.eyebrowRow}>
-            <Eyebrow>DESCRIBE IT</Eyebrow>
+            <Eyebrow>{t('pain_eb_describe')}</Eyebrow>
           </View>
 
           <View style={styles.chipColumn}>

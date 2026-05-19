@@ -51,7 +51,7 @@ export default function StreakFreezeScreen() {
         </View>
 
         <View>
-          <Eyebrow variant="accent">MISSED YESTERDAY?</Eyebrow>
+          <Eyebrow variant="accent">{t('streak_eb_missed_yesterday')}</Eyebrow>
           <Text style={styles.title}>{t('sf_title')}</Text>
           <Text style={styles.sub}>{t('sf_body')}</Text>
 

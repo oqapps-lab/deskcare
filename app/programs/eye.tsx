@@ -162,7 +162,7 @@ export default function EyeProgramScreen() {
             </Svg>
             <View style={styles.ringCenter} pointerEvents="none">
               <Text style={styles.countNumber}>{DURATION_SEC - elapsed}</Text>
-              <Eyebrow variant="accent">SECONDS</Eyebrow>
+              <Eyebrow variant="accent">{t('eye_eb_seconds')}</Eyebrow>
             </View>
           </Animated.View>
           <Text style={styles.caption}>{t('pe_title')}</Text>

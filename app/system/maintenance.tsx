@@ -77,7 +77,7 @@ export default function MaintenanceScreen() {
         </Animated.View>
 
         <View>
-          <Eyebrow variant="accent">WE'LL BE RIGHT BACK</Eyebrow>
+          <Eyebrow variant="accent">{t('maintenance_eb_right_back')}</Eyebrow>
           <Text style={styles.title}>{t('mt_title')}</Text>
           <Text style={styles.sub}>{t('mt_body')}</Text>
 

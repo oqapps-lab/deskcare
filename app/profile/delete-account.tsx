@@ -37,8 +37,8 @@ export default function DeleteAccountScreen() {
   const submit = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     Alert.alert(
-      'Delete account?',
-      "This permanently deletes your profile, streak, pain history, sessions, and subscription state. This can't be undone.",
+      t('delete_account_alert_title'),
+      t('delete_account_alert_body'),
       [
         { text: t('common_cancel'), style: 'cancel' },
         {
@@ -80,7 +80,7 @@ export default function DeleteAccountScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <Eyebrow variant="accent">PERMANENT</Eyebrow>
+        <Eyebrow variant="accent">{t('delete_eb_permanent')}</Eyebrow>
         <Text style={styles.title}>{t('pd_title')}</Text>
         <Text style={styles.body}>
           {t('pd_body')}
@@ -100,9 +100,11 @@ export default function DeleteAccountScreen() {
 
         <View style={{ height: spacing.lg }} />
 
-        <Eyebrow>CONFIRM</Eyebrow>
+        <Eyebrow>{t('delete_eb_confirm')}</Eyebrow>
         <Text style={styles.confirmHint}>
-          Type <Text style={styles.confirmPhrase}>{CONFIRM_PHRASE}</Text> to enable the button.
+          {t('pd_confirm_hint_prefix')}{' '}
+          <Text style={styles.confirmPhrase}>{CONFIRM_PHRASE}</Text>{' '}
+          {t('pd_confirm_hint_suffix')}
         </Text>
         <TextInput
           value={confirm}

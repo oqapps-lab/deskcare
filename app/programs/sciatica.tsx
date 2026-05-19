@@ -141,7 +141,7 @@ export default function SciaticaProgramScreen() {
         showsVerticalScrollIndicator={false}
       >
         <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
-          <Eyebrow variant="accent">SCIATICA RELIEF</Eyebrow>
+          <Eyebrow variant="accent">{t('sciatica_eb_relief')}</Eyebrow>
           <Text style={styles.heroTitle}>
             {active ? 'Phase 1 · Day 4 of 7' : 'A calm 21-day return to standing without wincing.'}
           </Text>
@@ -189,7 +189,7 @@ export default function SciaticaProgramScreen() {
           lockedCopy={active ? 'Unlocks on day 8' : undefined}
         />
 
-        <Eyebrow>INSIDE YOU GET</Eyebrow>
+        <Eyebrow>{t('sciatica_eb_inside')}</Eyebrow>
         <View style={styles.insideList}>
           {INSIDE.map((line) => (
             <View key={line} style={styles.insideRow}>

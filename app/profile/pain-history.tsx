@@ -214,7 +214,7 @@ export default function PainHistoryScreen() {
           </GlassCard>
         </View>
 
-        <Eyebrow>BY ZONE</Eyebrow>
+        <Eyebrow>{t('pain_hist_eb_by_zone')}</Eyebrow>
         <View style={styles.zones}>
           {perZone.map((z, i) => (
             <React.Fragment key={z.zone}>
