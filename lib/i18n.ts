@@ -31,12 +31,12 @@ export const SCREENSHOT_LOCALE: string = '';
 
 export const getLocale = (): Locale => {
   const override = SCREENSHOT_LOCALE.trim();
-  if (override && (STRINGS as any)[override]) return override as Locale;
+  if (override && (STRINGS as Record<string, Dict>)[override]) return override as Locale;
   try {
     // Device locale via Intl — works in modern Hermes/Expo SDK 55+.
     // Tries exact match first ('de-DE'), then base language ('de' → first matching variant).
     const sys = Intl.DateTimeFormat().resolvedOptions().locale;
-    if ((STRINGS as any)[sys]) return sys as Locale;
+    if ((STRINGS as Record<string, Dict>)[sys]) return sys as Locale;
     const base = sys.split('-')[0];
     const found = Object.keys(STRINGS).find((l) => l === base || l.startsWith(base + '-'));
     if (found) return found as Locale;

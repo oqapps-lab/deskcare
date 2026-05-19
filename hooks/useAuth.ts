@@ -144,10 +144,11 @@ export const useAuth = () => {
         return { ok: false, error: error.message };
       }
       return { ok: true };
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const err = e as { code?: string; message?: string } | null;
       // Apple emits ERR_REQUEST_CANCELED on user-initiated cancel.
-      if (e?.code === 'ERR_REQUEST_CANCELED') return { ok: false, cancelled: true };
-      const msg = e?.message ?? t('auth_err_apple_failed');
+      if (err?.code === 'ERR_REQUEST_CANCELED') return { ok: false, cancelled: true };
+      const msg = err?.message ?? t('auth_err_apple_failed');
       setError(msg);
       return { ok: false, error: msg };
     } finally {
@@ -192,15 +193,16 @@ export const useAuth = () => {
         return { ok: false, error: error.message };
       }
       return { ok: true };
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const err = e as { code?: string | number; message?: string } | null;
       if (
-        e?.code === gs.statusCodes?.SIGN_IN_CANCELLED ||
-        e?.code === '-5' ||
-        e?.code === 'CANCELED'
+        err?.code === gs.statusCodes?.SIGN_IN_CANCELLED ||
+        err?.code === '-5' ||
+        err?.code === 'CANCELED'
       ) {
         return { ok: false, cancelled: true };
       }
-      const msg = e?.message ?? t('auth_err_google_failed');
+      const msg = err?.message ?? t('auth_err_google_failed');
       setError(msg);
       return { ok: false, error: msg };
     } finally {
