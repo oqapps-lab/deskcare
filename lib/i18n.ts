@@ -598,6 +598,18 @@ const en: Dict = {
   paywall_feature_sciatica: 'Sciatica program + symptom check-in',
   paywall_feature_pain_insights: 'Pain tracking & weekly insights',
 
+  auth_err_apple_ios_only: 'Apple Sign-In requires iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In is unavailable on this device.',
+  auth_err_apple_no_token: 'No identity token returned by Apple.',
+  auth_err_apple_failed: 'Apple Sign-In failed',
+  auth_err_google_no_token: 'No idToken returned by Google.',
+  auth_err_google_failed: 'Google Sign-In failed',
+  auth_err_expo_go_apple: 'Apple Sign-In requires a dev build (not Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In requires a dev build (not Expo Go).',
+
+  auth_err_apple_module_unavail: 'Apple Sign-In module unavailable.',
+  auth_err_google_module_unavail: 'Google Sign-In module unavailable.',
+
 };
 
 const enGB: Dict = {
@@ -1101,6 +1113,18 @@ const enGB: Dict = {
   zone_eyes: 'Eyes',
   zone_neck: 'Neck',
   zone_wrists: 'Wrists',
+
+  auth_err_apple_ios_only: 'Apple Sign-In requires iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In is unavailable on this device.',
+  auth_err_apple_no_token: 'No identity token returned by Apple.',
+  auth_err_apple_failed: 'Apple Sign-In failed',
+  auth_err_google_no_token: 'No idToken returned by Google.',
+  auth_err_google_failed: 'Google Sign-In failed',
+  auth_err_expo_go_apple: 'Apple Sign-In requires a dev build (not Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In requires a dev build (not Expo Go).',
+
+  auth_err_apple_module_unavail: 'Apple Sign-In module unavailable.',
+  auth_err_google_module_unavail: 'Google Sign-In module unavailable.',
 
 };
 
@@ -1608,6 +1632,18 @@ const de: Dict = {
   symptom_a11y_pick: 'Mindestens eines auswählen',
   symptom_cta_adapt: 'Heute anpassen',
   symptom_cta_pause: 'Programm pausieren',
+  auth_err_apple_ios_only: 'Apple Sign-In erfordert iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In ist auf diesem Gerät nicht verfügbar.',
+  auth_err_apple_no_token: 'Apple hat kein Identitätstoken zurückgegeben.',
+  auth_err_apple_failed: 'Apple Sign-In fehlgeschlagen',
+  auth_err_google_no_token: 'Google hat kein idToken zurückgegeben.',
+  auth_err_google_failed: 'Google Sign-In fehlgeschlagen',
+  auth_err_expo_go_apple: 'Apple Sign-In erfordert einen Dev-Build (nicht Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In erfordert einen Dev-Build (nicht Expo Go).',
+
+  auth_err_apple_module_unavail: 'Apple Sign-In Modul nicht verfügbar.',
+  auth_err_google_module_unavail: 'Google Sign-In Modul nicht verfügbar.',
+
 };
 
 const ja: Dict = {
@@ -2114,6 +2150,18 @@ const ja: Dict = {
   symptom_a11y_pick: '1つ以上選択',
   symptom_cta_adapt: '今日を調整',
   symptom_cta_pause: 'プログラムを一時停止',
+  auth_err_apple_ios_only: 'Apple Sign-InはiOSのみ対応です。',
+  auth_err_apple_unavailable: 'この端末ではApple Sign-Inを利用できません。',
+  auth_err_apple_no_token: 'Appleから識別トークンが返されませんでした。',
+  auth_err_apple_failed: 'Apple Sign-Inに失敗しました',
+  auth_err_google_no_token: 'Googleからidトークンが返されませんでした。',
+  auth_err_google_failed: 'Google Sign-Inに失敗しました',
+  auth_err_expo_go_apple: 'Apple Sign-InにはDevビルドが必要です（Expo Goでは不可）。',
+  auth_err_expo_go_google: 'Google Sign-InにはDevビルドが必要です（Expo Goでは不可）。',
+
+  auth_err_apple_module_unavail: 'Apple Sign-Inモジュールが利用できません。',
+  auth_err_google_module_unavail: 'Google Sign-Inモジュールが利用できません。',
+
 };
 
 const fr: Dict = {
@@ -2620,6 +2668,18 @@ const fr: Dict = {
   symptom_a11y_pick: 'Choisis au moins un',
   symptom_cta_adapt: 'Adapter aujourd\'hui',
   symptom_cta_pause: 'Mettre le programme en pause',
+  auth_err_apple_ios_only: 'Apple Sign-In nécessite iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In n\'est pas disponible sur cet appareil.',
+  auth_err_apple_no_token: 'Aucun jeton d\'identité renvoyé par Apple.',
+  auth_err_apple_failed: 'Échec d\'Apple Sign-In',
+  auth_err_google_no_token: 'Aucun idToken renvoyé par Google.',
+  auth_err_google_failed: 'Échec de Google Sign-In',
+  auth_err_expo_go_apple: 'Apple Sign-In nécessite un dev build (pas Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In nécessite un dev build (pas Expo Go).',
+
+  auth_err_apple_module_unavail: 'Module Apple Sign-In indisponible.',
+  auth_err_google_module_unavail: 'Module Google Sign-In indisponible.',
+
 };
 
 const ko: Dict = {
@@ -3126,6 +3186,18 @@ const ko: Dict = {
   symptom_a11y_pick: '하나 이상 선택',
   symptom_cta_adapt: '오늘 조정',
   symptom_cta_pause: '프로그램 일시 중지',
+  auth_err_apple_ios_only: 'Apple Sign-In은 iOS에서만 사용 가능합니다.',
+  auth_err_apple_unavailable: '이 기기에서는 Apple Sign-In을 사용할 수 없습니다.',
+  auth_err_apple_no_token: 'Apple에서 식별 토큰이 반환되지 않았습니다.',
+  auth_err_apple_failed: 'Apple Sign-In 실패',
+  auth_err_google_no_token: 'Google에서 idToken이 반환되지 않았습니다.',
+  auth_err_google_failed: 'Google Sign-In 실패',
+  auth_err_expo_go_apple: 'Apple Sign-In은 Dev 빌드가 필요합니다 (Expo Go 불가).',
+  auth_err_expo_go_google: 'Google Sign-In은 Dev 빌드가 필요합니다 (Expo Go 불가).',
+
+  auth_err_apple_module_unavail: 'Apple Sign-In 모듈을 사용할 수 없습니다.',
+  auth_err_google_module_unavail: 'Google Sign-In 모듈을 사용할 수 없습니다.',
+
 };
 
 const es: Dict = {
@@ -3632,6 +3704,18 @@ const es: Dict = {
   symptom_a11y_pick: 'Elige al menos uno',
   symptom_cta_adapt: 'Adaptar hoy',
   symptom_cta_pause: 'Pausar el programa',
+  auth_err_apple_ios_only: 'Apple Sign-In requiere iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In no está disponible en este dispositivo.',
+  auth_err_apple_no_token: 'Apple no devolvió token de identidad.',
+  auth_err_apple_failed: 'Apple Sign-In falló',
+  auth_err_google_no_token: 'Google no devolvió idToken.',
+  auth_err_google_failed: 'Google Sign-In falló',
+  auth_err_expo_go_apple: 'Apple Sign-In requiere un dev build (no Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In requiere un dev build (no Expo Go).',
+
+  auth_err_apple_module_unavail: 'Módulo Apple Sign-In no disponible.',
+  auth_err_google_module_unavail: 'Módulo Google Sign-In no disponible.',
+
 };
 
 const it: Dict = {
@@ -4138,6 +4222,18 @@ const it: Dict = {
   symptom_a11y_pick: 'Scegline almeno uno',
   symptom_cta_adapt: 'Adatta oggi',
   symptom_cta_pause: 'Metti in pausa il programma',
+  auth_err_apple_ios_only: 'Apple Sign-In richiede iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In non è disponibile su questo dispositivo.',
+  auth_err_apple_no_token: 'Apple non ha restituito un token di identità.',
+  auth_err_apple_failed: 'Apple Sign-In non riuscito',
+  auth_err_google_no_token: 'Google non ha restituito idToken.',
+  auth_err_google_failed: 'Google Sign-In non riuscito',
+  auth_err_expo_go_apple: 'Apple Sign-In richiede una build di sviluppo (non Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In richiede una build di sviluppo (non Expo Go).',
+
+  auth_err_apple_module_unavail: 'Modulo Apple Sign-In non disponibile.',
+  auth_err_google_module_unavail: 'Modulo Google Sign-In non disponibile.',
+
 };
 
 const nl: Dict = {
@@ -4644,6 +4740,18 @@ const nl: Dict = {
   symptom_a11y_pick: 'Kies er minstens één',
   symptom_cta_adapt: 'Vandaag aanpassen',
   symptom_cta_pause: 'Programma pauzeren',
+  auth_err_apple_ios_only: 'Apple Sign-In vereist iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In is niet beschikbaar op dit apparaat.',
+  auth_err_apple_no_token: 'Apple heeft geen identiteits-token teruggegeven.',
+  auth_err_apple_failed: 'Apple Sign-In mislukt',
+  auth_err_google_no_token: 'Google heeft geen idToken teruggegeven.',
+  auth_err_google_failed: 'Google Sign-In mislukt',
+  auth_err_expo_go_apple: 'Apple Sign-In vereist een dev build (niet Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In vereist een dev build (niet Expo Go).',
+
+  auth_err_apple_module_unavail: 'Apple Sign-In module niet beschikbaar.',
+  auth_err_google_module_unavail: 'Google Sign-In module niet beschikbaar.',
+
 };
 
 const sv: Dict = {
@@ -5150,6 +5258,18 @@ const sv: Dict = {
   symptom_a11y_pick: 'Välj minst ett',
   symptom_cta_adapt: 'Anpassa idag',
   symptom_cta_pause: 'Pausa programmet',
+  auth_err_apple_ios_only: 'Apple Sign-In kräver iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In är inte tillgängligt på den här enheten.',
+  auth_err_apple_no_token: 'Apple returnerade ingen identitetstoken.',
+  auth_err_apple_failed: 'Apple Sign-In misslyckades',
+  auth_err_google_no_token: 'Google returnerade ingen idToken.',
+  auth_err_google_failed: 'Google Sign-In misslyckades',
+  auth_err_expo_go_apple: 'Apple Sign-In kräver en dev-build (inte Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In kräver en dev-build (inte Expo Go).',
+
+  auth_err_apple_module_unavail: 'Apple Sign-In-modul ej tillgänglig.',
+  auth_err_google_module_unavail: 'Google Sign-In-modul ej tillgänglig.',
+
 };
 
 const ptBR: Dict = {
@@ -5656,6 +5776,18 @@ const ptBR: Dict = {
   symptom_a11y_pick: 'Escolha pelo menos um',
   symptom_cta_adapt: 'Adaptar hoje',
   symptom_cta_pause: 'Pausar o programa',
+  auth_err_apple_ios_only: 'Apple Sign-In requer iOS.',
+  auth_err_apple_unavailable: 'Apple Sign-In não está disponível neste dispositivo.',
+  auth_err_apple_no_token: 'Apple não retornou token de identidade.',
+  auth_err_apple_failed: 'Falha no Apple Sign-In',
+  auth_err_google_no_token: 'Google não retornou idToken.',
+  auth_err_google_failed: 'Falha no Google Sign-In',
+  auth_err_expo_go_apple: 'Apple Sign-In requer um dev build (não Expo Go).',
+  auth_err_expo_go_google: 'Google Sign-In requer um dev build (não Expo Go).',
+
+  auth_err_apple_module_unavail: 'Módulo Apple Sign-In indisponível.',
+  auth_err_google_module_unavail: 'Módulo Google Sign-In indisponível.',
+
 };
 
 const STRINGS: Record<Locale, Dict> = {

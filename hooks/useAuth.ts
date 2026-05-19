@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Platform } from 'react-native';
 import { supabase } from '../lib/supabase';
+import { t } from '../lib/i18n';
 import { IS_EXPO_GO } from '../lib/native-runtime';
 
 export interface AuthResult {
@@ -102,21 +103,21 @@ export const useAuth = () => {
 
   const signInWithApple = useCallback(async (): Promise<AuthResult> => {
     if (Platform.OS !== 'ios') {
-      const msg = 'Apple Sign-In requires iOS.';
+      const msg = t('auth_err_apple_ios_only');
       setError(msg);
       return { ok: false, error: msg };
     }
     const AppleAuthentication = loadAppleAuth();
     if (!AppleAuthentication) {
       const msg = IS_EXPO_GO
-        ? 'Apple Sign-In requires a dev build (not Expo Go).'
-        : 'Apple Sign-In module unavailable.';
+        ? t('auth_err_expo_go_apple')
+        : t('auth_err_apple_module_unavail');
       setError(msg);
       return { ok: false, error: msg };
     }
     const available = await AppleAuthentication.isAvailableAsync();
     if (!available) {
-      const msg = 'Apple Sign-In is unavailable on this device.';
+      const msg = t('auth_err_apple_unavailable');
       setError(msg);
       return { ok: false, error: msg };
     }
@@ -130,7 +131,7 @@ export const useAuth = () => {
         ],
       });
       if (!credential.identityToken) {
-        const msg = 'No identity token returned by Apple.';
+        const msg = t('auth_err_apple_no_token');
         setError(msg);
         return { ok: false, error: msg };
       }
@@ -146,7 +147,7 @@ export const useAuth = () => {
     } catch (e: any) {
       // Apple emits ERR_REQUEST_CANCELED on user-initiated cancel.
       if (e?.code === 'ERR_REQUEST_CANCELED') return { ok: false, cancelled: true };
-      const msg = e?.message ?? 'Apple Sign-In failed';
+      const msg = e?.message ?? t('auth_err_apple_failed');
       setError(msg);
       return { ok: false, error: msg };
     } finally {
@@ -163,8 +164,8 @@ export const useAuth = () => {
     const gs = loadGoogleSignIn();
     if (!gs) {
       const msg = IS_EXPO_GO
-        ? 'Google Sign-In requires a dev build (not Expo Go).'
-        : 'Google Sign-In module unavailable.';
+        ? t('auth_err_expo_go_google')
+        : t('auth_err_google_module_unavail');
       setError(msg);
       return { ok: false, error: msg };
     }
@@ -178,7 +179,7 @@ export const useAuth = () => {
       const idToken =
         (userInfo as any)?.idToken ?? (userInfo as any)?.data?.idToken ?? null;
       if (!idToken) {
-        const msg = 'No idToken returned by Google.';
+        const msg = t('auth_err_google_no_token');
         setError(msg);
         return { ok: false, error: msg };
       }
@@ -199,7 +200,7 @@ export const useAuth = () => {
       ) {
         return { ok: false, cancelled: true };
       }
-      const msg = e?.message ?? 'Google Sign-In failed';
+      const msg = e?.message ?? t('auth_err_google_failed');
       setError(msg);
       return { ok: false, error: msg };
     } finally {
