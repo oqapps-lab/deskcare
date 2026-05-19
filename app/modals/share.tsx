@@ -8,7 +8,6 @@ import {
   AtmosphericBackground,
   BgPattern,
   Eyebrow,
-  GlassCard,
   Glyph,
 } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';

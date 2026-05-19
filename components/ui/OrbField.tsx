@@ -27,15 +27,9 @@ import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
  * Absolute-fill, pointerEvents="none".
  */
 
-// Wider sibling pairs so the colour drift is genuinely visible rather than
-// a sub-perceptual nudge. Each pair stays in-channel (coral / peach / soft
-// lavender) so the atmosphere doesn't whiplash hue.
 const CORAL_A = '#E87B4E';
-const CORAL_B = '#FF9F6B';
 const PEACH_A = '#FFB599';
-const PEACH_B = '#FFD2A8';
 const LAVENDER_A = '#9B8EB4';
-const LAVENDER_B = '#C2B0DC';
 
 // Slightly stronger alphas — the sum of two crossfading orbs at any instant
 // equals one orb at peak, so the visible intensity is preserved.

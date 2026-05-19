@@ -14,8 +14,6 @@ import Animated, {
 import Svg, {
   Circle,
   Defs,
-  LinearGradient as SvgLinearGradient,
-  Path,
   RadialGradient as SvgRadialGradient,
   Stop,
 } from 'react-native-svg';

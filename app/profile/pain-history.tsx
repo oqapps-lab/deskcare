@@ -40,7 +40,7 @@ export default function PainHistoryScreen() {
   const userId = useUserId();
   const [entries, setEntries] = useState<PainEntry[] | null>(null);
   const [zoneMap, setZoneMap] = useState<Record<string, string>>({}); // zone_id → display name
-  const [loading, setLoading] = useState(!!userId);
+  const [, setLoading] = useState(!!userId);
 
   useEffect(() => {
     if (!userId) {

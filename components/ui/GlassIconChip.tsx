@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
-import { colors, radii, shadows } from '../../constants/tokens';
+import { colors, shadows } from '../../constants/tokens';
 import { Glyph, GlyphName } from './Glyph';
 
 interface Props {

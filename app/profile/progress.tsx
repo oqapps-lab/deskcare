@@ -72,7 +72,7 @@ export default function ProgressScreen() {
   const userId = useUserId();
   const [streak, setStreak] = useState<Streak | null>(null);
   const [sessions, setSessions] = useState<SessionRow[] | null>(null);
-  const [loading, setLoading] = useState(!!userId);
+  const [, setLoading] = useState(!!userId);
 
   useEffect(() => {
     if (!userId) {

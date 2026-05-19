@@ -10,7 +10,7 @@ import Svg, {
   Rect,
   Stop,
 } from 'react-native-svg';
-import { colors, gradients, radii, shadows } from '../../constants/tokens';
+import { colors, radii, shadows } from '../../constants/tokens';
 
 type IllustrationName = 'wifi-cloud';
 

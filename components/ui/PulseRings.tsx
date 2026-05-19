@@ -8,7 +8,6 @@ import Animated, {
   withDelay,
   Easing,
 } from 'react-native-reanimated';
-import Svg, { Circle } from 'react-native-svg';
 import { colors } from '../../constants/tokens';
 
 interface Props {

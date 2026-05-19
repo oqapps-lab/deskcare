@@ -8,7 +8,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Haptics from 'expo-haptics';
-import { colors, gradients, radii, shadows } from '../../constants/tokens';
+import { colors, radii, shadows } from '../../constants/tokens';
 
 interface Props {
   value: number; // 0..1
