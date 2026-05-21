@@ -154,7 +154,13 @@ export default function LibraryScreen() {
                     <VideoPlaceholder pose={poseFor(e.code)} circle />
                     <View style={styles.rowText}>
                       <View style={styles.rowTitleRow}>
-                        <Text style={styles.rowName} numberOfLines={2}>
+                        <Text
+                          style={styles.rowName}
+                          numberOfLines={2}
+                          ellipsizeMode="tail"
+                          adjustsFontSizeToFit
+                          minimumFontScale={0.85}
+                        >
                           {i18nField(e, 'title')}
                         </Text>
                         {e.is_premium && !isPremium && <PremiumLock size="sm" />}

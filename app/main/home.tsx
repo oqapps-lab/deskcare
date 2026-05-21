@@ -226,7 +226,15 @@ export default function HomeScreen() {
               <StreakArc value={parseInt(cfg.streakValue, 10) || 0} total={14} />
               <View style={styles.streakMeta}>
                 <Eyebrow>{t('home_streak_label')}</Eyebrow>
-                <Text style={styles.streakSub}>{cfg.streakSubLine}</Text>
+                <Text
+                  style={styles.streakSub}
+                  numberOfLines={2}
+                  ellipsizeMode="tail"
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.85}
+                >
+                  {cfg.streakSubLine}
+                </Text>
               </View>
             </View>
           </GlassCard>
@@ -383,7 +391,7 @@ const ZoneCircle: React.FC<{
 const MatteCoralPill: React.FC<{ label: string }> = ({ label }) => (
   <View style={styles.mcpOuter}>
     {Platform.OS === 'ios' ? (
-      <BlurView intensity={32} tint="light" style={styles.mcpBlur}>
+      <BlurView intensity={30} tint="light" style={styles.mcpBlur}>
         <View style={[StyleSheet.absoluteFill, styles.mcpFill]} pointerEvents="none" />
         <LinearGradient
           pointerEvents="none"

@@ -189,7 +189,15 @@ export default function PlanScreen() {
                       >
                         {n.value}
                       </Text>
-                      <Text style={styles.numberLabel} numberOfLines={1}>{n.label}</Text>
+                      <Text
+                        style={styles.numberLabel}
+                        numberOfLines={2}
+                        ellipsizeMode="tail"
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.7}
+                      >
+                        {n.label}
+                      </Text>
                     </View>
                     {i < NUMBERS.length - 1 && <View style={styles.numberDivider} />}
                   </React.Fragment>
