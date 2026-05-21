@@ -171,7 +171,7 @@ export default function SignUpScreen() {
           )}
 
           <Text style={styles.legal}>
-            By continuing you accept the{' '}
+            {t('auth_signup_legal_before')}{' '}
             <Text
               style={styles.legalAccent}
               onPress={() => {
@@ -181,7 +181,7 @@ export default function SignUpScreen() {
             >
               {t('common_terms')}
             </Text>
-            {' '}and{' '}
+            {t('auth_signup_legal_and')}
             <Text
               style={styles.legalAccent}
               onPress={() => {
@@ -196,7 +196,8 @@ export default function SignUpScreen() {
 
           <Pressable onPress={signIn} hitSlop={10} style={styles.switchRow}>
             <Text style={styles.switchText}>
-              Already have an account? <Text style={styles.switchAccent}>{t('auth_signup_existing_link')}</Text>
+              {t('auth_signup_switch_question')}{' '}
+              <Text style={styles.switchAccent}>{t('auth_signup_existing_link')}</Text>
             </Text>
           </Pressable>
         </ScrollView>

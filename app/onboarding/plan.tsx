@@ -28,16 +28,35 @@ import { useOnboarding } from '../../lib/store/onboarding';
 import { t } from '../../lib/i18n';
 import { useUserId } from '../../lib/store/session';
 
-const ROUTINES: ReadonlyArray<{
+type RoutineCard = {
   name: string;
   duration: string;
+  hint: string;
   icon: GlyphName;
   tone: HaloTone;
-}> = [
-  { name: t('onb_plan_routine_neck'),  duration: '2 MIN',  icon: 'infinity', tone: 'coral' },
-  { name: t('onb_plan_routine_back'),  duration: '3 MIN',  icon: 'refresh',  tone: 'peach' },
-  { name: t('onb_plan_routine_eyes'),  duration: '30 SEC', icon: 'eye',      tone: 'lavender' },
-];
+};
+
+// Build the personalized 3-card plan from the user's picked zones. Each
+// zone maps to a body-targeted routine; if the user picked fewer than 3
+// zones (or "everything"), we fill with the defaults so the screen always
+// shows three cards.
+const ZONE_TO_ROUTINE: Record<string, RoutineCard> = {
+  neck:      { name: t('onb_plan_routine_neck'),      duration: '2 MIN',  hint: t('plan_step_neck'),     icon: 'infinity', tone: 'coral' },
+  back:      { name: t('onb_plan_routine_back'),      duration: '3 MIN',  hint: t('plan_step_posture'),  icon: 'refresh',  tone: 'peach' },
+  eyes:      { name: t('onb_plan_routine_eyes'),      duration: '30 SEC', hint: t('plan_step_recovery'), icon: 'eye',      tone: 'lavender' },
+  shoulders: { name: t('onb_plan_routine_shoulders'), duration: '2 MIN',  hint: t('plan_step_shoulders'),icon: 'plus',     tone: 'peach' },
+  wrists:    { name: t('onb_plan_routine_wrists'),    duration: '1 MIN',  hint: t('plan_step_wrists'),   icon: 'plus',     tone: 'mint' },
+};
+
+const DEFAULT_ZONES = ['neck', 'back', 'eyes'] as const;
+
+const buildPlanFor = (zones: ReadonlyArray<string>): RoutineCard[] => {
+  const picked = (zones ?? []).filter((z) => z in ZONE_TO_ROUTINE);
+  const all: string[] = [];
+  for (const z of picked) if (!all.includes(z)) all.push(z);
+  for (const d of DEFAULT_ZONES) if (all.length < 3 && !all.includes(d)) all.push(d);
+  return all.slice(0, 3).map((z) => ZONE_TO_ROUTINE[z]);
+};
 
 const NUMBERS: ReadonlyArray<{ value: string; label: string }> = [
   { value: '14', label: t('onb_plan_stat_exercises') },
@@ -88,6 +107,8 @@ export default function PlanScreen() {
   const userId = useUserId();
   const saveOnboarding = useOnboarding((s) => s.saveToSupabase);
   const resetOnboarding = useOnboarding((s) => s.reset);
+  const painZones = useOnboarding((s) => s.pain_zones);
+  const routines = buildPlanFor(painZones);
 
   const back = () => {
     Haptics.selectionAsync();
@@ -129,7 +150,7 @@ export default function PlanScreen() {
           </Animated.View>
 
           <Animated.View style={[styles.routines, routinesStyle]}>
-            {ROUTINES.map((r, i) => (
+            {routines.map((r) => (
               <View key={r.name} style={styles.routineWrap}>
                 <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
                   <View style={styles.routineRow}>
@@ -142,9 +163,7 @@ export default function PlanScreen() {
                     />
                     <View style={styles.routineText}>
                       <Text style={styles.routineName}>{r.name}</Text>
-                      <Text style={styles.routineHint}>
-                        {i === 0 ? t('plan_step_neck') : i === 1 ? t('plan_step_posture') : t('plan_step_recovery')}
-                      </Text>
+                      <Text style={styles.routineHint}>{r.hint}</Text>
                     </View>
                     <View style={styles.durationPill}>
                       <Text style={styles.durationText}>{r.duration}</Text>

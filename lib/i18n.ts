@@ -634,6 +634,30 @@ const en: Dict = {
   prof_sub_trial_n: 'Trial · {n} days remaining',
   prof_sub_active_n: '{plan} · billed automatically',
 
+  onb_plan_routine_shoulders: 'Shoulder Release',
+  onb_plan_routine_wrists: 'Wrist Care',
+  plan_step_shoulders: 'Open the upper-trap line',
+  plan_step_wrists: 'For keyboard hands',
+  auth_forgot_alert_body: 'For now, email us at {email} and we will reset your password manually.',
+  auth_signin_show: 'Show',
+  auth_signin_switch_question: 'New here?',
+  auth_signup_switch_question: 'Already have an account?',
+  auth_signup_legal_before: 'By continuing you accept the',
+  auth_signup_legal_and: ' and ',
+  sciatica_phase_acute_title: 'Phase 1 · Acute',
+  sciatica_phase_acute_sub: 'Gentle · Days 1–7',
+  sciatica_phase_maint_title: 'Phase 2 · Maintenance',
+  sciatica_phase_maint_sub: 'Progressive · Days 8–21',
+  sciatica_hero_inactive: 'A calm 21-day return to standing without wincing.',
+  sciatica_check_in_sub: '6-question check-in · adapts today\'s routine',
+  sciatica_meta_acute: 'DAYS 1–7 · {n} ROUTINES · ~3 MIN / DAY',
+  sciatica_meta_maint: 'DAYS 8–21 · {n} ROUTINES · ~5 MIN / DAY',
+  eye_eb_2020: 'THE 20-20-20 RULE',
+  eye_eb_browse_n: 'BROWSE {n} EXERCISES',
+
+  psc_meta_phases: '2 PHASES · 14 EXERCISES · CLINICIAN-REVIEWED',
+  psc_hero_active: 'Phase 1 · Day {day} of {total}',
+
 };
 
 const enGB: Dict = {
@@ -1173,6 +1197,30 @@ const enGB: Dict = {
   prof_sub_trial_one: 'Trial · 1 day remaining',
   prof_sub_trial_n: 'Trial · {n} days remaining',
   prof_sub_active_n: '{plan} · billed automatically',
+
+  onb_plan_routine_shoulders: 'Shoulder Release',
+  onb_plan_routine_wrists: 'Wrist Care',
+  plan_step_shoulders: 'Open the upper-trap line',
+  plan_step_wrists: 'For keyboard hands',
+  auth_forgot_alert_body: 'For now, email us at {email} and we will reset your password manually.',
+  auth_signin_show: 'Show',
+  auth_signin_switch_question: 'New here?',
+  auth_signup_switch_question: 'Already have an account?',
+  auth_signup_legal_before: 'By continuing you accept the',
+  auth_signup_legal_and: ' and ',
+  sciatica_phase_acute_title: 'Phase 1 · Acute',
+  sciatica_phase_acute_sub: 'Gentle · Days 1–7',
+  sciatica_phase_maint_title: 'Phase 2 · Maintenance',
+  sciatica_phase_maint_sub: 'Progressive · Days 8–21',
+  sciatica_hero_inactive: 'A calm 21-day return to standing without wincing.',
+  sciatica_check_in_sub: '6-question check-in · adapts today\'s routine',
+  sciatica_meta_acute: 'DAYS 1–7 · {n} ROUTINES · ~3 MIN / DAY',
+  sciatica_meta_maint: 'DAYS 8–21 · {n} ROUTINES · ~5 MIN / DAY',
+  eye_eb_2020: 'THE 20-20-20 RULE',
+  eye_eb_browse_n: 'BROWSE {n} EXERCISES',
+
+  psc_meta_phases: '2 PHASES · 14 EXERCISES · CLINICIAN-REVIEWED',
+  psc_hero_active: 'Phase 1 · Day {day} of {total}',
 
 };
 
@@ -1716,6 +1764,30 @@ const de: Dict = {
   prof_sub_trial_n: 'Testphase · {n} Tage verbleibend',
   prof_sub_active_n: '{plan} · automatische Abrechnung',
 
+  onb_plan_routine_shoulders: 'Schulter-Entspannung',
+  onb_plan_routine_wrists: 'Handgelenk-Pflege',
+  plan_step_shoulders: 'Den Trapezius öffnen',
+  plan_step_wrists: 'Für Tastatur-Hände',
+  auth_forgot_alert_body: 'Schreib uns vorerst an {email}, dann setzen wir dein Passwort manuell zurück.',
+  auth_signin_show: 'Anzeigen',
+  auth_signin_switch_question: 'Neu hier?',
+  auth_signup_switch_question: 'Schon ein Konto?',
+  auth_signup_legal_before: 'Mit dem Fortfahren akzeptierst du die',
+  auth_signup_legal_and: ' und ',
+  sciatica_phase_acute_title: 'Phase 1 · Akut',
+  sciatica_phase_acute_sub: 'Sanft · Tage 1–7',
+  sciatica_phase_maint_title: 'Phase 2 · Erhaltung',
+  sciatica_phase_maint_sub: 'Progressiv · Tage 8–21',
+  sciatica_hero_inactive: 'Eine ruhige 21-tägige Rückkehr zum schmerzfreien Stehen.',
+  sciatica_check_in_sub: '6 Fragen · passt heutige Routine an',
+  sciatica_meta_acute: 'TAGE 1–7 · {n} ROUTINEN · ~3 MIN / TAG',
+  sciatica_meta_maint: 'TAGE 8–21 · {n} ROUTINEN · ~5 MIN / TAG',
+  eye_eb_2020: 'DIE 20-20-20-REGEL',
+  eye_eb_browse_n: '{n} ÜBUNGEN DURCHSUCHEN',
+
+  psc_meta_phases: '2 PHASEN · 14 ÜBUNGEN · KLINISCH GEPRÜFT',
+  psc_hero_active: 'Phase 1 · Tag {day} von {total}',
+
 };
 
 const ja: Dict = {
@@ -2257,6 +2329,30 @@ const ja: Dict = {
   prof_sub_trial_one: 'トライアル · 残り1日',
   prof_sub_trial_n: 'トライアル · 残り{n}日',
   prof_sub_active_n: '{plan} · 自動課金',
+
+  onb_plan_routine_shoulders: '肩のリリース',
+  onb_plan_routine_wrists: '手首ケア',
+  plan_step_shoulders: '僧帽筋上部をほぐす',
+  plan_step_wrists: 'キーボード作業の手のために',
+  auth_forgot_alert_body: '現在は手動リセットです。{email} までメールしてください。',
+  auth_signin_show: '表示',
+  auth_signin_switch_question: '初めてですか？',
+  auth_signup_switch_question: 'すでにアカウントをお持ちですか？',
+  auth_signup_legal_before: '続行することで、以下に同意したとみなされます：',
+  auth_signup_legal_and: ' および ',
+  sciatica_phase_acute_title: 'フェーズ1 · 急性期',
+  sciatica_phase_acute_sub: '穏やか · 1〜7日目',
+  sciatica_phase_maint_title: 'フェーズ2 · 維持期',
+  sciatica_phase_maint_sub: '段階的 · 8〜21日目',
+  sciatica_hero_inactive: '21日かけて、痛みなく立てる体へ穏やかに戻る。',
+  sciatica_check_in_sub: '6つの質問 · 今日のルーティンを調整',
+  sciatica_meta_acute: '1〜7日目 · {n}ルーティン · 約3分/日',
+  sciatica_meta_maint: '8〜21日目 · {n}ルーティン · 約5分/日',
+  eye_eb_2020: '20-20-20ルール',
+  eye_eb_browse_n: '{n}件のエクササイズを探す',
+
+  psc_meta_phases: '2フェーズ · 14エクササイズ · 臨床レビュー済',
+  psc_hero_active: 'フェーズ1 · {total}日中{day}日目',
 
 };
 
@@ -2800,6 +2896,30 @@ const fr: Dict = {
   prof_sub_trial_n: 'Essai · {n} jours restants',
   prof_sub_active_n: '{plan} · facturation automatique',
 
+  onb_plan_routine_shoulders: 'Détente d\'épaules',
+  onb_plan_routine_wrists: 'Soin des poignets',
+  plan_step_shoulders: 'Détendre les trapèzes',
+  plan_step_wrists: 'Pour les mains de clavier',
+  auth_forgot_alert_body: 'Pour l\'instant, écrivez-nous à {email} et nous réinitialiserons le mot de passe manuellement.',
+  auth_signin_show: 'Afficher',
+  auth_signin_switch_question: 'Nouveau ici ?',
+  auth_signup_switch_question: 'Vous avez déjà un compte ?',
+  auth_signup_legal_before: 'En continuant, vous acceptez les',
+  auth_signup_legal_and: ' et ',
+  sciatica_phase_acute_title: 'Phase 1 · Aiguë',
+  sciatica_phase_acute_sub: 'Doux · Jours 1–7',
+  sciatica_phase_maint_title: 'Phase 2 · Entretien',
+  sciatica_phase_maint_sub: 'Progressif · Jours 8–21',
+  sciatica_hero_inactive: 'Un retour calme à la station debout sans grimacer, en 21 jours.',
+  sciatica_check_in_sub: 'Check-in en 6 questions · adapte la routine du jour',
+  sciatica_meta_acute: 'JOURS 1–7 · {n} ROUTINES · ~3 MIN/JOUR',
+  sciatica_meta_maint: 'JOURS 8–21 · {n} ROUTINES · ~5 MIN/JOUR',
+  eye_eb_2020: 'LA RÈGLE 20-20-20',
+  eye_eb_browse_n: 'PARCOURIR {n} EXERCICES',
+
+  psc_meta_phases: '2 PHASES · 14 EXERCICES · VÉRIFIÉ CLINIQUEMENT',
+  psc_hero_active: 'Phase 1 · Jour {day} sur {total}',
+
 };
 
 const ko: Dict = {
@@ -3341,6 +3461,30 @@ const ko: Dict = {
   prof_sub_trial_one: '체험 · 1일 남음',
   prof_sub_trial_n: '체험 · {n}일 남음',
   prof_sub_active_n: '{plan} · 자동 결제',
+
+  onb_plan_routine_shoulders: '어깨 풀기',
+  onb_plan_routine_wrists: '손목 케어',
+  plan_step_shoulders: '상부 승모근 풀기',
+  plan_step_wrists: '키보드 사용자의 손을 위해',
+  auth_forgot_alert_body: '지금은 수동 재설정입니다. {email}로 이메일을 보내주세요.',
+  auth_signin_show: '표시',
+  auth_signin_switch_question: '처음이신가요?',
+  auth_signup_switch_question: '이미 계정이 있나요?',
+  auth_signup_legal_before: '계속하면 다음에 동의하는 것이 됩니다:',
+  auth_signup_legal_and: ' 및 ',
+  sciatica_phase_acute_title: '1단계 · 급성기',
+  sciatica_phase_acute_sub: '부드럽게 · 1~7일차',
+  sciatica_phase_maint_title: '2단계 · 유지기',
+  sciatica_phase_maint_sub: '점진적 · 8~21일차',
+  sciatica_hero_inactive: '21일에 걸쳐 통증 없이 서는 몸으로 차분히 돌아가기.',
+  sciatica_check_in_sub: '6개 질문 · 오늘의 루틴 조정',
+  sciatica_meta_acute: '1~7일차 · {n}개 루틴 · ~3분/일',
+  sciatica_meta_maint: '8~21일차 · {n}개 루틴 · ~5분/일',
+  eye_eb_2020: '20-20-20 규칙',
+  eye_eb_browse_n: '{n}개의 운동 탐색',
+
+  psc_meta_phases: '2단계 · 운동 14개 · 임상 검토 완료',
+  psc_hero_active: '1단계 · {total}일 중 {day}일째',
 
 };
 
@@ -3884,6 +4028,30 @@ const es: Dict = {
   prof_sub_trial_n: 'Prueba · {n} días restantes',
   prof_sub_active_n: '{plan} · facturación automática',
 
+  onb_plan_routine_shoulders: 'Relax de hombros',
+  onb_plan_routine_wrists: 'Cuidado de muñecas',
+  plan_step_shoulders: 'Suelta los trapecios',
+  plan_step_wrists: 'Para manos de teclado',
+  auth_forgot_alert_body: 'Por ahora, escríbenos a {email} y restablecemos tu contraseña manualmente.',
+  auth_signin_show: 'Mostrar',
+  auth_signin_switch_question: '¿Nuevo aquí?',
+  auth_signup_switch_question: '¿Ya tienes una cuenta?',
+  auth_signup_legal_before: 'Al continuar aceptas los',
+  auth_signup_legal_and: ' y ',
+  sciatica_phase_acute_title: 'Fase 1 · Aguda',
+  sciatica_phase_acute_sub: 'Suave · Días 1–7',
+  sciatica_phase_maint_title: 'Fase 2 · Mantenimiento',
+  sciatica_phase_maint_sub: 'Progresiva · Días 8–21',
+  sciatica_hero_inactive: 'Un regreso calmado a estar de pie sin muecas, en 21 días.',
+  sciatica_check_in_sub: 'Check-in de 6 preguntas · ajusta la rutina de hoy',
+  sciatica_meta_acute: 'DÍAS 1–7 · {n} RUTINAS · ~3 MIN/DÍA',
+  sciatica_meta_maint: 'DÍAS 8–21 · {n} RUTINAS · ~5 MIN/DÍA',
+  eye_eb_2020: 'LA REGLA 20-20-20',
+  eye_eb_browse_n: 'EXPLORA {n} EJERCICIOS',
+
+  psc_meta_phases: '2 FASES · 14 EJERCICIOS · REVISADO CLÍNICAMENTE',
+  psc_hero_active: 'Fase 1 · Día {day} de {total}',
+
 };
 
 const it: Dict = {
@@ -4425,6 +4593,30 @@ const it: Dict = {
   prof_sub_trial_one: 'Prova · 1 giorno rimanente',
   prof_sub_trial_n: 'Prova · {n} giorni rimanenti',
   prof_sub_active_n: '{plan} · addebito automatico',
+
+  onb_plan_routine_shoulders: 'Rilassamento spalle',
+  onb_plan_routine_wrists: 'Cura dei polsi',
+  plan_step_shoulders: 'Apri il trapezio',
+  plan_step_wrists: 'Per le mani da tastiera',
+  auth_forgot_alert_body: 'Per ora, scrivici a {email} e reimpostiamo la password manualmente.',
+  auth_signin_show: 'Mostra',
+  auth_signin_switch_question: 'Sei nuovo qui?',
+  auth_signup_switch_question: 'Hai già un account?',
+  auth_signup_legal_before: 'Continuando accetti i',
+  auth_signup_legal_and: ' e ',
+  sciatica_phase_acute_title: 'Fase 1 · Acuta',
+  sciatica_phase_acute_sub: 'Delicato · Giorni 1–7',
+  sciatica_phase_maint_title: 'Fase 2 · Mantenimento',
+  sciatica_phase_maint_sub: 'Progressivo · Giorni 8–21',
+  sciatica_hero_inactive: 'Un ritorno calmo allo stare in piedi senza smorfie in 21 giorni.',
+  sciatica_check_in_sub: 'Check-in di 6 domande · adatta la routine di oggi',
+  sciatica_meta_acute: 'GIORNI 1–7 · {n} ROUTINE · ~3 MIN/GIORNO',
+  sciatica_meta_maint: 'GIORNI 8–21 · {n} ROUTINE · ~5 MIN/GIORNO',
+  eye_eb_2020: 'LA REGOLA 20-20-20',
+  eye_eb_browse_n: 'SFOGLIA {n} ESERCIZI',
+
+  psc_meta_phases: '2 FASI · 14 ESERCIZI · REVISIONATO CLINICAMENTE',
+  psc_hero_active: 'Fase 1 · Giorno {day} di {total}',
 
 };
 
@@ -4968,6 +5160,30 @@ const nl: Dict = {
   prof_sub_trial_n: 'Proefperiode · nog {n} dagen',
   prof_sub_active_n: '{plan} · automatische facturering',
 
+  onb_plan_routine_shoulders: 'Schouder ontspannen',
+  onb_plan_routine_wrists: 'Polszorg',
+  plan_step_shoulders: 'Bovenste trapezius openen',
+  plan_step_wrists: 'Voor toetsenbordhanden',
+  auth_forgot_alert_body: 'Voorlopig: mail ons op {email}, dan resetten we je wachtwoord handmatig.',
+  auth_signin_show: 'Tonen',
+  auth_signin_switch_question: 'Nieuw hier?',
+  auth_signup_switch_question: 'Heb je al een account?',
+  auth_signup_legal_before: 'Door verder te gaan accepteer je de',
+  auth_signup_legal_and: ' en ',
+  sciatica_phase_acute_title: 'Fase 1 · Acuut',
+  sciatica_phase_acute_sub: 'Zacht · Dagen 1–7',
+  sciatica_phase_maint_title: 'Fase 2 · Onderhoud',
+  sciatica_phase_maint_sub: 'Progressief · Dagen 8–21',
+  sciatica_hero_inactive: 'Een rustige terugkeer naar pijnloos staan, in 21 dagen.',
+  sciatica_check_in_sub: 'Check-in van 6 vragen · past routine van vandaag aan',
+  sciatica_meta_acute: 'DAGEN 1–7 · {n} ROUTINES · ~3 MIN/DAG',
+  sciatica_meta_maint: 'DAGEN 8–21 · {n} ROUTINES · ~5 MIN/DAG',
+  eye_eb_2020: 'DE 20-20-20-REGEL',
+  eye_eb_browse_n: 'BLADER DOOR {n} OEFENINGEN',
+
+  psc_meta_phases: '2 FASEN · 14 OEFENINGEN · KLINISCH BEOORDEELD',
+  psc_hero_active: 'Fase 1 · Dag {day} van {total}',
+
 };
 
 const sv: Dict = {
@@ -5510,6 +5726,30 @@ const sv: Dict = {
   prof_sub_trial_n: 'Prova · {n} dagar kvar',
   prof_sub_active_n: '{plan} · debiteras automatiskt',
 
+  onb_plan_routine_shoulders: 'Axelavkoppling',
+  onb_plan_routine_wrists: 'Handledsvård',
+  plan_step_shoulders: 'Öppna övre trapezius',
+  plan_step_wrists: 'För tangentbordshänder',
+  auth_forgot_alert_body: 'För nu: mejla {email} så återställer vi lösenordet manuellt.',
+  auth_signin_show: 'Visa',
+  auth_signin_switch_question: 'Ny här?',
+  auth_signup_switch_question: 'Har du redan ett konto?',
+  auth_signup_legal_before: 'Genom att fortsätta godkänner du',
+  auth_signup_legal_and: ' och ',
+  sciatica_phase_acute_title: 'Fas 1 · Akut',
+  sciatica_phase_acute_sub: 'Mjukt · Dagar 1–7',
+  sciatica_phase_maint_title: 'Fas 2 · Underhåll',
+  sciatica_phase_maint_sub: 'Progressivt · Dagar 8–21',
+  sciatica_hero_inactive: 'En lugn återgång till smärtfritt stående, 21 dagar.',
+  sciatica_check_in_sub: '6-frågors koll · anpassar dagens rutin',
+  sciatica_meta_acute: 'DAGAR 1–7 · {n} RUTINER · ~3 MIN/DAG',
+  sciatica_meta_maint: 'DAGAR 8–21 · {n} RUTINER · ~5 MIN/DAG',
+  eye_eb_2020: '20-20-20-REGELN',
+  eye_eb_browse_n: 'BLÄDDRA BLAND {n} ÖVNINGAR',
+
+  psc_meta_phases: '2 FASER · 14 ÖVNINGAR · KLINISKT GRANSKAT',
+  psc_hero_active: 'Fas 1 · Dag {day} av {total}',
+
 };
 
 const ptBR: Dict = {
@@ -6051,6 +6291,30 @@ const ptBR: Dict = {
   prof_sub_trial_one: 'Período de teste · 1 dia restante',
   prof_sub_trial_n: 'Período de teste · {n} dias restantes',
   prof_sub_active_n: '{plan} · cobrança automática',
+
+  onb_plan_routine_shoulders: 'Alívio dos ombros',
+  onb_plan_routine_wrists: 'Cuidado dos pulsos',
+  plan_step_shoulders: 'Solte o trapézio superior',
+  plan_step_wrists: 'Para mãos de teclado',
+  auth_forgot_alert_body: 'Por enquanto, escreva para {email} e redefinimos sua senha manualmente.',
+  auth_signin_show: 'Mostrar',
+  auth_signin_switch_question: 'Novo por aqui?',
+  auth_signup_switch_question: 'Já tem uma conta?',
+  auth_signup_legal_before: 'Ao continuar você aceita os',
+  auth_signup_legal_and: ' e ',
+  sciatica_phase_acute_title: 'Fase 1 · Aguda',
+  sciatica_phase_acute_sub: 'Suave · Dias 1–7',
+  sciatica_phase_maint_title: 'Fase 2 · Manutenção',
+  sciatica_phase_maint_sub: 'Progressivo · Dias 8–21',
+  sciatica_hero_inactive: 'Um retorno calmo a ficar em pé sem fazer cara feia, em 21 dias.',
+  sciatica_check_in_sub: 'Check-in de 6 perguntas · adapta a rotina de hoje',
+  sciatica_meta_acute: 'DIAS 1–7 · {n} ROTINAS · ~3 MIN/DIA',
+  sciatica_meta_maint: 'DIAS 8–21 · {n} ROTINAS · ~5 MIN/DIA',
+  eye_eb_2020: 'A REGRA 20-20-20',
+  eye_eb_browse_n: 'EXPLORE {n} EXERCÍCIOS',
+
+  psc_meta_phases: '2 FASES · 14 EXERCÍCIOS · REVISÃO CLÍNICA',
+  psc_hero_active: 'Fase 1 · Dia {day} de {total}',
 
 };
 

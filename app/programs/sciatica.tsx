@@ -43,13 +43,13 @@ export default function SciaticaProgramScreen() {
   const params = useLocalSearchParams<{ active?: string }>();
   const userId = useUserId();
   const [acutePhase, setAcutePhase] = useState<PhaseRoutines>({
-    title: 'Phase 1 · Acute',
-    subtitle: 'Gentle · Days 1–7',
+    title: t('sciatica_phase_acute_title'),
+    subtitle: t('sciatica_phase_acute_sub'),
     routines: [],
   });
   const [maintPhase, setMaintPhase] = useState<PhaseRoutines>({
-    title: 'Phase 2 · Maintenance',
-    subtitle: 'Progressive · Days 8–21',
+    title: t('sciatica_phase_maint_title'),
+    subtitle: t('sciatica_phase_maint_sub'),
     routines: [],
   });
   const [progressActive, setProgressActive] = useState<boolean | null>(null);
@@ -143,9 +143,11 @@ export default function SciaticaProgramScreen() {
         <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
           <Eyebrow variant="accent">{t('sciatica_eb_relief')}</Eyebrow>
           <Text style={styles.heroTitle}>
-            {active ? 'Phase 1 · Day 4 of 7' : 'A calm 21-day return to standing without wincing.'}
+            {active
+              ? t('psc_hero_active', { day: 4, total: 7 })
+              : t('sciatica_hero_inactive')}
           </Text>
-          <Text style={styles.heroMeta}>2 PHASES · 14 EXERCISES · CLINICIAN-REVIEWED</Text>
+          <Text style={styles.heroMeta}>{t('psc_meta_phases')}</Text>
           {active && (
             <View style={{ marginTop: spacing.md }}>
               <ProgressBar value={4 / 7} accessibilityLabel={t('psc_progress_label', { day: 4, total: 7 })} />
@@ -165,7 +167,7 @@ export default function SciaticaProgramScreen() {
               <IconHalo icon="infinity" size="md" tone="coral" variant="gradient" glow />
               <View style={{ flex: 1, minWidth: 0 }}>
                 <Text style={styles.rowTitle}>{t('psc_check_title')}</Text>
-                <Text style={styles.rowSub}>6-question check-in · adapts today's routine</Text>
+                <Text style={styles.rowSub}>{t('sciatica_check_in_sub')}</Text>
               </View>
               <Svg width={16} height={16} viewBox="0 0 16 16">
                 <Path d="M6 3 L11 8 L6 13" stroke={colors.primaryDeep} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
@@ -176,17 +178,17 @@ export default function SciaticaProgramScreen() {
 
         <PhaseCard
           phase={acutePhase}
-          meta={`DAYS 1–7 · ${acutePhase.routines.length} ROUTINES · ~3 MIN / DAY`}
+          meta={t('sciatica_meta_acute', { n: acutePhase.routines.length })}
           active={active}
           locked={!active}
         />
 
         <PhaseCard
           phase={maintPhase}
-          meta={`DAYS 8–21 · ${maintPhase.routines.length} ROUTINES · ~5 MIN / DAY`}
+          meta={t('sciatica_meta_maint', { n: maintPhase.routines.length })}
           active={false}
           locked={!active}
-          lockedCopy={active ? t('sciatica_locked_unlock_day8') : undefined}
+          lockedCopy={t('sciatica_locked_unlock_day8')}
         />
 
         <Eyebrow>{t('sciatica_eb_inside')}</Eyebrow>

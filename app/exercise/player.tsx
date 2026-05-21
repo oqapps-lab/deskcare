@@ -133,6 +133,18 @@ export default function ExercisePlayerScreen() {
   // the user was still seeing a loading spinner / a black video frame.
   const [ready, setReady] = useState(false);
 
+  // Reset all transient session state when the user opens the player with
+  // different params (or re-enters after a completed routine). Expo Router
+  // can keep the component mounted across route changes, so useState's
+  // mount-time initialiser does not always fire — explicit reset prevents
+  // stale `elapsed` from a previous session bleeding into a fresh run.
+  useEffect(() => {
+    setStepIdx(0);
+    setElapsed(0);
+    setPaused(false);
+    setReady(false);
+  }, [routineSlug, exerciseSlug]);
+
   const step = items[stepIdx];
   // Per Russell's atom×reps spec: real item duration = atom.duration_seconds × reps.
   const stepDur = step ? (step.exercise?.duration_seconds ?? 5) * step.reps : 1;

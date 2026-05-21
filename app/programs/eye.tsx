@@ -184,7 +184,7 @@ export default function EyeProgramScreen() {
 
         <View style={styles.ruleWrap}>
           <GlassCard tint="lavender" radius="xl" padding={spacing.xl} innerGradient>
-            <Eyebrow>THE 20-20-20 RULE</Eyebrow>
+            <Eyebrow>{t('eye_eb_2020')}</Eyebrow>
             <Text style={styles.ruleTitle}>{t('pe_sub')}</Text>
             <Text style={styles.ruleBody}>{t('pe_explain')}</Text>
           </GlassCard>
@@ -197,7 +197,9 @@ export default function EyeProgramScreen() {
         </View>
 
         <Eyebrow>
-          {exercises ? `BROWSE ${exercises.length} EXERCISES` : 'BROWSE EXERCISES'}
+          {exercises
+            ? t('eye_eb_browse_n', { n: exercises.length })
+            : t('eye_eb_browse_n', { n: 0 })}
         </Eyebrow>
         <View style={styles.list}>
           {exLoading && !exercises ? (

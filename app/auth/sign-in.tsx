@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path } from 'react-native-svg';
@@ -16,6 +16,7 @@ import {
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useAuth } from '../../hooks/useAuth';
 import { t } from '../../lib/i18n';
+import { SUPPORT_EMAIL } from '../../lib/legal';
 
 export default function SignInScreen() {
   const insets = useSafeAreaInsets();
@@ -104,7 +105,7 @@ export default function SignInScreen() {
               <TextInput
                 value={password}
                 onChangeText={setPassword}
-                placeholder={t('auth_signup_pwd_match_hint')}
+                placeholder={t('auth_placeholder_password')}
                 placeholderTextColor={colors.inkSubtle}
                 secureTextEntry={!showPw}
                 autoCapitalize="none"
@@ -112,11 +113,24 @@ export default function SignInScreen() {
                 style={[styles.input, { flex: 1 }]}
               />
               <Pressable hitSlop={10} onPress={() => setShowPw((s) => !s)} style={styles.pwToggle}>
-                <Text style={styles.pwToggleText}>{showPw ? t('common_close') : 'Show'}</Text>
+                <Text style={styles.pwToggleText}>{showPw ? t('common_close') : t('auth_signin_show')}</Text>
               </Pressable>
             </View>
 
-            <Pressable hitSlop={10} style={styles.forgot} onPress={() => Haptics.selectionAsync()}>
+            <Pressable
+              hitSlop={10}
+              style={styles.forgot}
+              accessibilityRole="button"
+              accessibilityLabel={t('auth_signin_forgot')}
+              onPress={() => {
+                Haptics.selectionAsync();
+                Alert.alert(
+                  t('auth_signin_forgot'),
+                  t('auth_forgot_alert_body', { email: SUPPORT_EMAIL }),
+                  [{ text: t('common_close') }],
+                );
+              }}
+            >
               <Text style={styles.forgotText}>{t('auth_signin_forgot')}</Text>
             </Pressable>
           </View>
@@ -157,7 +171,8 @@ export default function SignInScreen() {
 
           <Pressable onPress={signUp} hitSlop={10} style={styles.switchRow}>
             <Text style={styles.switchText}>
-              New here? <Text style={styles.switchAccent}>{t('auth_signin_create_account')}</Text>
+              {t('auth_signin_switch_question')}{' '}
+              <Text style={styles.switchAccent}>{t('auth_signin_create_account')}</Text>
             </Text>
           </Pressable>
         </ScrollView>

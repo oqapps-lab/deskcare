@@ -72,7 +72,16 @@ export default function MilestoneScreen() {
 
   const share = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.replace('/modals/share');
+    // Forward params so the share poster shows the same stats the user just
+    // unlocked. Without this, /modals/share renders "—" for streak/minutes/moves.
+    router.replace({
+      pathname: '/modals/share',
+      params: {
+        streak: streakStr === '—' ? '' : streakStr,
+        minutes: minutesStr === '—' ? '' : minutesStr,
+        moves: movesStr === '—' ? '' : movesStr,
+      },
+    } as never);
   };
   const close = () => {
     Haptics.selectionAsync();
