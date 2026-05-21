@@ -1,15 +1,17 @@
 /**
  * Legal + marketing URLs published on https://oqapps.pro.
  *
- * Mirrored locally at `_LEGAL_DOCS/legal/deskcare/*.html` — push that
- * folder to oqapps.pro static hosting whenever the source changes.
+ * Hosted under /legal/deskfit/* — the project's original name on the
+ * hosting bucket. The in-app brand is DeskCare but the static paths
+ * predate the rename. Do NOT switch the paths without redeploying the
+ * static site to /legal/deskcare/* — they're 404 there as of 2026-05-21.
  */
 
 export const LEGAL_URLS = {
-  privacy: 'https://oqapps.pro/legal/deskcare/privacy',
-  terms: 'https://oqapps.pro/legal/deskcare/terms',
-  support: 'https://oqapps.pro/legal/deskcare/support',
-  deleteAccount: 'https://oqapps.pro/legal/deskcare/delete-account',
+  privacy: 'https://oqapps.pro/legal/deskfit/privacy',
+  terms: 'https://oqapps.pro/legal/deskfit/terms',
+  support: 'https://oqapps.pro/legal/deskfit/support',
+  deleteAccount: 'https://oqapps.pro/legal/deskfit/delete-account',
   marketing: 'https://oqapps.pro/products',
 } as const;
 
