@@ -264,21 +264,21 @@ export default function PainCheckInScreen() {
               onPress={() => setLevel('mild')}
               icon={level === 'mild' ? 'check' : undefined}
             >
-              Mild discomfort
+              {t('pc_chip_mild')}
             </PillChip>
             <PillChip
               active={level === 'moderate'}
               icon={level === 'moderate' ? 'check' : undefined}
               onPress={() => setLevel('moderate')}
             >
-              Moderate pain
+              {t('pc_chip_moderate')}
             </PillChip>
             <PillChip
               active={level === 'severe'}
               onPress={() => setLevel('severe')}
               icon={level === 'severe' ? 'check' : undefined}
             >
-              Sharp, hard to work through
+              {t('pc_chip_severe')}
             </PillChip>
           </View>
         </ScrollView>

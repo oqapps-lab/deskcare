@@ -51,9 +51,7 @@ export default function RateAppScreen() {
         <View>
           <Eyebrow variant="accent">{t('rate_eb_quick_favor')}</Eyebrow>
           <Text style={styles.title}>{t('rate_title')}</Text>
-          <Text style={styles.sub}>
-            A few taps — it shapes what we build next. No popups, we promise.
-          </Text>
+          <Text style={styles.sub}>{t('rate_app_sub_explainer')}</Text>
 
           <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
             <View style={styles.starsRow}>

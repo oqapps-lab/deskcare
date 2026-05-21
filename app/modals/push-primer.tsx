@@ -91,12 +91,12 @@ export default function PushPrimerScreen() {
           <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient>
             <View style={styles.factRow}>
               <View style={styles.coralDot} />
-              <Text style={styles.factText}>4 short nudges between 9 and 18:00</Text>
+              <Text style={styles.factText}>{t('pushp_fact_nudges')}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.factRow}>
               <View style={styles.coralDot} />
-              <Text style={styles.factText}>20-20-20 eye prompt every 20 minutes</Text>
+              <Text style={styles.factText}>{t('pushp_fact_eye_2020')}</Text>
             </View>
             <View style={styles.divider} />
             <View style={styles.factRow}>

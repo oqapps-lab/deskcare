@@ -47,14 +47,14 @@ export default function QuizWorkScreen() {
   const primaryZone = painZones?.[0];
   const zoneNoun =
     primaryZone === 'neck'
-      ? 'neck pain'
+      ? t('qwork_zone_neck')
       : primaryZone === 'back'
-        ? 'lower-back pain'
+        ? t('qwork_zone_back')
         : primaryZone === 'eyes'
-          ? 'eye strain'
+          ? t('qwork_zone_eyes')
           : primaryZone === 'wrists'
-            ? 'wrist tension'
-            : 'desk-related discomfort';
+            ? t('qwork_zone_wrists')
+            : t('qwork_zone_default');
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(16);
@@ -102,8 +102,7 @@ export default function QuizWorkScreen() {
           <GlassCard tint="peach" radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
             <Text style={styles.statNumber}>87%</Text>
             <Text style={styles.statCopy}>
-              of desk workers with {zoneNoun}{'\n'}
-              report relief within 14 days.
+              {t('qwork_stat_copy', { zone: zoneNoun })}
             </Text>
           </GlassCard>
         </View>

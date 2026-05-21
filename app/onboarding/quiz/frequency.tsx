@@ -39,7 +39,7 @@ const OPTIONS: ReadonlyArray<{
 }> = [
   { id: 'sometimes', title: t('quiz_freq_sometimes'),    sub: t('quiz_freq_few_month'), icon: 'clock',    tone: 'lavender' },
   { id: 'weekly',    title: t('quiz_freq_few_week'),     sub: t('quiz_freq_background'), icon: 'refresh',  tone: 'peach' },
-  { id: 'daily',     title: t('quiz_freq_daily'),        sub: 'Can\'t ignore it',        icon: 'eye',      tone: 'coral' },
+  { id: 'daily',     title: t('quiz_freq_daily'),        sub: t('quiz_freq_cant_ignore'), icon: 'eye',      tone: 'coral' },
 ];
 
 export default function QuizFrequencyScreen() {

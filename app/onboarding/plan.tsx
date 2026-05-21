@@ -34,9 +34,9 @@ const ROUTINES: ReadonlyArray<{
   icon: GlyphName;
   tone: HaloTone;
 }> = [
-  { name: 'Neck Unwind',         duration: '2 MIN',  icon: 'infinity', tone: 'coral' },
-  { name: 'Lower Back Release',  duration: '3 MIN',  icon: 'refresh',  tone: 'peach' },
-  { name: 'Eye Reset',           duration: '30 SEC', icon: 'eye',      tone: 'lavender' },
+  { name: t('onb_plan_routine_neck'),  duration: '2 MIN',  icon: 'infinity', tone: 'coral' },
+  { name: t('onb_plan_routine_back'),  duration: '3 MIN',  icon: 'refresh',  tone: 'peach' },
+  { name: t('onb_plan_routine_eyes'),  duration: '30 SEC', icon: 'eye',      tone: 'lavender' },
 ];
 
 const NUMBERS: ReadonlyArray<{ value: string; label: string }> = [

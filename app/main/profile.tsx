@@ -66,9 +66,9 @@ const formatRowSub = (
           (new Date(sub.trial_end).getTime() - Date.now()) / (24 * 3600 * 1000),
         ),
       );
-      return `Trial · ${days} day${days === 1 ? '' : 's'} remaining`;
+      return days === 1 ? t('prof_sub_trial_one') : t('prof_sub_trial_n', { n: days });
     }
-    if (sub.status === 'active') return `${sub.plan.replace('_', ' ')} · billed automatically`;
+    if (sub.status === 'active') return t('prof_sub_active_n', { plan: sub.plan.replace('_', ' ') });
     if (sub.status === 'expired' || sub.status === 'cancelled') return t('ps_subscription_sub_expired');
     return t('prof_subscription_sub_free');
   }
@@ -87,6 +87,13 @@ const tierBadgeFor = (status: string | undefined, isPremium: boolean): string | 
   return null;
 };
 
+const zoneLabel = (slug: string): string => {
+  const k = `zone_${slug}` as never;
+  const localized = t(k);
+  // i18n returns the key itself if no translation exists — fall back to capitalize.
+  return localized === slug || localized === `zone_${slug}` ? capitalize(slug) : localized;
+};
+
 const headerSubFor = (snap: ReturnType<typeof useHomeSnapshot>): string => {
   const days = snap.streak?.current_streak ?? 0;
   const zones = snap.onboardingData.pain_zones ?? [];
@@ -94,9 +101,9 @@ const headerSubFor = (snap: ReturnType<typeof useHomeSnapshot>): string => {
     zones.length === 0
       ? t('prof_handle_sub')
       : zones.length === 1
-        ? `${capitalize(zones[0])} focus`
-        : `${capitalize(zones[0])} & ${capitalize(zones[1])} focus`;
-  return days === 0 ? focusLabel : `Day ${days} · ${focusLabel}`;
+        ? t('prof_focus_one', { zone: zoneLabel(zones[0]) })
+        : t('prof_focus_two', { zone1: zoneLabel(zones[0]), zone2: zoneLabel(zones[1]) });
+  return days === 0 ? focusLabel : t('prof_day_n_focus', { n: days, focus: focusLabel });
 };
 
 const capitalize = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : s);

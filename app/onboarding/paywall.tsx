@@ -299,7 +299,7 @@ export default function PaywallScreen() {
               <Svg width={14} height={14} viewBox="0 0 14 14">
                 <Path d="M7 1 L8.7 5 L13 5.6 L9.8 8.5 L10.7 13 L7 10.8 L3.3 13 L4.2 8.5 L1 5.6 L5.3 5 Z" fill={colors.primaryMid} />
               </Svg>
-              <Text style={styles.trustText}>4.8 · 2,400+ reviews</Text>
+              <Text style={styles.trustText}>{t('pw_trust_rating')}</Text>
             </View>
           </Animated.View>
 
