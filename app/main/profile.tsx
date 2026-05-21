@@ -272,8 +272,16 @@ export default function ProfileScreen() {
 
 const StatCol: React.FC<{ value: string; label: string }> = ({ value, label }) => (
   <View style={styles.statCol}>
-    <Text style={styles.statValue}>{value}</Text>
-    <Text style={styles.statLabel}>{label}</Text>
+    <Text
+      style={styles.statValue}
+      numberOfLines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.5}
+      allowFontScaling={false}
+    >
+      {value}
+    </Text>
+    <Text style={styles.statLabel} numberOfLines={1}>{label}</Text>
   </View>
 );
 
@@ -330,11 +338,12 @@ const styles = StyleSheet.create({
   statCol: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 0,
   },
   statValue: {
-    fontSize: 36,
-    lineHeight: 40,
-    letterSpacing: -0.8,
+    fontSize: 30,
+    lineHeight: 34,
+    letterSpacing: -0.6,
     color: colors.primary,
     fontFamily: typeScale.display.fontFamily,
   },

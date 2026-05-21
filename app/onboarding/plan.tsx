@@ -180,8 +180,16 @@ export default function PlanScreen() {
                 {NUMBERS.map((n, i) => (
                   <React.Fragment key={n.label}>
                     <View style={styles.numberCol}>
-                      <Text style={styles.numberValue}>{n.value}</Text>
-                      <Text style={styles.numberLabel}>{n.label}</Text>
+                      <Text
+                        style={styles.numberValue}
+                        numberOfLines={1}
+                        adjustsFontSizeToFit
+                        minimumFontScale={0.5}
+                        allowFontScaling={false}
+                      >
+                        {n.value}
+                      </Text>
+                      <Text style={styles.numberLabel} numberOfLines={1}>{n.label}</Text>
                     </View>
                     {i < NUMBERS.length - 1 && <View style={styles.numberDivider} />}
                   </React.Fragment>
@@ -265,6 +273,7 @@ const styles = StyleSheet.create({
   numberCol: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 0,
   },
   numberValue: {
     fontSize: 44,

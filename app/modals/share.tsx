@@ -152,8 +152,16 @@ const TargetGlyph: React.FC<{ id: string }> = ({ id }) => {
 
 const PosterFact: React.FC<{ v: string; l: string }> = ({ v, l }) => (
   <View style={styles.posterFactCol}>
-    <Text style={styles.posterFactV}>{v}</Text>
-    <Text style={styles.posterFactL}>{l}</Text>
+    <Text
+      style={styles.posterFactV}
+      numberOfLines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.5}
+      allowFontScaling={false}
+    >
+      {v}
+    </Text>
+    <Text style={styles.posterFactL} numberOfLines={1}>{l}</Text>
   </View>
 );
 const PosterSep = () => <View style={styles.posterFactSep} />;
@@ -224,6 +232,7 @@ const styles = StyleSheet.create({
   posterFactCol: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 0,
   },
   posterFactV: {
     ...typeScale.titleLg,

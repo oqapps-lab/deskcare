@@ -152,8 +152,16 @@ export default function RoutinePreviewScreen() {
 
 const StatCol: React.FC<{ value: string; unit: string }> = ({ value, unit }) => (
   <View style={styles.statCol}>
-    <Text style={styles.statValue}>{value}</Text>
-    <Text style={styles.statUnit}>{unit}</Text>
+    <Text
+      style={styles.statValue}
+      numberOfLines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.5}
+      allowFontScaling={false}
+    >
+      {value}
+    </Text>
+    <Text style={styles.statUnit} numberOfLines={1}>{unit}</Text>
   </View>
 );
 
@@ -193,6 +201,7 @@ const styles = StyleSheet.create({
   statCol: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 0,
   },
   statValue: {
     fontSize: 32,

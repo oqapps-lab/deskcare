@@ -212,7 +212,8 @@ export default function SessionCompleteScreen() {
                       style={styles.statValue}
                       numberOfLines={1}
                       adjustsFontSizeToFit
-                      minimumFontScale={0.7}
+                      minimumFontScale={0.5}
+                      allowFontScaling={false}
                     >
                       {s.value}
                     </Text>
@@ -282,19 +283,21 @@ const styles = StyleSheet.create({
   statCol: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 0,
   },
   statValue: {
-    fontSize: 40,
-    lineHeight: 44,
+    fontSize: 32,
+    lineHeight: 36,
     color: colors.primary,
     fontFamily: typeScale.display.fontFamily,
-    letterSpacing: -0.8,
+    letterSpacing: -0.6,
   },
   statLabel: {
     ...typeScale.labelSm,
     color: colors.inkMuted,
     textTransform: 'uppercase',
     marginTop: 4,
+    letterSpacing: 0.4,
   },
   statDivider: {
     width: 1,

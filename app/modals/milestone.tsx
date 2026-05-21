@@ -145,8 +145,16 @@ export default function MilestoneScreen() {
 
 const Fact: React.FC<{ v: string; l: string }> = ({ v, l }) => (
   <View style={styles.factCol}>
-    <Text style={styles.factValue}>{v}</Text>
-    <Text style={styles.factLabel}>{l}</Text>
+    <Text
+      style={styles.factValue}
+      numberOfLines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.5}
+      allowFontScaling={false}
+    >
+      {v}
+    </Text>
+    <Text style={styles.factLabel} numberOfLines={1}>{l}</Text>
   </View>
 );
 const Sep = () => <View style={styles.factSep} />;
@@ -204,6 +212,7 @@ const styles = StyleSheet.create({
   factCol: {
     flex: 1,
     alignItems: 'center',
+    minWidth: 0,
   },
   factValue: {
     fontSize: 32,
