@@ -22,6 +22,7 @@ import {
 import type { HaloTone } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { useHomeSnapshot } from '../../hooks/useUserData';
+import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
 import { ROUTINE_SLUGS } from '../../constants/routines';
 
@@ -67,12 +68,14 @@ export default function HomeScreen() {
   // Live data from Supabase (signed-in users). When `?state=` is set, mock
   // wins so we can still preview every variant for design review.
   const snap = useHomeSnapshot();
+  const userId = useUserId();
   const liveAvailable = !!snap.profile && !explicitState;
 
   // Pick which state's tone/copy template to use:
   //  - explicit ?state param wins for demos.
   //  - signed-in user with streak ≥ 1 → 'active' (or 'premium' if subscribed).
   //  - signed-in user with streak = 0 / never stretched → 'first'.
+  //  - signed-in but profile still loading → 'first' (don't flash mock streak 6).
   //  - signed-out / no profile → fall back to legacy default 'active'.
   const inferredState: HomeState = liveAvailable
     ? snap.isPremium
@@ -80,7 +83,9 @@ export default function HomeScreen() {
       : (snap.streak?.current_streak ?? 0) === 0
         ? 'first'
         : 'active'
-    : explicitState ?? 'active';
+    : userId && !explicitState
+      ? 'first'
+      : explicitState ?? 'active';
 
   const baseCfg = buildStateConfig(inferredState);
   const cfg: StateCfg = liveAvailable

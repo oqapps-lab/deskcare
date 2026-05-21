@@ -75,7 +75,6 @@ const REMINDERS: ReadonlyArray<SwitchRowDef> = [
 
 const ACCOUNT_TPL: ReadonlyArray<NavRowDef> = [
   { key: 'sub',     icon: 'crown',    tone: 'coral',    title: t('ps_subscription_title'),    sub: '', route: '/onboarding/paywall' },
-  { key: 'profile', icon: 'settings', tone: 'lavender', title: t('ps_profile_details_title'), sub: t('ps_profile_details_sub'),     route: '/onboarding/quiz/zone' },
   { key: 'restore', icon: 'refresh',  tone: 'mint',     title: t('ps_restore_title'),         sub: t('ps_restore_sub'), route: '/onboarding/paywall' },
 ];
 

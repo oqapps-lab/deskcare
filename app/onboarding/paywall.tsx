@@ -343,16 +343,17 @@ export default function PaywallScreen() {
           style={[styles.ctaFloating, ctaStyle, { paddingBottom: insets.bottom + spacing.md }]}
           pointerEvents="box-none"
         >
+          {/* Top fade so scrollable content blends into the CTA bg.
+              Kept to 56pt so plan cards stay readable at initial scroll. */}
           <LinearGradient
             colors={[
               'rgba(251,249,245,0)',
-              'rgba(251,249,245,0.85)',
               'rgba(251,249,245,1)',
             ]}
-            locations={[0, 0.5, 1]}
-            style={StyleSheet.absoluteFill}
+            style={styles.ctaFade}
             pointerEvents="none"
           />
+          <View style={styles.ctaBgSolid} pointerEvents="none" />
           <PillCTA variant="primary" size="lg" breath onPress={begin}>
             {t('pw_cta')}
           </PillCTA>
@@ -585,6 +586,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xxl,
     paddingTop: spacing.lg,
     alignItems: 'center',
+  },
+  ctaFade: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: 56,
+  },
+  ctaBgSolid: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 56,
+    bottom: 0,
+    backgroundColor: 'rgb(251,249,245)',
   },
   afterText: {
     ...typeScale.bodySm,

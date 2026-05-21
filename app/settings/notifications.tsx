@@ -294,6 +294,7 @@ export default function NotificationSettingsScreen() {
               right={<Glyph name="chevron-right" size={18} color={colors.inkSubtle} />}
               onPress={() => {
                 Haptics.selectionAsync();
+                router.push('/onboarding/paywall');
               }}
             />
           </Animated.View>
