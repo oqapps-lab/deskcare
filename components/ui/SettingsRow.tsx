@@ -38,7 +38,7 @@ export const SettingsRow: React.FC<Props> = ({ icon, title, subtitle, right }) =
       </View>
       <View style={styles.right}>
         {right.type === 'toggle' && (
-          <ToggleSwitch value={right.value} onChange={right.onChange} />
+          <ToggleSwitch value={right.value} onChange={right.onChange} accessibilityLabel={title} />
         )}
         {right.type === 'chevron' && (
           <View style={styles.chevronGroup}>

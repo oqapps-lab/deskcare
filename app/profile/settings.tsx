@@ -169,7 +169,7 @@ export default function SettingsScreen() {
                   <Text style={styles.rowTitle}>{r.title}</Text>
                   <Text style={styles.rowSub}>{r.sub}</Text>
                 </View>
-                <ToggleSwitch value={!!values[r.key]} onChange={() => toggle(r.key)} />
+                <ToggleSwitch value={!!values[r.key]} onChange={() => toggle(r.key)} accessibilityLabel={r.title} />
               </View>
             </GlassCard>
           ))}

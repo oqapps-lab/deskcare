@@ -133,7 +133,7 @@ export default function SignUpScreen() {
               <Text style={styles.marketingTitle}>{t('auth_signup_marketing_title')}</Text>
               <Text style={styles.marketingSub}>{t('auth_signup_marketing_sub')}</Text>
             </View>
-            <ToggleSwitch value={marketing} onChange={setMarketing} />
+            <ToggleSwitch value={marketing} onChange={setMarketing} accessibilityLabel={t('auth_signup_marketing_title')} />
           </View>
 
           <View style={{ height: spacing.xl }} />

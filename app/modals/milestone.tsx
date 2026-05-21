@@ -117,7 +117,7 @@ export default function MilestoneScreen() {
         <Animated.View style={contentStyle}>
           <Eyebrow variant="accent">{t('milestone_eyebrow')}</Eyebrow>
           <Text style={styles.title}>{t('milestone_title')}</Text>
-          <Text style={styles.sub}>{t('milestone_sub')}</Text>
+          <Text style={styles.sub}>{t('milestone_sub', { minutes: minutesStr })}</Text>
 
           <GlassCard tint="peach" radius="xl" padding={spacing.lg} innerGradient decorativeCorner>
             <View style={styles.factsRow}>

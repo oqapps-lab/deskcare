@@ -13,6 +13,9 @@ interface Props {
   value: boolean;
   onChange?: (next: boolean) => void;
   disabled?: boolean;
+  /** VoiceOver label. Without this, the switch is read as "switch, on" with no
+   *  context. Pass the parent row's title (or a richer label). */
+  accessibilityLabel?: string;
 }
 
 const TRACK_W = 52;
@@ -24,7 +27,7 @@ const THUMB = 26;
  * Off-state uses warm surfaceHigh track + canvas thumb.
  * Animates thumb translate via reanimated; haptic on flip.
  */
-export const ToggleSwitch: React.FC<Props> = ({ value, onChange, disabled = false }) => {
+export const ToggleSwitch: React.FC<Props> = ({ value, onChange, disabled = false, accessibilityLabel }) => {
   const x = useSharedValue(value ? TRACK_W - THUMB - 3 : 3);
 
   useEffect(() => {
@@ -45,6 +48,7 @@ export const ToggleSwitch: React.FC<Props> = ({ value, onChange, disabled = fals
     <Pressable
       onPress={handlePress}
       accessibilityRole="switch"
+      accessibilityLabel={accessibilityLabel}
       accessibilityState={{ checked: value, disabled }}
       hitSlop={8}
       style={[styles.track, { opacity: disabled ? 0.4 : 1 }]}

@@ -271,7 +271,7 @@ export default function NotificationSettingsScreen() {
               title={t('ps_eyebreaks_title')}
               sub={t('ps_eyebreaks_sub')}
               right={
-                <ToggleSwitch value={eyeTimer} onChange={setEyeTimer} />
+                <ToggleSwitch value={eyeTimer} onChange={setEyeTimer} accessibilityLabel={t('ps_eyebreaks_title')} />
               }
             />
             <GlassRow
@@ -280,7 +280,7 @@ export default function NotificationSettingsScreen() {
               tint="peach"
               title={t('ps_notif_sound_title')}
               sub={t('ps_notif_sound_sub')}
-              right={<ToggleSwitch value={sound} onChange={setSound} />}
+              right={<ToggleSwitch value={sound} onChange={setSound} accessibilityLabel={t('ps_notif_sound_title')} />}
             />
             <GlassRow
               icon="crown"

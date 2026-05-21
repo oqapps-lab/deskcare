@@ -92,6 +92,8 @@ export default function ProgramsScreen() {
             <Pressable
               key={p.id}
               onPress={() => open(p.route, p.premium)}
+              accessibilityRole="button"
+              accessibilityLabel={p.title}
               style={({ pressed }) => [pressed && styles.pressed]}
             >
               <GlassCard tint={p.tone} radius="xl" padding={spacing.xl} innerGradient decorativeCorner>
