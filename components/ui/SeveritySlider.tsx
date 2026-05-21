@@ -4,6 +4,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
+  useAnimatedReaction,
   runOnJS,
 } from 'react-native-reanimated';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -15,38 +16,77 @@ interface Props {
   onChange?: (v: number) => void;
 }
 
+const THUMB = 28;
+
 /**
  * Warm gradient slider for pain severity. Track fades cream → coral → deep.
- * Thumb is white glass disc with warm shadow.
+ *
+ * The whole track is the touch target — tap anywhere to snap the thumb,
+ * drag continues from the touch position. Parent receives live updates
+ * during drag (rounded to 1/10 to avoid render storms) plus a final
+ * settle at touch-end. Track-width changes (rotation, parent layout)
+ * resync the thumb without animation jumps.
  */
 export const SeveritySlider: React.FC<Props> = ({ value, onChange }) => {
   const trackW = useSharedValue(0);
   const x = useSharedValue(0);
+  const lastReported = useSharedValue(-1);
 
   const onLayout = (e: LayoutChangeEvent) => {
     const w = e.nativeEvent.layout.width;
     trackW.value = w;
-    x.value = value * (w - 28);
+    x.value = value * (w - THUMB);
   };
 
+  // External value prop → thumb position (e.g. parent resets to 0).
+  useAnimatedReaction(
+    () => ({ v: value, w: trackW.value }),
+    ({ v, w }) => {
+      if (w <= THUMB) return;
+      // Only sync from props when the value is materially different from
+      // the in-flight gesture position. Avoids tug-of-war while dragging.
+      const target = v * (w - THUMB);
+      if (Math.abs(target - x.value) > 0.5) {
+        x.value = target;
+      }
+    },
+    [value],
+  );
+
+  const emit = (v: number) => {
+    if (onChange) onChange(v);
+  };
   const triggerHaptic = () => {
-    // Fire-and-forget — swallow the Promise so Hermes strict doesn't warn.
     void Haptics.selectionAsync();
   };
 
+  const reportThrottled = (v: number) => {
+    'worklet';
+    const rounded = Math.round(v * 10) / 10;
+    if (rounded !== lastReported.value) {
+      lastReported.value = rounded;
+      runOnJS(emit)(rounded);
+    }
+  };
+
   const pan = Gesture.Pan()
+    .minDistance(0) // activate on touch — no swipe threshold
     .onBegin((e) => {
-      x.value = Math.min(Math.max(0, e.x - 14), trackW.value - 28);
+      const next = Math.min(Math.max(0, e.x - THUMB / 2), trackW.value - THUMB);
+      x.value = next;
+      if (trackW.value > THUMB) reportThrottled(next / (trackW.value - THUMB));
     })
     .onUpdate((e) => {
-      x.value = Math.min(Math.max(0, e.x - 14), trackW.value - 28);
+      const next = Math.min(Math.max(0, e.x - THUMB / 2), trackW.value - THUMB);
+      x.value = next;
+      if (trackW.value > THUMB) reportThrottled(next / (trackW.value - THUMB));
     })
     .onEnd(() => {
-      if (onChange) {
-        const v = trackW.value > 28 ? x.value / (trackW.value - 28) : 0;
-        runOnJS(onChange)(v);
-        runOnJS(triggerHaptic)();
+      if (trackW.value > THUMB) {
+        const v = x.value / (trackW.value - THUMB);
+        runOnJS(emit)(v);
       }
+      runOnJS(triggerHaptic)();
     });
 
   const thumbStyle = useAnimatedStyle(() => ({
@@ -54,44 +94,44 @@ export const SeveritySlider: React.FC<Props> = ({ value, onChange }) => {
   }));
 
   return (
-    <View onLayout={onLayout} style={styles.track}>
-      <LinearGradient
-        colors={
-          [
-            colors.secondaryMid,
-            colors.primaryLight,
-            colors.primaryMid,
-            colors.primary,
-          ] as unknown as readonly [string, string, ...string[]]
-        }
-        start={{ x: 0, y: 0.5 }}
-        end={{ x: 1, y: 0.5 }}
-        style={styles.trackGradient}
-      />
-      <GestureDetector gesture={pan}>
-        <Animated.View style={[styles.thumb, thumbStyle, shadows.chip]} />
-      </GestureDetector>
-    </View>
+    <GestureDetector gesture={pan}>
+      <View onLayout={onLayout} style={styles.track}>
+        <LinearGradient
+          colors={
+            [
+              colors.secondaryMid,
+              colors.primaryLight,
+              colors.primaryMid,
+              colors.primary,
+            ] as unknown as readonly [string, string, ...string[]]
+          }
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={styles.trackGradient}
+          pointerEvents="none"
+        />
+        <Animated.View style={[styles.thumb, thumbStyle, shadows.chip]} pointerEvents="none" />
+      </View>
+    </GestureDetector>
   );
 };
 
 const styles = StyleSheet.create({
   track: {
-    height: 28,
-    borderRadius: radii.pill,
+    height: 44, // wider hit area for finger-friendly tapping
     justifyContent: 'center',
     overflow: 'visible',
   },
   trackGradient: {
     height: 10,
     borderRadius: radii.pill,
-    marginTop: 9,
+    marginTop: 17, // (44 - 10) / 2 = 17 to center
   },
   thumb: {
     position: 'absolute',
-    top: 0,
-    width: 28,
-    height: 28,
+    top: 8, // (44 - 28) / 2 = 8 to center vertically
+    width: THUMB,
+    height: THUMB,
     borderRadius: 14,
     backgroundColor: colors.white,
     borderWidth: 3,
