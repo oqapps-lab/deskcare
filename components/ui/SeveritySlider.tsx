@@ -71,6 +71,10 @@ export const SeveritySlider: React.FC<Props> = ({ value, onChange }) => {
 
   const pan = Gesture.Pan()
     .minDistance(0) // activate on touch — no swipe threshold
+    // Bail out if the user is panning vertically — that's a parent-scroll
+    // gesture, not a slider drag. Without this, the slider's Pan captures
+    // every vertical swipe on the screen and breaks ScrollView.
+    .failOffsetY([-12, 12])
     .onBegin((e) => {
       const next = Math.min(Math.max(0, e.x - THUMB / 2), trackW.value - THUMB);
       x.value = next;

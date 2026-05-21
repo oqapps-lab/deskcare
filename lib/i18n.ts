@@ -616,7 +616,7 @@ const en: Dict = {
   qwork_zone_eyes: 'eye strain',
   qwork_zone_wrists: 'wrist tension',
   qwork_zone_default: 'desk-related discomfort',
-  qwork_stat_copy: 'of desk workers with {zone}\\nreport relief within 14 days.',
+  qwork_stat_copy: 'of desk workers with {zone}\nreport relief within 14 days.',
   onb_plan_routine_neck: 'Neck Unwind',
   onb_plan_routine_back: 'Lower Back Release',
   onb_plan_routine_eyes: 'Eye Reset',
@@ -657,6 +657,12 @@ const en: Dict = {
 
   psc_meta_phases: '2 PHASES · 14 EXERCISES · CLINICIAN-REVIEWED',
   psc_hero_active: 'Phase 1 · Day {day} of {total}',
+
+  pph_last_14_days: 'LAST 14 DAYS',
+  pph_trend_easing: '↓ Easing',
+  pph_trend_steady: '→ Steady',
+  pw_restore_success_title: 'Restore complete',
+  pw_restore_success_body: 'If you previously subscribed, your access is restored. Pull down to refresh if you do not see Pro features.',
 
 };
 
@@ -1180,7 +1186,7 @@ const enGB: Dict = {
   qwork_zone_eyes: 'eye strain',
   qwork_zone_wrists: 'wrist tension',
   qwork_zone_default: 'desk-related discomfort',
-  qwork_stat_copy: 'of desk workers with {zone}\\nreport relief within 14 days.',
+  qwork_stat_copy: 'of desk workers with {zone}\nreport relief within 14 days.',
   onb_plan_routine_neck: 'Neck Unwind',
   onb_plan_routine_back: 'Lower Back Release',
   onb_plan_routine_eyes: 'Eye Reset',
@@ -1221,6 +1227,12 @@ const enGB: Dict = {
 
   psc_meta_phases: '2 PHASES · 14 EXERCISES · CLINICIAN-REVIEWED',
   psc_hero_active: 'Phase 1 · Day {day} of {total}',
+
+  pph_last_14_days: 'LAST 14 DAYS',
+  pph_trend_easing: '↓ Easing',
+  pph_trend_steady: '→ Steady',
+  pw_restore_success_title: 'Restore complete',
+  pw_restore_success_body: 'If you previously subscribed, your access is restored. Pull down to refresh if you do not see Pro features.',
 
 };
 
@@ -1746,7 +1758,7 @@ const de: Dict = {
   qwork_zone_eyes: 'Augenbelastung',
   qwork_zone_wrists: 'Handgelenksanspannung',
   qwork_zone_default: 'schreibtischbedingte Beschwerden',
-  qwork_stat_copy: 'der Schreibtischarbeiter mit {zone}\\nberichten von Linderung in 14 Tagen.',
+  qwork_stat_copy: 'der Schreibtischarbeiter mit {zone}\nberichten von Linderung in 14 Tagen.',
   onb_plan_routine_neck: 'Nacken-Entspannung',
   onb_plan_routine_back: 'Lendenwirbel-Entlastung',
   onb_plan_routine_eyes: 'Augenreset',
@@ -1787,6 +1799,12 @@ const de: Dict = {
 
   psc_meta_phases: '2 PHASEN · 14 ÜBUNGEN · KLINISCH GEPRÜFT',
   psc_hero_active: 'Phase 1 · Tag {day} von {total}',
+
+  pph_last_14_days: 'LETZTE 14 TAGE',
+  pph_trend_easing: '↓ Lässt nach',
+  pph_trend_steady: '→ Stabil',
+  pw_restore_success_title: 'Wiederherstellung abgeschlossen',
+  pw_restore_success_body: 'Wenn du zuvor abonniert hast, ist dein Zugang wiederhergestellt. Zum Aktualisieren nach unten ziehen.',
 
 };
 
@@ -2312,7 +2330,7 @@ const ja: Dict = {
   qwork_zone_eyes: '眼精疲労',
   qwork_zone_wrists: '手首の緊張',
   qwork_zone_default: 'デスクワーク由来の不快感',
-  qwork_stat_copy: 'デスクワーカーの{zone}は\\n14日以内に緩和を実感しています。',
+  qwork_stat_copy: 'デスクワーカーの{zone}は\n14日以内に緩和を実感しています。',
   onb_plan_routine_neck: '首ほぐし',
   onb_plan_routine_back: '腰のリリース',
   onb_plan_routine_eyes: '目のリセット',
@@ -2353,6 +2371,12 @@ const ja: Dict = {
 
   psc_meta_phases: '2フェーズ · 14エクササイズ · 臨床レビュー済',
   psc_hero_active: 'フェーズ1 · {total}日中{day}日目',
+
+  pph_last_14_days: '直近14日間',
+  pph_trend_easing: '↓ 改善中',
+  pph_trend_steady: '→ 安定',
+  pw_restore_success_title: '復元完了',
+  pw_restore_success_body: '以前ご購入された場合、アクセスが復元されました。Pro機能が表示されない場合は引き下げて更新してください。',
 
 };
 
@@ -2878,7 +2902,7 @@ const fr: Dict = {
   qwork_zone_eyes: 'fatigue visuelle',
   qwork_zone_wrists: 'tension du poignet',
   qwork_zone_default: 'inconfort lié au bureau',
-  qwork_stat_copy: 'des employés de bureau souffrant de {zone}\\nrapportent un soulagement en 14 jours.',
+  qwork_stat_copy: 'des employés de bureau souffrant de {zone}\nrapportent un soulagement en 14 jours.',
   onb_plan_routine_neck: 'Détente du cou',
   onb_plan_routine_back: 'Détente lombaire',
   onb_plan_routine_eyes: 'Reset des yeux',
@@ -2919,6 +2943,12 @@ const fr: Dict = {
 
   psc_meta_phases: '2 PHASES · 14 EXERCICES · VÉRIFIÉ CLINIQUEMENT',
   psc_hero_active: 'Phase 1 · Jour {day} sur {total}',
+
+  pph_last_14_days: '14 DERNIERS JOURS',
+  pph_trend_easing: '↓ Diminue',
+  pph_trend_steady: '→ Stable',
+  pw_restore_success_title: 'Restauration terminée',
+  pw_restore_success_body: 'Si vous étiez abonné, votre accès est restauré. Tirez vers le bas pour actualiser si vous ne voyez pas les fonctions Pro.',
 
 };
 
@@ -3444,7 +3474,7 @@ const ko: Dict = {
   qwork_zone_eyes: '눈의 피로',
   qwork_zone_wrists: '손목 긴장',
   qwork_zone_default: '책상 관련 불편함',
-  qwork_stat_copy: '{zone}이 있는 사무직의\\n14일 이내 완화 경험률.',
+  qwork_stat_copy: '{zone}이 있는 사무직의\n14일 이내 완화 경험률.',
   onb_plan_routine_neck: '목 풀기',
   onb_plan_routine_back: '허리 풀기',
   onb_plan_routine_eyes: '눈 리셋',
@@ -3485,6 +3515,12 @@ const ko: Dict = {
 
   psc_meta_phases: '2단계 · 운동 14개 · 임상 검토 완료',
   psc_hero_active: '1단계 · {total}일 중 {day}일째',
+
+  pph_last_14_days: '지난 14일',
+  pph_trend_easing: '↓ 완화',
+  pph_trend_steady: '→ 안정',
+  pw_restore_success_title: '복원 완료',
+  pw_restore_success_body: '이전에 구독한 적이 있다면 접근이 복원되었습니다. Pro 기능이 보이지 않으면 아래로 당겨 새로고침하세요.',
 
 };
 
@@ -4010,7 +4046,7 @@ const es: Dict = {
   qwork_zone_eyes: 'fatiga visual',
   qwork_zone_wrists: 'tensión en muñecas',
   qwork_zone_default: 'molestias por el escritorio',
-  qwork_stat_copy: 'de oficinistas con {zone}\\nreportan alivio en 14 días.',
+  qwork_stat_copy: 'de oficinistas con {zone}\nreportan alivio en 14 días.',
   onb_plan_routine_neck: 'Relax cervical',
   onb_plan_routine_back: 'Liberación lumbar',
   onb_plan_routine_eyes: 'Reset visual',
@@ -4051,6 +4087,12 @@ const es: Dict = {
 
   psc_meta_phases: '2 FASES · 14 EJERCICIOS · REVISADO CLÍNICAMENTE',
   psc_hero_active: 'Fase 1 · Día {day} de {total}',
+
+  pph_last_14_days: 'ÚLTIMOS 14 DÍAS',
+  pph_trend_easing: '↓ Mejorando',
+  pph_trend_steady: '→ Estable',
+  pw_restore_success_title: 'Restauración completa',
+  pw_restore_success_body: 'Si te suscribiste antes, tu acceso se restauró. Desliza hacia abajo para refrescar si no ves Pro.',
 
 };
 
@@ -4576,7 +4618,7 @@ const it: Dict = {
   qwork_zone_eyes: 'affaticamento visivo',
   qwork_zone_wrists: 'tensione ai polsi',
   qwork_zone_default: 'fastidi da scrivania',
-  qwork_stat_copy: 'degli impiegati con {zone}\\nriferiscono sollievo entro 14 giorni.',
+  qwork_stat_copy: 'degli impiegati con {zone}\nriferiscono sollievo entro 14 giorni.',
   onb_plan_routine_neck: 'Rilassamento collo',
   onb_plan_routine_back: 'Rilascio lombare',
   onb_plan_routine_eyes: 'Reset oculare',
@@ -4617,6 +4659,12 @@ const it: Dict = {
 
   psc_meta_phases: '2 FASI · 14 ESERCIZI · REVISIONATO CLINICAMENTE',
   psc_hero_active: 'Fase 1 · Giorno {day} di {total}',
+
+  pph_last_14_days: 'ULTIMI 14 GIORNI',
+  pph_trend_easing: '↓ In calo',
+  pph_trend_steady: '→ Stabile',
+  pw_restore_success_title: 'Ripristino completato',
+  pw_restore_success_body: 'Se eri abbonato, il tuo accesso è stato ripristinato. Tira verso il basso per aggiornare se non vedi le funzioni Pro.',
 
 };
 
@@ -5142,7 +5190,7 @@ const nl: Dict = {
   qwork_zone_eyes: 'oogvermoeidheid',
   qwork_zone_wrists: 'polsspanning',
   qwork_zone_default: 'bureau-gerelateerd ongemak',
-  qwork_stat_copy: 'van kantoorwerkers met {zone}\\nervaart binnen 14 dagen verlichting.',
+  qwork_stat_copy: 'van kantoorwerkers met {zone}\nervaart binnen 14 dagen verlichting.',
   onb_plan_routine_neck: 'Nek ontspannen',
   onb_plan_routine_back: 'Lage rug ontspannen',
   onb_plan_routine_eyes: 'Oog reset',
@@ -5183,6 +5231,12 @@ const nl: Dict = {
 
   psc_meta_phases: '2 FASEN · 14 OEFENINGEN · KLINISCH BEOORDEELD',
   psc_hero_active: 'Fase 1 · Dag {day} van {total}',
+
+  pph_last_14_days: 'LAATSTE 14 DAGEN',
+  pph_trend_easing: '↓ Neemt af',
+  pph_trend_steady: '→ Stabiel',
+  pw_restore_success_title: 'Herstel voltooid',
+  pw_restore_success_body: 'Als je eerder abonneerde, is je toegang hersteld. Sleep omlaag om te vernieuwen als Pro niet zichtbaar is.',
 
 };
 
@@ -5708,7 +5762,7 @@ const sv: Dict = {
   qwork_zone_eyes: 'ögonansträngning',
   qwork_zone_wrists: 'handledsspänning',
   qwork_zone_default: 'skrivbordsrelaterat obehag',
-  qwork_stat_copy: 'av kontorsarbetare med {zone}\\nrapporterar lindring inom 14 dagar.',
+  qwork_stat_copy: 'av kontorsarbetare med {zone}\nrapporterar lindring inom 14 dagar.',
   onb_plan_routine_neck: 'Nackavkoppling',
   onb_plan_routine_back: 'Ländryggsavkoppling',
   onb_plan_routine_eyes: 'Ögonåterställning',
@@ -5749,6 +5803,12 @@ const sv: Dict = {
 
   psc_meta_phases: '2 FASER · 14 ÖVNINGAR · KLINISKT GRANSKAT',
   psc_hero_active: 'Fas 1 · Dag {day} av {total}',
+
+  pph_last_14_days: 'SENASTE 14 DAGAR',
+  pph_trend_easing: '↓ Avtar',
+  pph_trend_steady: '→ Stabilt',
+  pw_restore_success_title: 'Återställning klar',
+  pw_restore_success_body: 'Om du tidigare prenumererat är åtkomsten återställd. Dra nedåt för att uppdatera om Pro inte syns.',
 
 };
 
@@ -6274,7 +6334,7 @@ const ptBR: Dict = {
   qwork_zone_eyes: 'fadiga ocular',
   qwork_zone_wrists: 'tensão nos pulsos',
   qwork_zone_default: 'desconforto pelo escritório',
-  qwork_stat_copy: 'dos trabalhadores de escritório com {zone}\\nrelatam alívio em 14 dias.',
+  qwork_stat_copy: 'dos trabalhadores de escritório com {zone}\nrelatam alívio em 14 dias.',
   onb_plan_routine_neck: 'Relaxar pescoço',
   onb_plan_routine_back: 'Alívio lombar',
   onb_plan_routine_eyes: 'Reset visual',
@@ -6315,6 +6375,12 @@ const ptBR: Dict = {
 
   psc_meta_phases: '2 FASES · 14 EXERCÍCIOS · REVISÃO CLÍNICA',
   psc_hero_active: 'Fase 1 · Dia {day} de {total}',
+
+  pph_last_14_days: 'ÚLTIMOS 14 DIAS',
+  pph_trend_easing: '↓ Aliviando',
+  pph_trend_steady: '→ Estável',
+  pw_restore_success_title: 'Restauração concluída',
+  pw_restore_success_body: 'Se você assinou antes, seu acesso foi restaurado. Puxe para baixo se não vir os recursos Pro.',
 
 };
 

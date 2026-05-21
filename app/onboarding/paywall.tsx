@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -127,19 +127,27 @@ export default function PaywallScreen() {
 
   const restore = async () => {
     Haptics.selectionAsync();
+    const showSuccess = () => {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      Alert.alert(
+        t('pw_restore_success_title'),
+        t('pw_restore_success_body'),
+        [{ text: t('common_close') }],
+      );
+    };
     if (PREMIUM_BYPASS) {
       // No real subscription state on TF-internal — nothing to restore.
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      showSuccess();
       return;
     }
     const adapty = loadAdapty();
     if (!adapty) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      showSuccess();
       return;
     }
     try {
       await adapty.restorePurchases();
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      showSuccess();
     } catch (e) {
       console.warn('[deskcare] Restore purchases failed:', e);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);

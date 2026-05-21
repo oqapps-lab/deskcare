@@ -306,7 +306,8 @@ export default function PainCheckInScreen() {
             size="lg"
             icon="check"
             iconBg
-            breath
+            breath={selectedZones.size > 0}
+            disabled={selectedZones.size === 0}
             onPress={save}
           >
             {t('pc_save_cta')}

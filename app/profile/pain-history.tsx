@@ -180,7 +180,7 @@ export default function PainHistoryScreen() {
           </GlassCard>
         </View>
 
-        <Eyebrow>LAST 14 DAYS</Eyebrow>
+        <Eyebrow>{t('pph_last_14_days')}</Eyebrow>
         <View style={styles.stripWrap}>
           <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
             <View style={styles.strip}>
@@ -225,7 +225,7 @@ export default function PainHistoryScreen() {
                   <Text style={styles.zoneMeta}>{t('pph_avg_z', { avg: String(z.avg) })}</Text>
                 </View>
                 <Text style={[styles.zoneTrend, z.trend === 'down' ? styles.zoneTrendDown : styles.zoneTrendFlat]}>
-                  {z.trend === 'down' ? '↓ Easing' : '→ Steady'}
+                  {z.trend === 'down' ? t('pph_trend_easing') : t('pph_trend_steady')}
                 </Text>
               </View>
               {i < perZone.length - 1 && <View style={styles.zoneDivider} />}
