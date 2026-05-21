@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
@@ -103,7 +103,17 @@ export default function MaintenanceScreen() {
           <PillCTA variant="primary" size="lg" icon="refresh" onPress={retry}>
             {t('mt_cta')}
           </PillCTA>
-          <Text style={styles.statusLink}>status.deskcare.app</Text>
+          <Pressable
+            hitSlop={10}
+            accessibilityRole="link"
+            accessibilityLabel="status.deskcare.app"
+            onPress={() => {
+              Haptics.selectionAsync();
+              Linking.openURL('https://status.deskcare.app').catch(() => {});
+            }}
+          >
+            <Text style={styles.statusLink}>status.deskcare.app</Text>
+          </Pressable>
         </View>
       </View>
     </AtmosphericBackground>

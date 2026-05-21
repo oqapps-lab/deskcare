@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Linking, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Constants from 'expo-constants';
@@ -50,8 +50,11 @@ export default function ForceUpdateScreen() {
 
   const update = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    // In production, open App Store — for Stage 5 just return to demo
-    router.replace('/main/home');
+    // App Store deep link: opens the storefront on real devices, no-op in sim.
+    // Falls back to /main/home if the URL handler refuses (offline / sim).
+    Linking.openURL('itms-apps://apps.apple.com/app/id6767548896').catch(() => {
+      router.replace('/main/home');
+    });
   };
 
   return (
@@ -115,7 +118,7 @@ export default function ForceUpdateScreen() {
           <PillCTA variant="primary" size="lg" breath onPress={update}>
             {t('fu_cta')}
           </PillCTA>
-          <Text style={styles.versionText}>{`You are on DeskCare ${Constants.expoConfig?.version ?? '—'} · Required latest`}</Text>
+          <Text style={styles.versionText}>{t('fu_version_line', { version: Constants.expoConfig?.version ?? '—' })}</Text>
         </View>
       </View>
     </AtmosphericBackground>

@@ -664,6 +664,9 @@ const en: Dict = {
   pw_restore_success_title: 'Restore complete',
   pw_restore_success_body: 'If you previously subscribed, your access is restored. Pull down to refresh if you do not see Pro features.',
 
+  fu_version_line: 'You are on DeskCare {version} · Required latest',
+  eye_session_step_n: 'STEP {current} OF {total}',
+
 };
 
 const enGB: Dict = {
@@ -1233,6 +1236,9 @@ const enGB: Dict = {
   pph_trend_steady: '→ Steady',
   pw_restore_success_title: 'Restore complete',
   pw_restore_success_body: 'If you previously subscribed, your access is restored. Pull down to refresh if you do not see Pro features.',
+
+  fu_version_line: 'You are on DeskCare {version} · Required latest',
+  eye_session_step_n: 'STEP {current} OF {total}',
 
 };
 
@@ -1806,6 +1812,9 @@ const de: Dict = {
   pw_restore_success_title: 'Wiederherstellung abgeschlossen',
   pw_restore_success_body: 'Wenn du zuvor abonniert hast, ist dein Zugang wiederhergestellt. Zum Aktualisieren nach unten ziehen.',
 
+  fu_version_line: 'Du nutzt DeskCare {version} · Aktuelle Version erforderlich',
+  eye_session_step_n: 'SCHRITT {current} VON {total}',
+
 };
 
 const ja: Dict = {
@@ -2377,6 +2386,9 @@ const ja: Dict = {
   pph_trend_steady: '→ 安定',
   pw_restore_success_title: '復元完了',
   pw_restore_success_body: '以前ご購入された場合、アクセスが復元されました。Pro機能が表示されない場合は引き下げて更新してください。',
+
+  fu_version_line: '現在のDeskCareは{version} · 最新が必要です',
+  eye_session_step_n: 'ステップ{current} / {total}',
 
 };
 
@@ -2950,6 +2962,9 @@ const fr: Dict = {
   pw_restore_success_title: 'Restauration terminée',
   pw_restore_success_body: 'Si vous étiez abonné, votre accès est restauré. Tirez vers le bas pour actualiser si vous ne voyez pas les fonctions Pro.',
 
+  fu_version_line: 'Vous utilisez DeskCare {version} · Dernière version requise',
+  eye_session_step_n: 'ÉTAPE {current} SUR {total}',
+
 };
 
 const ko: Dict = {
@@ -3521,6 +3536,9 @@ const ko: Dict = {
   pph_trend_steady: '→ 안정',
   pw_restore_success_title: '복원 완료',
   pw_restore_success_body: '이전에 구독한 적이 있다면 접근이 복원되었습니다. Pro 기능이 보이지 않으면 아래로 당겨 새로고침하세요.',
+
+  fu_version_line: '현재 DeskCare {version} · 최신 버전 필요',
+  eye_session_step_n: '{current} / {total} 단계',
 
 };
 
@@ -4094,6 +4112,9 @@ const es: Dict = {
   pw_restore_success_title: 'Restauración completa',
   pw_restore_success_body: 'Si te suscribiste antes, tu acceso se restauró. Desliza hacia abajo para refrescar si no ves Pro.',
 
+  fu_version_line: 'Tienes DeskCare {version} · Se requiere la última versión',
+  eye_session_step_n: 'PASO {current} DE {total}',
+
 };
 
 const it: Dict = {
@@ -4665,6 +4686,9 @@ const it: Dict = {
   pph_trend_steady: '→ Stabile',
   pw_restore_success_title: 'Ripristino completato',
   pw_restore_success_body: 'Se eri abbonato, il tuo accesso è stato ripristinato. Tira verso il basso per aggiornare se non vedi le funzioni Pro.',
+
+  fu_version_line: 'Usi DeskCare {version} · È richiesta la versione più recente',
+  eye_session_step_n: 'PASSO {current} DI {total}',
 
 };
 
@@ -5238,6 +5262,9 @@ const nl: Dict = {
   pw_restore_success_title: 'Herstel voltooid',
   pw_restore_success_body: 'Als je eerder abonneerde, is je toegang hersteld. Sleep omlaag om te vernieuwen als Pro niet zichtbaar is.',
 
+  fu_version_line: 'Je hebt DeskCare {version} · Laatste versie vereist',
+  eye_session_step_n: 'STAP {current} VAN {total}',
+
 };
 
 const sv: Dict = {
@@ -5810,6 +5837,9 @@ const sv: Dict = {
   pw_restore_success_title: 'Återställning klar',
   pw_restore_success_body: 'Om du tidigare prenumererat är åtkomsten återställd. Dra nedåt för att uppdatera om Pro inte syns.',
 
+  fu_version_line: 'Du har DeskCare {version} · Senaste version krävs',
+  eye_session_step_n: 'STEG {current} AV {total}',
+
 };
 
 const ptBR: Dict = {
@@ -6381,6 +6411,9 @@ const ptBR: Dict = {
   pph_trend_steady: '→ Estável',
   pw_restore_success_title: 'Restauração concluída',
   pw_restore_success_body: 'Se você assinou antes, seu acesso foi restaurado. Puxe para baixo se não vir os recursos Pro.',
+
+  fu_version_line: 'Você tem DeskCare {version} · Versão mais recente exigida',
+  eye_session_step_n: 'ETAPA {current} DE {total}',
 
 };
 

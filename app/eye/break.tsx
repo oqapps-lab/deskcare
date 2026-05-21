@@ -72,7 +72,8 @@ export default function EyeBreakScreen() {
   };
   const skip = () => {
     Haptics.selectionAsync();
-    router.push('/eye/session');
+    if (router.canGoBack()) router.back();
+    else router.replace('/main/home');
   };
   const back = () => {
     Haptics.selectionAsync();

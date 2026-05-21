@@ -115,7 +115,7 @@ export default function EyeSessionScreen() {
         ]}
       >
         <View style={styles.topCluster}>
-          <Eyebrow>STEP 1 OF 5</Eyebrow>
+          <Eyebrow>{t('eye_session_step_n', { current: 1, total: 5 })}</Eyebrow>
           <View style={{ height: spacing.sm }} />
           <Text style={styles.stepTitle}>{t('eye_session_label')}</Text>
           <View style={{ height: spacing.sm }} />
