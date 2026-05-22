@@ -1,7 +1,33 @@
 # DeskCare — Monetization
 
-**Дата:** 13 апреля 2026  
+**Дата:** 13 апреля 2026 · **Revised:** 22 мая 2026 (v1.1 — pre-launch pricing finalized)
 **Основа:** [RESEARCH-BRIEF.md](../01-research/RESEARCH-BRIEF.md) §6.2, [COMPETITORS.md](../01-research/COMPETITORS.md), бенчмарки RevenueCat/Adapty 2025–2026
+
+---
+
+> ## ⚠ Pricing v1.1 — supersedes §2-§4 below
+>
+> На основе свежего competitor pricing research (май 2026, см. [`aso/research/pricing-strategy.md`](../../aso/research/pricing-strategy.md)) исходные ценовые точки из апрельского draft'a пересмотрены вверх:
+>
+> | Тир | v1.0 draft (апрель) | **v1.1 (май, ship)** | Обоснование |
+> |---|---|---|---|
+> | Weekly | $1.99/wk | **$3.99/wk** | Никто из stretching-конкурентов не ставит weekly <$3.99 (Weasyo $7.99 единственный). $1.99 = AI-scanner clone tier. |
+> | Monthly (hidden) | $4.99/mo | **$9.99/mo** | RevenueCat H&F median 2026 = $9.99/mo. Bend $13.99. Дешёвый monthly каннибализирует annual. |
+> | Annual (hero) | $29.99/yr | **$34.99/yr** | Bend $39.99, Wakeout $47.99–59.99 (наш ближайший positioning-конкурент). $29.99 был 25% ниже H&F median. |
+> | Sciatica add-on | +$2.99/mo | **v1.1 defer** | Сложная paywall-логика, niche WTP. Reveal на completed-program screens после первого года данных. |
+> | Lifetime | $79.99 | **v2 defer** | Релиз пока без — требует established LTV-данных. |
+> | Free tier post-trial | 3 routines/day, 2 zones | **1 routine/day, 1 picked zone** | Толкает к upgrade. 3/day для Marina = effectively full product. |
+>
+> **Save badge:** "SAVE 58%" → **"SAVE 83%"** (weekly $3.99×52 = $207.48 vs annual $34.99 = save $172.49 = 83%).
+>
+> **Source of truth для всех paywall-решений:** `aso/research/pricing-strategy.md` (full 8-decision framework, unit economics, funnel projections, geo-tiers).
+>
+> Apple subscription product IDs (для ASC IAP setup):
+> - `com.gazetastreet.deskcare.sub.annual` — $34.99/yr (hero, default-selected)
+> - `com.gazetastreet.deskcare.sub.weekly` — $3.99/wk (secondary visible)
+> - `com.gazetastreet.deskcare.sub.monthly` — $9.99/mo (catalog only, hidden behind "View all plans")
+>
+> Все 3 в subscription group `deskcare_pro` (позволяет mid-cycle upgrades).
 
 ---
 
