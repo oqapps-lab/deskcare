@@ -111,7 +111,11 @@ export default function PaywallScreen() {
       const paywall = await adapty.getPaywall('default');
       const products = await adapty.getPaywallProducts(paywall);
       const product = (products as any[]).find((p) => {
-        const unit = p?.subscriptionPeriod?.unit ?? p?.subscription?.unit;
+        // Adapty SDK shape: AdaptyPaywallProduct.subscription.subscriptionPeriod.{unit, numberOfUnits}.
+        // Fallback to top-level for SDK forward-compat.
+        const unit =
+          p?.subscription?.subscriptionPeriod?.unit ??
+          p?.subscriptionPeriod?.unit;
         if (plan === 'yearly') return unit === 'year';
         if (plan === 'monthly') return unit === 'month';
         return unit === 'week';
