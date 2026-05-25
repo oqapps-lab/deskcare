@@ -8,6 +8,7 @@ import { colors } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
 import { configureForegroundBehavior } from '../lib/notifications';
 import { IS_EXPO_GO } from '../lib/native-runtime';
+import { setPremiumFromProfile } from '../lib/premium';
 
 // Configure how foreground notifications are presented. Must run at module
 // scope so it happens before any notification fires.
@@ -24,11 +25,24 @@ if (!IS_EXPO_GO && ADAPTY_KEY) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { adapty } = require('react-native-adapty');
+    // Activate is idempotent across cold/warm starts in the same process —
+    // second call returns #3005 "activateOnceError". Either way Adapty is up.
     (adapty as any)
       .activate(ADAPTY_KEY, { logLevel: 'error' })
-      .catch((e: unknown) => {
-        console.warn('[deskcare] Adapty.activate failed:', e);
-      });
+      .catch(() => { /* already activated — fine */ });
+
+    // Subscribe to profile changes (fires on purchase / restore / expiry).
+    // Safe to call even if activate hasn't finished — Adapty queues the
+    // listener internally and emits the first onLatestProfileLoad once
+    // activation completes.
+    (adapty as any).addEventListener?.('onLatestProfileLoad', (profile: unknown) => {
+      setPremiumFromProfile(profile);
+    });
+    // Initial pull — entitlement may already be active for a returning user.
+    (adapty as any)
+      .getProfile?.()
+      .then((profile: unknown) => setPremiumFromProfile(profile))
+      .catch((e: unknown) => console.warn('[deskcare] Adapty.getProfile failed:', e));
   } catch (e) {
     console.warn('[deskcare] react-native-adapty unavailable:', e);
   }
