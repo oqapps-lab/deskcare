@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useUserId } from '../lib/store/session';
+import { useIsPremium } from '../lib/premium';
 import type { Profile, Routine, Streak } from '../lib/types/db';
 
 interface OnboardingData {
@@ -31,6 +32,9 @@ export interface HomeUserSnapshot {
  */
 export const useHomeSnapshot = (): HomeUserSnapshot => {
   const userId = useUserId();
+  // Adapty Zustand source — updates instantly on purchase/restore/expiry,
+  // tolerates Adapty→Supabase webhook delay or misconfiguration.
+  const isPremiumFromAdapty = useIsPremium();
   const [snap, setSnap] = useState<HomeUserSnapshot>({
     profile: null,
     onboardingData: {},
@@ -140,5 +144,7 @@ export const useHomeSnapshot = (): HomeUserSnapshot => {
     };
   }, [userId]);
 
-  return snap;
+  // OR Supabase (canonical, set by Adapty webhook) with Adapty Zustand
+  // (instant client-side after purchase). Either truthy → premium.
+  return { ...snap, isPremium: snap.isPremium || isPremiumFromAdapty };
 };
