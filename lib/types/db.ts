@@ -78,7 +78,7 @@ export interface Profile {
 export interface DeskcareSubscription {
   user_id: string;
   status: 'free' | 'trialing' | 'active' | 'expired' | 'cancelled' | 'paused' | 'billing_issue';
-  plan: 'free' | 'pro_monthly' | 'pro_annual' | 'sciatica_addon' | 'lifetime';
+  plan: 'free' | 'pro_weekly' | 'pro_monthly' | 'pro_annual' | 'sciatica_addon' | 'lifetime';
   is_active: boolean;
   trial_end: string | null;
   current_period_end: string | null;
