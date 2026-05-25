@@ -5,7 +5,7 @@ import { Stack } from 'expo-router';
 import { View } from 'react-native';
 import { useAppFonts } from '../hooks/useAppFonts';
 import { colors } from '../constants/tokens';
-import { useSession } from '../lib/store/session';
+import { useSession, useUserId } from '../lib/store/session';
 import { configureForegroundBehavior } from '../lib/notifications';
 import { IS_EXPO_GO } from '../lib/native-runtime';
 import { setPremiumFromProfile } from '../lib/premium';
@@ -79,10 +79,33 @@ export default function RootLayout() {
   const fontsLoaded = useAppFonts();
   const initSession = useSession((s) => s.init);
   const hasHydrated = useSession((s) => s.hasHydrated);
+  const userId = useUserId();
 
   useEffect(() => {
     initSession();
   }, [initSession]);
+
+  // Link Adapty profile to Supabase user. Without this, Adapty's webhook to
+  // Supabase can't resolve which deskcare_subscriptions row to upsert →
+  // purchase succeeds in Apple+Adapty but Supabase row never reflects it.
+  useEffect(() => {
+    if (IS_EXPO_GO) return;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const { adapty } = require('react-native-adapty');
+      if (userId) {
+        (adapty as any).identify?.(userId)?.catch?.((e: unknown) => {
+          console.warn('[deskcare] adapty.identify failed:', e);
+        });
+      } else {
+        (adapty as any).logout?.()?.catch?.((e: unknown) => {
+          console.warn('[deskcare] adapty.logout failed:', e);
+        });
+      }
+    } catch {
+      // module unavailable — Expo Go path
+    }
+  }, [userId]);
 
   if (!fontsLoaded || !hasHydrated) {
     return <View style={{ flex: 1, backgroundColor: colors.canvas }} />;
