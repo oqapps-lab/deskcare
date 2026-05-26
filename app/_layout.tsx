@@ -2,13 +2,17 @@ import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
-import { View } from 'react-native';
+import { View, Platform } from 'react-native';
 import { useAppFonts } from '../hooks/useAppFonts';
 import { colors } from '../constants/tokens';
 import { useSession, useUserId } from '../lib/store/session';
 import { configureForegroundBehavior } from '../lib/notifications';
 import { IS_EXPO_GO } from '../lib/native-runtime';
 import { setPremiumFromProfile } from '../lib/premium';
+import {
+  getTrackingPermissionsAsync,
+  requestTrackingPermissionsAsync,
+} from 'expo-tracking-transparency';
 
 // Configure how foreground notifications are presented. Must run at module
 // scope so it happens before any notification fires.
@@ -84,6 +88,30 @@ export default function RootLayout() {
   useEffect(() => {
     initSession();
   }, [initSession]);
+
+  // App Tracking Transparency. Required by Apple (privacy manifest declares
+  // NSPrivacyTracking=true). Without firing this prompt, AppsFlyer attribution
+  // is IDFA-less and Apple may reject (ITMS-91064). Show once after a brief
+  // delay so it doesn't collide with the system notification-permission sheet.
+  useEffect(() => {
+    if (Platform.OS !== 'ios' || IS_EXPO_GO) return;
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      try {
+        const current = await getTrackingPermissionsAsync();
+        if (cancelled) return;
+        if (current.status === 'undetermined' && current.canAskAgain) {
+          await requestTrackingPermissionsAsync();
+        }
+      } catch (e) {
+        console.warn('[deskcare] ATT prompt failed:', e);
+      }
+    }, 1500);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, []);
 
   // Link Adapty profile to Supabase user. Without this, Adapty's webhook to
   // Supabase can't resolve which deskcare_subscriptions row to upsert →

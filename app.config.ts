@@ -28,6 +28,65 @@ const config: ExpoConfig = {
       NSUserTrackingUsageDescription:
         'DeskCare uses anonymized data to measure which referrals bring helpful users — never identifying you personally.',
     },
+    // Apple privacy manifest. ITMS-91064 reject if tracking SDKs present
+    // (Adapty, AppsFlyer) without declaring domains/Reasons here.
+    privacyManifests: {
+      NSPrivacyTracking: true,
+      NSPrivacyTrackingDomains: [
+        // AppsFlyer attribution
+        'appsflyer.com',
+        'appsflyersdk.com',
+        'app.appsflyer.com',
+        'launches.appsflyer.com',
+        'register.appsflyer.com',
+        'gcdsdk.appsflyer.com',
+        't.appsflyer.com',
+        'events.appsflyersdk.com',
+        // Adapty receipt validation + analytics
+        'api.adapty.io',
+        'api-eu.adapty.io',
+        'api-iso.adapty.io',
+        'api-public.adapty.io',
+      ],
+      NSPrivacyCollectedDataTypes: [
+        {
+          NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypePurchaseHistory',
+          NSPrivacyCollectedDataTypeLinked: true,
+          NSPrivacyCollectedDataTypeTracking: false,
+          NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAppFunctionality'],
+        },
+        {
+          NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypeDeviceID',
+          NSPrivacyCollectedDataTypeLinked: false,
+          NSPrivacyCollectedDataTypeTracking: true,
+          NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeThirdPartyAdvertising', 'NSPrivacyCollectedDataTypePurposeAnalytics'],
+        },
+        {
+          NSPrivacyCollectedDataType: 'NSPrivacyCollectedDataTypeProductInteraction',
+          NSPrivacyCollectedDataTypeLinked: true,
+          NSPrivacyCollectedDataTypeTracking: false,
+          NSPrivacyCollectedDataTypePurposes: ['NSPrivacyCollectedDataTypePurposeAnalytics', 'NSPrivacyCollectedDataTypePurposeAppFunctionality'],
+        },
+      ],
+      NSPrivacyAccessedAPITypes: [
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryUserDefaults',
+          NSPrivacyAccessedAPITypeReasons: ['CA92.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategorySystemBootTime',
+          NSPrivacyAccessedAPITypeReasons: ['35F9.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryFileTimestamp',
+          NSPrivacyAccessedAPITypeReasons: ['C617.1'],
+        },
+        {
+          NSPrivacyAccessedAPIType: 'NSPrivacyAccessedAPICategoryDiskSpace',
+          NSPrivacyAccessedAPITypeReasons: ['E174.1'],
+        },
+      ],
+    },
   },
   android: {
     package: 'com.gazetastreet.deskcare',
