@@ -21,29 +21,29 @@ import { useIsPremium } from '../../lib/premium';
 import type { Routine } from '../../lib/types/db';
 import { t } from '../../lib/i18n';
 
-interface SessionDef {
-  /** Slug to route into preview if it exists in routines table; else stay as info-only. */
+interface PlanDef {
   slug?: string;
-  title: string;
-  detail: string;
+  /** i18n key for the day's title and detail. */
+  titleKey: string;
+  detailKey: string;
   minutes: number;
 }
 
-const PLAN: SessionDef[] = [
-  { slug: 'wrists-quick-2min',  title: 'Day 1 — Median nerve glides',  detail: 'Gentle 6-position slide of the median nerve through the carpal tunnel.', minutes: 2 },
-  { slug: 'wrists-relief-2min', title: 'Day 2 — Tendon glides',        detail: 'Fist → hook → flat → straight to mobilize each finger tendon.',           minutes: 2 },
-  { title: 'Day 3 — Wrist flex / extend',                              detail: 'Slow stretch holds in both directions, 30s each side.',                    minutes: 3 },
-  { title: 'Day 4 — Combined glides',                                  detail: 'Nerve + tendon glides chained for full circulation.',                      minutes: 4 },
-  { title: 'Day 5 — Eccentric strengthening',                          detail: 'Resisted wrist drops to load the forearm flexors safely.',                 minutes: 4 },
-  { title: 'Day 6 — Active recovery',                                  detail: 'Light circles + decompression hangs, no resistance.',                      minutes: 3 },
-  { title: 'Day 7 — Full protocol',                                    detail: 'Run the whole sequence end-to-end as your habit anchor.',                  minutes: 5 },
+const PLAN: PlanDef[] = [
+  { slug: 'wrists-quick-2min',  titleKey: 'prog_carpal_day1_title', detailKey: 'prog_carpal_day1_detail', minutes: 2 },
+  { slug: 'wrists-relief-2min', titleKey: 'prog_carpal_day2_title', detailKey: 'prog_carpal_day2_detail', minutes: 2 },
+  {                             titleKey: 'prog_carpal_day3_title', detailKey: 'prog_carpal_day3_detail', minutes: 3 },
+  {                             titleKey: 'prog_carpal_day4_title', detailKey: 'prog_carpal_day4_detail', minutes: 4 },
+  {                             titleKey: 'prog_carpal_day5_title', detailKey: 'prog_carpal_day5_detail', minutes: 4 },
+  {                             titleKey: 'prog_carpal_day6_title', detailKey: 'prog_carpal_day6_detail', minutes: 3 },
+  {                             titleKey: 'prog_carpal_day7_title', detailKey: 'prog_carpal_day7_detail', minutes: 5 },
 ];
 
-const FEATURES = [
-  '8 progressive sessions over 7 days',
-  'Nerve + tendon glides backed by hand-therapy literature',
-  'Contraindications + when to see a doctor',
-  'Track symptoms across the program',
+const FEATURE_KEYS = [
+  'prog_carpal_feat_1',
+  'prog_carpal_feat_2',
+  'prog_carpal_feat_3',
+  'prog_carpal_feat_4',
 ];
 
 export default function CarpalTunnelProgramScreen() {
@@ -93,7 +93,7 @@ export default function CarpalTunnelProgramScreen() {
     }
   };
 
-  const openSession = (s: SessionDef) => {
+  const openSession = (s: PlanDef) => {
     if (!s.slug) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
       return;
@@ -133,41 +133,45 @@ export default function CarpalTunnelProgramScreen() {
         <Eyebrow style={{ marginTop: spacing.xl }}>{t('prog_carpal_plan_eyebrow')}</Eyebrow>
 
         <View style={styles.sessionList}>
-          {PLAN.map((s, i) => (
-            <Animated.View key={s.title} entering={FadeInDown.delay(60 + i * 60).duration(280)}>
-              <Pressable
-                onPress={() => openSession(s)}
-                accessibilityRole="button"
-                accessibilityLabel={`${s.title}, ${s.minutes} minutes`}
-                style={({ pressed }) => [pressed && styles.pressed]}
-              >
-                <GlassCard tint={i % 2 === 0 ? 'cream' : 'mint'} radius="xl" padding={spacing.lg}>
-                  <View style={styles.row}>
-                    <View style={styles.dayBubble}>
-                      <Text style={styles.dayNum}>{i + 1}</Text>
+          {PLAN.map((s, i) => {
+            const title = t(s.titleKey);
+            const detail = t(s.detailKey);
+            return (
+              <Animated.View key={s.titleKey} entering={FadeInDown.delay(60 + i * 60).duration(280)}>
+                <Pressable
+                  onPress={() => openSession(s)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${title}, ${s.minutes} minutes`}
+                  style={({ pressed }) => [pressed && styles.pressed]}
+                >
+                  <GlassCard tint={i % 2 === 0 ? 'cream' : 'mint'} radius="xl" padding={spacing.lg}>
+                    <View style={styles.row}>
+                      <View style={styles.dayBubble}>
+                        <Text style={styles.dayNum}>{i + 1}</Text>
+                      </View>
+                      <View style={{ flex: 1, minWidth: 0 }}>
+                        <Text style={styles.sessionTitle}>{title}</Text>
+                        <Text style={styles.sessionDetail}>{detail}</Text>
+                      </View>
+                      <Text style={styles.duration}>{s.minutes} MIN</Text>
                     </View>
-                    <View style={{ flex: 1, minWidth: 0 }}>
-                      <Text style={styles.sessionTitle}>{s.title}</Text>
-                      <Text style={styles.sessionDetail}>{s.detail}</Text>
-                    </View>
-                    <Text style={styles.duration}>{s.minutes} MIN</Text>
-                  </View>
-                </GlassCard>
-              </Pressable>
-            </Animated.View>
-          ))}
+                  </GlassCard>
+                </Pressable>
+              </Animated.View>
+            );
+          })}
         </View>
 
         <Eyebrow style={{ marginTop: spacing.xl }}>{t('prog_carpal_inside_eyebrow')}</Eyebrow>
         <View style={styles.insideList}>
-          {FEATURES.map((line) => (
-            <View key={line} style={styles.insideRow}>
+          {FEATURE_KEYS.map((key) => (
+            <View key={key} style={styles.insideRow}>
               <View style={styles.check}>
                 <Svg width={12} height={12} viewBox="0 0 12 12">
                   <Path d="M2.5 6.5 L5 9 L9.5 3.5" stroke={colors.primaryDeep} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
                 </Svg>
               </View>
-              <Text style={styles.insideText}>{line}</Text>
+              <Text style={styles.insideText}>{t(key)}</Text>
             </View>
           ))}
         </View>

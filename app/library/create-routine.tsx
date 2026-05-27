@@ -23,12 +23,12 @@ import { useIsPremium } from '../../lib/premium';
 import type { BodyZoneSlug } from '../../lib/types/db';
 import { t, i18nField } from '../../lib/i18n';
 
-const FILTERS: ReadonlyArray<{ label: string; zone: BodyZoneSlug | 'all' }> = [
-  { label: 'All',     zone: 'all' },
-  { label: 'Neck',    zone: 'neck' },
-  { label: 'Back',    zone: 'back' },
-  { label: 'Eyes',    zone: 'eyes' },
-  { label: 'Wrists',  zone: 'wrists' },
+const buildFilters = (): ReadonlyArray<{ label: string; zone: BodyZoneSlug | 'all' }> => [
+  { label: t('mlib_filter_all'), zone: 'all' },
+  { label: t('zone_neck'),       zone: 'neck' },
+  { label: t('zone_back'),       zone: 'back' },
+  { label: t('zone_eyes'),       zone: 'eyes' },
+  { label: t('zone_wrists'),     zone: 'wrists' },
 ];
 
 const poseFor = (code: string): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch' => {
@@ -42,6 +42,7 @@ const poseFor = (code: string): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-
 export default function CreateRoutineScreen() {
   const insets = useSafeAreaInsets();
   const [name, setName] = useState('');
+  const FILTERS = React.useMemo(buildFilters, []);
   const [activeFilter, setActiveFilter] = useState(FILTERS[0]);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const { exercises, loading } = useExercises(activeFilter.zone);
