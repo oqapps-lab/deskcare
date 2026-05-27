@@ -358,6 +358,8 @@ export default function HomeScreen() {
             Haptics.selectionAsync();
             router.push('/coach' as never);
           }}
+          accessibilityRole="button"
+          accessibilityLabel={t('home_coach_tile_title')}
           style={({ pressed }) => [pressed && styles.pressed, styles.coachWrap]}
         >
           <GlassCard tint="coral" radius="xl" padding={spacing.lg}>
@@ -385,6 +387,8 @@ export default function HomeScreen() {
             Haptics.selectionAsync();
             router.push('/knowledge' as never);
           }}
+          accessibilityRole="button"
+          accessibilityLabel={t('home_knowledge_tile_title')}
           style={({ pressed }) => [pressed && styles.pressed, styles.knowledgeWrap]}
         >
           <GlassCard tint="lavender" radius="xl" padding={spacing.lg}>

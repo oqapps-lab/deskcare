@@ -55,7 +55,12 @@ export const CalendarSlotCard: React.FC<{
     : t('cal_sub_helper');
 
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [pressed && styles.pressed, styles.wrap]}>
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={title}
+      style={({ pressed }) => [pressed && styles.pressed, styles.wrap]}
+    >
       <GlassCard tint="peach" radius="xl" padding={spacing.lg}>
         <View style={styles.row}>
           <IconHalo icon="clock" size="md" tone="coral" variant="tinted" />

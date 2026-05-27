@@ -77,7 +77,12 @@ export const PostureCard: React.FC<{ posture: PostureScore }> = ({ posture }) =>
 
   return (
     <View style={styles.wrap}>
-      <Pressable onPress={openCheck} style={({ pressed }) => [pressed && styles.pressed]}>
+      <Pressable
+        onPress={openCheck}
+        accessibilityRole="button"
+        accessibilityLabel={`${title}. ${sub}`}
+        style={({ pressed }) => [pressed && styles.pressed]}
+      >
         <GlassCard tint={tint} radius="xl" padding={spacing.lg}>
           <View style={styles.row}>
             <Animated.View style={[styles.ringWrap, ringStyle]}>
