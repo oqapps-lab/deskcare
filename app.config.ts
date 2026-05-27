@@ -27,6 +27,13 @@ const config: ExpoConfig = {
       // editorial review ("explain in plain language what data is used").
       NSUserTrackingUsageDescription:
         'DeskCare uses anonymized data to measure which referrals bring helpful users — never identifying you personally.',
+      // Calendar — read-only access to find free slots between meetings so
+      // DeskCare can suggest 2-minute stretches that fit your day. Events
+      // never leave your device.
+      NSCalendarsUsageDescription:
+        'DeskCare reads your calendar to suggest stretches in the gaps between meetings. Events stay on this device.',
+      NSCalendarsFullAccessUsageDescription:
+        'DeskCare reads your calendar to suggest stretches in the gaps between meetings. Events stay on this device.',
     },
     // Apple privacy manifest. ITMS-91064 reject if tracking SDKs present
     // (Adapty, AppsFlyer) without declaring domains/Reasons here.

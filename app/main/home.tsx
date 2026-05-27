@@ -24,8 +24,10 @@ import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { useHomeSnapshot } from '../../hooks/useUserData';
 import { usePainTrend } from '../../hooks/usePainTrend';
 import { useDailyChallenge } from '../../hooks/useDailyChallenge';
+import { useCalendarSlot } from '../../hooks/useCalendarSlot';
 import { PainTrendCard } from '../../components/PainTrendCard';
 import { DailyChallengeCard } from '../../components/DailyChallengeCard';
+import { CalendarSlotCard } from '../../components/CalendarSlotCard';
 import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
 import { ROUTINE_SLUGS } from '../../constants/routines';
@@ -154,6 +156,7 @@ export default function HomeScreen() {
     | 'neck' | 'back' | 'wrists' | 'eyes' | 'full_body' | 'sciatica' | undefined;
   const painTrend = usePainTrend(primaryZoneSlug);
   const dailyChallenge = useDailyChallenge(2);
+  const calendarSlot = useCalendarSlot();
   const quickBreaks: QuickBreak[] = [
     {
       id: 'eyes',
@@ -339,6 +342,9 @@ export default function HomeScreen() {
         {userId && !dailyChallenge.loading && (
           <DailyChallengeCard challenge={dailyChallenge} />
         )}
+
+        {/* Calendar-aware suggestion — next free slot in user's day */}
+        <CalendarSlotCard state={calendarSlot} routineSlug={snap.recommendedRoutine?.slug} />
 
         {/* Pain trend — sparkline + delta % over last 14 days */}
         <PainTrendCard trend={painTrend} />
