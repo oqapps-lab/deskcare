@@ -1,7 +1,5 @@
 import React from 'react';
-import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { LinearGradient } from 'expo-linear-gradient';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path } from 'react-native-svg';
@@ -17,12 +15,13 @@ import {
   PremiumLock,
   StreakArc,
   TabBar,
-  VideoPlaceholder,
 } from '../../components/ui';
 import type { HaloTone } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { useHomeSnapshot } from '../../hooks/useUserData';
 import { usePainTrend } from '../../hooks/usePainTrend';
+import { useForYouRotation } from '../../hooks/useForYouRotation';
+import { ForYouCarousel } from '../../components/ForYouCarousel';
 import { useDailyChallenge } from '../../hooks/useDailyChallenge';
 import { useCalendarSlot } from '../../hooks/useCalendarSlot';
 import { usePostureScore } from '../../hooks/usePostureScore';
@@ -160,6 +159,7 @@ export default function HomeScreen() {
   const dailyChallenge = useDailyChallenge(2);
   const calendarSlot = useCalendarSlot();
   const posture = usePostureScore();
+  const forYouCards = useForYouRotation(primaryZoneSlug);
   const quickBreaks: QuickBreak[] = [
     {
       id: 'eyes',
@@ -254,25 +254,13 @@ export default function HomeScreen() {
           </GlassCard>
         </View>
 
-        {/* For you today */}
+        {/* For you today — dynamic 3-card carousel, daily rotation,
+            breathing-pulse on each illustration. */}
         <View style={styles.forYouRow}>
           <Eyebrow>{t('home_foryou_eyebrow')}</Eyebrow>
         </View>
 
-        <Pressable onPress={beginRoutine} style={({ pressed }) => [pressed && styles.pressed]}>
-          <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
-            <View style={styles.routineRow}>
-              <VideoPlaceholder pose="neck-roll" compact showPlay />
-              <View style={styles.routineText}>
-                <Text style={styles.routineName}>{cfg.routineName}</Text>
-                <Text style={styles.routineHint}>{cfg.routineHint}</Text>
-              </View>
-            </View>
-            <View style={styles.routineCtaWrap}>
-              <MatteCoralPill label={cfg.routineCta} />
-            </View>
-          </GlassCard>
-        </Pressable>
+        <ForYouCarousel cards={forYouCards} />
 
         {/* Quick breaks — Eye + contextual prompts for user's pain zones */}
         <View style={styles.eyeRowWrap}>
@@ -460,46 +448,6 @@ const ZoneCircle: React.FC<{
         <PremiumLock size="xs" tone="subtle" />
       </View>
     )}
-  </View>
-);
-
-/**
- * Non-interactive matte coral-glass pill — visual affordance inside cards
- * whose whole surface is the tap target. Same matte-glass language as the
- * primary PillCTA but compact and decoupled from press handling.
- */
-const MatteCoralPill: React.FC<{ label: string }> = ({ label }) => (
-  <View style={styles.mcpOuter}>
-    {Platform.OS === 'ios' ? (
-      <BlurView intensity={30} tint="light" style={styles.mcpBlur}>
-        <View style={[StyleSheet.absoluteFill, styles.mcpFill]} pointerEvents="none" />
-        <LinearGradient
-          pointerEvents="none"
-          colors={[
-            'rgba(255,255,255,0.10)',
-            'rgba(0,0,0,0)',
-            'rgba(0,0,0,0.10)',
-          ] as const}
-          locations={[0, 0.5, 1]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-        />
-      </BlurView>
-    ) : (
-      <View style={[StyleSheet.absoluteFill, styles.mcpFillAndroid]} pointerEvents="none" />
-    )}
-    <LinearGradient
-      pointerEvents="none"
-      colors={['rgba(255,255,255,0.32)', 'rgba(255,255,255,0)'] as const}
-      start={{ x: 0.5, y: 0 }}
-      end={{ x: 0.5, y: 1 }}
-      style={styles.mcpSheen}
-    />
-    <View style={styles.mcpBorder} pointerEvents="none" />
-    <View style={styles.mcpContent}>
-      <Text style={styles.mcpText}>{label}</Text>
-    </View>
   </View>
 );
 
