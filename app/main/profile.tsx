@@ -161,6 +161,14 @@ export default function ProfileScreen() {
       route: '/profile/pain-history',
     },
     {
+      key: 'buddy',
+      icon: 'plus',
+      tone: 'mint',
+      title: 'Stretching buddy',
+      sub: 'Invite a friend — see each other\'s streak',
+      route: '/buddy',
+    },
+    {
       key: 'settings',
       icon: 'settings',
       tone: 'lavender',
