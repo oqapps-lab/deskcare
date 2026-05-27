@@ -1,4 +1,5 @@
 import type { BodyZoneSlug } from './types/db';
+import type { GlyphName, HaloTone } from '../components/ui';
 
 /**
  * Rule-based Pain Coach decision tree. Pure functions — no LLM needed for
@@ -8,7 +9,8 @@ import type { BodyZoneSlug } from './types/db';
 
 export interface CoachZone {
   slug: BodyZoneSlug;
-  emoji: string;
+  icon: GlyphName;
+  tone: HaloTone;
   label: string;
   /** Sub-prompt question — one short follow-up. */
   followUp: string;
@@ -35,7 +37,8 @@ export interface CoachOption {
 export const COACH_ZONES: CoachZone[] = [
   {
     slug: 'neck',
-    emoji: '🦒',
+    icon: 'refresh',
+    tone: 'coral',
     label: 'Neck',
     followUp: 'How does it feel?',
     options: [
@@ -63,7 +66,8 @@ export const COACH_ZONES: CoachZone[] = [
   },
   {
     slug: 'back',
-    emoji: '🦴',
+    icon: 'infinity',
+    tone: 'peach',
     label: 'Back',
     followUp: 'Where exactly?',
     options: [
@@ -91,7 +95,8 @@ export const COACH_ZONES: CoachZone[] = [
   },
   {
     slug: 'eyes',
-    emoji: '👁',
+    icon: 'eye',
+    tone: 'lavender',
     label: 'Eyes',
     followUp: 'What kind of strain?',
     options: [
@@ -120,7 +125,8 @@ export const COACH_ZONES: CoachZone[] = [
   },
   {
     slug: 'wrists',
-    emoji: '✋',
+    icon: 'plus',
+    tone: 'mint',
     label: 'Wrists',
     followUp: 'How does it show up?',
     options: [
@@ -147,7 +153,8 @@ export const COACH_ZONES: CoachZone[] = [
   },
   {
     slug: 'sciatica',
-    emoji: '⚡️',
+    icon: 'bell',
+    tone: 'coral',
     label: 'Sciatica / leg pain',
     followUp: 'Where does the pain go?',
     options: [
@@ -179,7 +186,8 @@ export const COACH_ZONES: CoachZone[] = [
   },
   {
     slug: 'full_body',
-    emoji: '🧘',
+    icon: 'crown',
+    tone: 'lavender',
     label: 'Just stiff overall',
     followUp: 'Which best fits?',
     options: [

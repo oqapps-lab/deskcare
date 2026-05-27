@@ -85,7 +85,9 @@ export default function PainCoachScreen() {
                 {COACH_ZONES.map((z) => (
                   <Pressable key={z.slug} onPress={() => pickZone(z)} style={({ pressed }) => [pressed && styles.pressed, styles.zoneCell]}>
                     <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
-                      <Text style={styles.zoneEmoji}>{z.emoji}</Text>
+                      <View style={styles.zoneIconWrap}>
+                        <IconHalo icon={z.icon} size="md" tone={z.tone} variant="tinted" />
+                      </View>
                       <Text style={styles.zoneLabel}>{z.label}</Text>
                     </GlassCard>
                   </Pressable>
@@ -184,9 +186,8 @@ const styles = StyleSheet.create({
   zoneCell: {
     width: '47%',
   },
-  zoneEmoji: {
-    fontSize: 40,
-    marginBottom: spacing.xs,
+  zoneIconWrap: {
+    marginBottom: spacing.sm,
   },
   zoneLabel: {
     ...typeScale.titleLg,

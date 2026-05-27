@@ -44,7 +44,16 @@ const SUB_BY_LABEL = (m: number | null, label: PostureScore['label']): string =>
  * refreshes the score.
  */
 export const PostureCard: React.FC<{ posture: PostureScore }> = ({ posture }) => {
+  // ⚠ ALL hooks must run on every render — never gate behind early-return.
   const [open, setOpen] = useState(false);
+  const value = posture.score ?? 0;
+  const target = useSharedValue(0);
+  React.useEffect(() => {
+    target.value = withTiming(value, { duration: 600, easing: Easing.out(Easing.cubic) });
+  }, [value, target]);
+  const ringStyle = useAnimatedStyle(() => ({
+    opacity: 1,
+  }));
 
   if (posture.loading) return null;
 
@@ -62,16 +71,6 @@ export const PostureCard: React.FC<{ posture: PostureScore }> = ({ posture }) =>
     await posture.markChecked();
     setOpen(false);
   };
-
-  // Display: animated meter (0..10 ring).
-  const value = posture.score ?? 0;
-  const target = useSharedValue(0);
-  React.useEffect(() => {
-    target.value = withTiming(value, { duration: 600, easing: Easing.out(Easing.cubic) });
-  }, [value, target]);
-  const ringStyle = useAnimatedStyle(() => ({
-    opacity: 1,
-  }));
 
   return (
     <View style={styles.wrap}>
