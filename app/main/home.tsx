@@ -23,7 +23,9 @@ import type { HaloTone } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { useHomeSnapshot } from '../../hooks/useUserData';
 import { usePainTrend } from '../../hooks/usePainTrend';
+import { useDailyChallenge } from '../../hooks/useDailyChallenge';
 import { PainTrendCard } from '../../components/PainTrendCard';
+import { DailyChallengeCard } from '../../components/DailyChallengeCard';
 import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
 import { ROUTINE_SLUGS } from '../../constants/routines';
@@ -151,6 +153,7 @@ export default function HomeScreen() {
   const primaryZoneSlug = snap.onboardingData?.pain_zones?.[0] as
     | 'neck' | 'back' | 'wrists' | 'eyes' | 'full_body' | 'sciatica' | undefined;
   const painTrend = usePainTrend(primaryZoneSlug);
+  const dailyChallenge = useDailyChallenge(2);
   const quickBreaks: QuickBreak[] = [
     {
       id: 'eyes',
@@ -330,6 +333,11 @@ export default function HomeScreen() {
               </View>
             </GlassCard>
           </Pressable>
+        )}
+
+        {/* Daily challenge — 2 routines/day goal */}
+        {userId && !dailyChallenge.loading && (
+          <DailyChallengeCard challenge={dailyChallenge} />
         )}
 
         {/* Pain trend — sparkline + delta % over last 14 days */}
