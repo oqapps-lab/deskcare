@@ -104,7 +104,7 @@ export default function KnowledgeScreen() {
                   key={a.id}
                   onPress={() => openArticle(a.slug)}
                   accessibilityRole="button"
-                  accessibilityLabel={`${articleI18n(a as never, 'title')}, ${a.reading_minutes} minute read`}
+                  accessibilityLabel={articleI18n(a as never, 'title')}
                   style={({ pressed }) => [pressed && styles.pressed]}
                 >
                   <View style={[styles.card, i > 0 && { marginTop: spacing.md }]}>

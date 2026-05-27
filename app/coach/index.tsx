@@ -84,7 +84,13 @@ export default function PainCoachScreen() {
             <Animated.View entering={FadeIn.duration(280)} exiting={FadeOut.duration(180)}>
               <View style={styles.zoneGrid}>
                 {COACH_ZONES.map((z) => (
-                  <Pressable key={z.slug} onPress={() => pickZone(z)} style={({ pressed }) => [pressed && styles.pressed, styles.zoneCell]}>
+                  <Pressable
+                    key={z.slug}
+                    onPress={() => pickZone(z)}
+                    accessibilityRole="button"
+                    accessibilityLabel={z.label}
+                    style={({ pressed }) => [pressed && styles.pressed, styles.zoneCell]}
+                  >
                     <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
                       <View style={styles.zoneIconWrap}>
                         <IconHalo icon={z.icon} size="md" tone={z.tone} variant="tinted" />
@@ -103,6 +109,8 @@ export default function PainCoachScreen() {
                 <Pressable
                   key={o.key}
                   onPress={() => pickOption(o)}
+                  accessibilityRole="button"
+                  accessibilityLabel={o.label}
                   style={({ pressed }) => [pressed && styles.pressed, idx > 0 && { marginTop: spacing.md }]}
                 >
                   <GlassCard tint={o.redFlag ? 'peach' : 'cream'} radius="xl" padding={spacing.lg}>
