@@ -25,9 +25,11 @@ import { useHomeSnapshot } from '../../hooks/useUserData';
 import { usePainTrend } from '../../hooks/usePainTrend';
 import { useDailyChallenge } from '../../hooks/useDailyChallenge';
 import { useCalendarSlot } from '../../hooks/useCalendarSlot';
+import { usePostureScore } from '../../hooks/usePostureScore';
 import { PainTrendCard } from '../../components/PainTrendCard';
 import { DailyChallengeCard } from '../../components/DailyChallengeCard';
 import { CalendarSlotCard } from '../../components/CalendarSlotCard';
+import { PostureCard } from '../../components/PostureCard';
 import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
 import { ROUTINE_SLUGS } from '../../constants/routines';
@@ -157,6 +159,7 @@ export default function HomeScreen() {
   const painTrend = usePainTrend(primaryZoneSlug);
   const dailyChallenge = useDailyChallenge(2);
   const calendarSlot = useCalendarSlot();
+  const posture = usePostureScore();
   const quickBreaks: QuickBreak[] = [
     {
       id: 'eyes',
@@ -345,6 +348,9 @@ export default function HomeScreen() {
 
         {/* Calendar-aware suggestion — next free slot in user's day */}
         <CalendarSlotCard state={calendarSlot} routineSlug={snap.recommendedRoutine?.slug} />
+
+        {/* Posture self-check — time-decayed score + 3-point modal */}
+        <PostureCard posture={posture} />
 
         {/* Pain trend — sparkline + delta % over last 14 days */}
         <PainTrendCard trend={painTrend} />
