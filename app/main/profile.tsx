@@ -17,6 +17,8 @@ import type { GlyphName } from '../../components/ui';
 import type { HaloTone } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useHomeSnapshot } from '../../hooks/useUserData';
+import { useAchievements } from '../../hooks/useAchievements';
+import { AchievementGrid } from '../../components/AchievementGrid';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
@@ -229,6 +231,8 @@ export default function ProfileScreen() {
           </GlassCard>
         </View>
 
+        <ProfileAchievements />
+
         <Eyebrow>{t('prof_manage_eyebrow')}</Eyebrow>
         <View style={styles.rows}>
           {ROWS.map((r) => (
@@ -269,6 +273,21 @@ export default function ProfileScreen() {
     </AtmosphericBackground>
   );
 }
+
+const ProfileAchievements: React.FC = () => {
+  const { achievements, loading } = useAchievements();
+  if (loading || !achievements || achievements.length === 0) return null;
+  const earnedCount = achievements.filter((a) => !!a.earned_at).length;
+  return (
+    <View style={styles.achievementsWrap}>
+      <View style={styles.achievementsHeader}>
+        <Eyebrow>Achievements</Eyebrow>
+        <Text style={styles.achievementsCount}>{earnedCount} / {achievements.length}</Text>
+      </View>
+      <AchievementGrid items={achievements} maxRows={2} />
+    </View>
+  );
+};
 
 const StatCol: React.FC<{ value: string; label: string }> = ({ value, label }) => (
   <View style={styles.statCol}>
@@ -329,6 +348,19 @@ const styles = StyleSheet.create({
   },
   statsWrap: {
     marginBottom: spacing.xl,
+  },
+  achievementsWrap: {
+    marginBottom: spacing.xl,
+  },
+  achievementsHeader: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    justifyContent: 'space-between',
+  },
+  achievementsCount: {
+    ...typeScale.labelSm,
+    color: colors.inkSubtle,
+    fontFamily: 'PlusJakartaSans_600SemiBold',
   },
   statsRow: {
     flexDirection: 'row',

@@ -30,6 +30,11 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
+import {
+  checkAndUnlockAchievements,
+  type UnlockedAchievement,
+} from '../../hooks/useAchievements';
+import { AchievementUnlockOverlay } from '../../components/AchievementUnlockOverlay';
 
 /**
  * On signed-in completion: atomically insert a sessions row and bump the
@@ -78,12 +83,24 @@ export default function SessionCompleteScreen() {
     { value: streakCount > 0 ? String(streakCount) : '—', label: t('ex_complete_stat_streak') },
   ];
 
+  const [unlocked, setUnlocked] = React.useState<UnlockedAchievement[]>([]);
+
   useEffect(() => {
     if (!userId || writtenRef.current || durationSec === 0) return;
     writtenRef.current = true;
-    logCompletedSession(durationSec, movesCount).catch(() => {
-      // Best-effort; silent on RLS / network.
-    });
+    (async () => {
+      try {
+        await logCompletedSession(durationSec, movesCount);
+        // After streak/sessions bump, check what unlocked. Wait 600ms so
+        // the burst animation lands first, then layer the badge celebration.
+        const newly = await checkAndUnlockAchievements();
+        if (newly.length > 0) {
+          setTimeout(() => setUnlocked(newly), 700);
+        }
+      } catch {
+        // Best-effort; silent on RLS / network.
+      }
+    })();
   }, [userId, durationSec, movesCount]);
 
   const burst = useSharedValue(0.9);
@@ -241,6 +258,11 @@ export default function SessionCompleteScreen() {
           </Pressable>
         </View>
       </View>
+
+      <AchievementUnlockOverlay
+        items={unlocked}
+        onDismiss={() => setUnlocked([])}
+      />
     </AtmosphericBackground>
   );
 }
