@@ -169,6 +169,14 @@ export default function ProfileScreen() {
       route: '/buddy',
     },
     {
+      key: 'analytics',
+      icon: 'check',
+      tone: 'lavender',
+      title: t('prof_analytics_title'),
+      sub: t('prof_analytics_sub'),
+      route: '/analytics',
+    },
+    {
       key: 'settings',
       icon: 'settings',
       tone: 'lavender',

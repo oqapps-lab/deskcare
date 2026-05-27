@@ -771,6 +771,27 @@ const en: Dict = {
   prof_buddy_title: 'Stretching buddy',
   prof_buddy_sub: "Invite a friend — see each other's streak",
 
+  // Analytics screen (F15)
+  an_eyebrow: 'YOUR DESKCARE',
+  an_title: 'Progress',
+  an_kpi_sessions: 'SESSIONS',
+  an_kpi_minutes: 'MINUTES',
+  an_kpi_streak: 'CURRENT STREAK',
+  an_kpi_best: 'BEST STREAK',
+  an_chart_eyebrow: 'LAST 14 DAYS',
+  an_chart_title: 'Sessions per day',
+  an_zones_eyebrow: 'BREAKDOWN',
+  an_zones_title: 'Where you spend time',
+  an_insight_eyebrow: 'INSIGHT',
+  an_pain_better: 'Your {zone} is {pct}% better than two weeks ago.',
+  an_pain_worse: 'Your {zone} is {pct}% more painful than two weeks ago. Try the daily reset routines.',
+  an_pain_steady: 'Your {zone} held steady over the last 2 weeks.',
+  an_loading: 'Crunching numbers…',
+  an_empty_title: 'No sessions yet.',
+  an_empty_body: 'Complete your first routine and your progress will start showing up here.',
+  prof_analytics_title: 'Your progress',
+  prof_analytics_sub: 'See your sessions, zones, and pain trend',
+
 };
 
 const enGB: Dict = {
