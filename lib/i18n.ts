@@ -792,6 +792,16 @@ const en: Dict = {
   prof_analytics_title: 'Your progress',
   prof_analytics_sub: 'See your sessions, zones, and pain trend',
 
+  // Carpal-Tunnel program screen (F12)
+  prog_carpal_eyebrow: 'WRIST RELIEF',
+  prog_carpal_hero: '7-day Carpal Tunnel reset',
+  prog_carpal_screen_meta: '~3 min/day · nerve + tendon glides',
+  prog_carpal_disclaimer: 'Stop and consult a clinician if you feel numbness past your wrist, fingers going pale, or sharp shooting pain.',
+  prog_carpal_plan_eyebrow: 'YOUR 7-DAY PLAN',
+  prog_carpal_inside_eyebrow: 'INSIDE',
+  prog_carpal_content_note: 'Full session content unlocks after pairing the program with your premium subscription.',
+  prog_carpal_cta_start: 'Start day 1',
+
 };
 
 const enGB: Dict = {

@@ -49,7 +49,7 @@ const buildPrograms = () => [
     tone: 'mint' as const,
     icon: 'plus' as const,
     premium: true,
-    route: '/onboarding/paywall',
+    route: '/programs/carpal-tunnel',
   },
 ];
 
