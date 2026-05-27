@@ -352,6 +352,30 @@ export default function HomeScreen() {
         {/* Posture self-check — time-decayed score + 3-point modal */}
         <PostureCard posture={posture} />
 
+        {/* Pain Coach — decision-tree triage */}
+        <Pressable
+          onPress={() => {
+            Haptics.selectionAsync();
+            router.push('/coach' as never);
+          }}
+          style={({ pressed }) => [pressed && styles.pressed, styles.coachWrap]}
+        >
+          <GlassCard tint="coral" radius="xl" padding={spacing.lg}>
+            <View style={styles.eyeRow}>
+              <IconHalo icon="plus" size="md" tone="coral" variant="tinted" />
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={styles.eyeTitle}>Pain Coach</Text>
+                <Text style={styles.eyeSub}>Tell me where it hurts → I'll pick the right routine</Text>
+              </View>
+              <View style={styles.eyeArrow}>
+                <Svg width={16} height={16} viewBox="0 0 16 16">
+                  <Path d="M6 3 L11 8 L6 13" stroke={colors.primaryMid} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                </Svg>
+              </View>
+            </View>
+          </GlassCard>
+        </Pressable>
+
         {/* Pain trend — sparkline + delta % over last 14 days */}
         <PainTrendCard trend={painTrend} />
 
@@ -687,6 +711,9 @@ const styles = StyleSheet.create({
   },
   knowledgeWrap: {
     marginTop: spacing.lg,
+  },
+  coachWrap: {
+    marginTop: spacing.md,
   },
   programsWrap: {
     marginTop: spacing.xl,
