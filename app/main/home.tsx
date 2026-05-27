@@ -327,6 +327,30 @@ export default function HomeScreen() {
           </Pressable>
         )}
 
+        {/* Knowledge — desk-health editorial */}
+        <Pressable
+          onPress={() => {
+            Haptics.selectionAsync();
+            router.push('/knowledge' as never);
+          }}
+          style={({ pressed }) => [pressed && styles.pressed, styles.knowledgeWrap]}
+        >
+          <GlassCard tint="lavender" radius="xl" padding={spacing.lg}>
+            <View style={styles.eyeRow}>
+              <IconHalo icon="book" size="md" tone="lavender" variant="tinted" />
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={styles.eyeTitle}>Learn about your body</Text>
+                <Text style={styles.eyeSub}>3-5 min reads on neck, eyes, sleep, ergonomics</Text>
+              </View>
+              <View style={styles.eyeArrow}>
+                <Svg width={16} height={16} viewBox="0 0 16 16">
+                  <Path d="M6 3 L11 8 L6 13" stroke={colors.primaryMid} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                </Svg>
+              </View>
+            </View>
+          </GlassCard>
+        </Pressable>
+
         {/* Premium: programs row */}
         {state === 'premium' && (
           <View style={styles.programsWrap}>
@@ -632,6 +656,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.72)',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  knowledgeWrap: {
+    marginTop: spacing.lg,
   },
   programsWrap: {
     marginTop: spacing.xl,

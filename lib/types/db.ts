@@ -110,3 +110,27 @@ export interface ReminderSchedule {
   tone: ReminderTone;
   is_active: boolean;
 }
+
+export interface Article {
+  id: string;
+  slug: string;
+  body_zone_id: string | null;
+  title: string;
+  excerpt: string;
+  body_markdown: string;
+  title_i18n: Record<string, string> | null;
+  excerpt_i18n: Record<string, string> | null;
+  body_markdown_i18n: Record<string, string> | null;
+  cover_image_url: string | null;
+  reading_minutes: number;
+  is_premium: boolean;
+  tags: string[];
+  sort_order: number;
+  published_at: string | null;
+}
+
+export interface ArticleRead {
+  user_id: string;
+  article_id: string;
+  read_at: string;
+}
