@@ -828,6 +828,36 @@ const en: Dict = {
   cr_not_found: 'Routine not found.',
   cr_cta_start: 'Start routine',
 
+  // Challenges (F14)
+  prof_challenges_title: 'Challenges',
+  prof_challenges_sub: 'Run a 7/14/30-day reset',
+  ch_nav_title: 'Challenge',
+  ch_hero_eyebrow: 'PERSONAL CHALLENGE',
+  ch_hero_title: 'Pick a window. Show up daily.',
+  ch_hero_body: 'A clean stretch goal: do at least one session every day for the chosen duration. Tracks locally, no judgment if you miss — the chart just shows the truth.',
+  ch_pick_eyebrow: 'CHOOSE A DURATION',
+  ch_pick_7_title: 'Soft start · 7 days',
+  ch_pick_7_body: 'Build the habit anchor for a week.',
+  ch_pick_14_title: 'Deep groove · 14 days',
+  ch_pick_14_body: 'Long enough for the brain to wire it in.',
+  ch_pick_30_title: 'Recovery month · 30 days',
+  ch_pick_30_body: 'Real pain change shows up here.',
+  ch_pick_label: '{n}-day challenge',
+  ch_active_eyebrow: '{duration}-DAY CHALLENGE',
+  ch_active_day: 'Day {day} of {total}',
+  ch_active_meta: '{done} sessions done · {left} days left',
+  ch_grid_eyebrow: 'YOUR DAYS',
+  ch_today_logged: '✓ Today is logged',
+  ch_cta_log: 'Log today',
+  ch_action_share: 'Share progress',
+  ch_action_end: 'End this challenge',
+  ch_cancel_title: 'End the challenge?',
+  ch_cancel_body: 'Your progress will be lost. You can start a new one any time.',
+  ch_cancel_confirm: 'End',
+  ch_share_message: "Day {day} of a {duration}-day DeskCare challenge — {done} sessions done. Stretch with me 🌿",
+  ch_buddy_with: 'With {name}',
+  ch_buddy_meta: 'Their streak {their} · your sessions {yours}',
+
 };
 
 const enGB: Dict = {

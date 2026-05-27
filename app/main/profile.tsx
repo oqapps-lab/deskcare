@@ -177,6 +177,14 @@ export default function ProfileScreen() {
       route: '/analytics',
     },
     {
+      key: 'challenges',
+      icon: 'play',
+      tone: 'peach',
+      title: t('prof_challenges_title'),
+      sub: t('prof_challenges_sub'),
+      route: '/challenges',
+    },
+    {
       key: 'settings',
       icon: 'settings',
       tone: 'lavender',
