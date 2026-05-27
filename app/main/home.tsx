@@ -22,6 +22,8 @@ import {
 import type { HaloTone } from '../../components/ui';
 import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { useHomeSnapshot } from '../../hooks/useUserData';
+import { usePainTrend } from '../../hooks/usePainTrend';
+import { PainTrendCard } from '../../components/PainTrendCard';
 import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
 import { ROUTINE_SLUGS } from '../../constants/routines';
@@ -146,6 +148,9 @@ export default function HomeScreen() {
     onPress: () => void;
   };
   const userZones = new Set(snap.onboardingData?.pain_zones ?? []);
+  const primaryZoneSlug = snap.onboardingData?.pain_zones?.[0] as
+    | 'neck' | 'back' | 'wrists' | 'eyes' | 'full_body' | 'sciatica' | undefined;
+  const painTrend = usePainTrend(primaryZoneSlug);
   const quickBreaks: QuickBreak[] = [
     {
       id: 'eyes',
@@ -326,6 +331,9 @@ export default function HomeScreen() {
             </GlassCard>
           </Pressable>
         )}
+
+        {/* Pain trend — sparkline + delta % over last 14 days */}
+        <PainTrendCard trend={painTrend} />
 
         {/* Knowledge — desk-health editorial */}
         <Pressable
