@@ -70,7 +70,8 @@ export const useForYouRotation = (
     });
     scored.sort((a, b) => b.score - a.score);
 
-    // Pick top 3 with pose diversity — no two cards with same pose unless pool runs out.
+    // Pick top 3 with pose+tone diversity — no two cards share the same pose,
+    // and tones are reassigned cyclically so the row looks visually varied.
     const picked: ForYouCard[] = [];
     const usedPoses = new Set<Pose>();
     for (const s of scored) {
@@ -84,6 +85,13 @@ export const useForYouRotation = (
       if (picked.length >= 3) break;
       if (!picked.find((p) => p.id === s.card.id)) picked.push(s.card);
     }
-    return picked;
+
+    // Force tone variety — daily-rotating tone permutation so cards stand apart visually.
+    const tonePalette: ForYouCard['tone'][] = ['coral', 'mint', 'lavender', 'peach', 'cream'];
+    const toneOffset = rand(tonePalette.length);
+    return picked.map((c, i) => ({
+      ...c,
+      tone: tonePalette[(toneOffset + i * 2) % tonePalette.length],
+    }));
   }, [primaryZoneSlug]);
 };

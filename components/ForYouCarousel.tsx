@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
+  FadeInDown,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -68,6 +69,9 @@ const BreathingCard: React.FC<{ card: ForYouCard; index: number }> = ({ card, in
   };
 
   return (
+    <Animated.View
+      entering={reduceMotion ? undefined : FadeInDown.delay(80 + index * 120).duration(380).springify().damping(15)}
+    >
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
@@ -84,6 +88,7 @@ const BreathingCard: React.FC<{ card: ForYouCard; index: number }> = ({ card, in
         <Text style={styles.title} numberOfLines={2}>{card.title}</Text>
       </GlassCard>
     </Pressable>
+    </Animated.View>
   );
 };
 
