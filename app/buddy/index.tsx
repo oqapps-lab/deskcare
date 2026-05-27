@@ -146,7 +146,12 @@ export default function BuddyScreen() {
 
           {!loading && !buddy && mode === 'overview' && (
             <Animated.View entering={FadeIn.duration(280)}>
-              <Pressable onPress={onInvite} style={({ pressed }) => [pressed && styles.pressed]}>
+              <Pressable
+                onPress={onInvite}
+                accessibilityRole="button"
+                accessibilityLabel={t('buddy_send_invite')}
+                style={({ pressed }) => [pressed && styles.pressed]}
+              >
                 <GlassCard tint="coral" radius="xl" padding={spacing.lg}>
                   <View style={styles.actionRow}>
                     <IconHalo icon="plus" size="md" tone="coral" variant="tinted" />
@@ -158,7 +163,12 @@ export default function BuddyScreen() {
                 </GlassCard>
               </Pressable>
 
-              <Pressable onPress={() => setMode('enter')} style={({ pressed }) => [pressed && styles.pressed, { marginTop: spacing.md }]}>
+              <Pressable
+                onPress={() => setMode('enter')}
+                accessibilityRole="button"
+                accessibilityLabel={t('buddy_have_code')}
+                style={({ pressed }) => [pressed && styles.pressed, { marginTop: spacing.md }]}
+              >
                 <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
                   <View style={styles.actionRow}>
                     <IconHalo icon="check" size="md" tone="mint" variant="tinted" />
