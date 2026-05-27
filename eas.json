@@ -19,6 +19,17 @@
         "EXPO_PUBLIC_PREMIUM_BYPASS": "1"
       }
     },
+    "simulator": {
+      "extends": "base",
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "buildConfiguration": "Release"
+      },
+      "env": {
+        "EXPO_PUBLIC_PREMIUM_BYPASS": "1"
+      }
+    },
     "preview": {
       "extends": "base",
       "distribution": "internal",
