@@ -802,6 +802,32 @@ const en: Dict = {
   prog_carpal_content_note: 'Full session content unlocks after pairing the program with your premium subscription.',
   prog_carpal_cta_start: 'Start day 1',
 
+  // Custom Routines (F13)
+  cr_builder_title: 'Build your own routine',
+  cr_builder_sub: 'Pick exercises, save, run any time',
+  cr_saved_eyebrow: 'YOUR ROUTINES',
+  cr_count_exercises: '{n} exercises',
+  cr_title: 'Custom routine',
+  cr_eyebrow: 'NAME YOUR ROUTINE',
+  cr_name_placeholder: 'Morning reset',
+  cr_meta: '{count} selected · ≈{min} min',
+  cr_cta_save: 'Save routine',
+  cr_err_min_title: 'Add a couple more',
+  cr_err_min_body: 'Pick at least 2 exercises so the routine has a flow.',
+  cr_default_name: 'My routine',
+  cr_lock_eyebrow: 'PREMIUM',
+  cr_lock_title: 'Custom routines are a premium feature',
+  cr_lock_body: 'Unlock to build, save, and run your own exercise sequences whenever you want.',
+  cr_hero_eyebrow: 'YOUR ROUTINE',
+  cr_hero_meta: '{count} EXERCISES · ≈{min} MIN',
+  cr_exercises_eyebrow: 'IN THIS ROUTINE',
+  cr_delete_action: 'Delete this routine',
+  cr_delete_title: 'Delete routine?',
+  cr_delete_body: '"{name}" will be removed from your saved routines.',
+  cr_delete_confirm: 'Delete',
+  cr_not_found: 'Routine not found.',
+  cr_cta_start: 'Start routine',
+
 };
 
 const enGB: Dict = {

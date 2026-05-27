@@ -8,6 +8,8 @@ import {
   AtmosphericBackground,
   BgPattern,
   DecorativeArc,
+  GlassCard,
+  IconHalo,
   PillChip,
   PremiumLock,
   TabBar,
@@ -15,6 +17,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useExercises } from '../../hooks/useContent';
+import { useCustomRoutines } from '../../hooks/useCustomRoutines';
 import { useIsPremium } from '../../lib/premium';
 import type { BodyZoneSlug } from '../../lib/types/db';
 import { t, i18nField } from '../../lib/i18n';
@@ -49,6 +52,7 @@ export default function LibraryScreen() {
   const [activeFilter, setActiveFilter] = useState<Filter>(FILTERS[0]);
   const { exercises, loading, error } = useExercises(activeFilter.zone);
   const isPremium = useIsPremium();
+  const { routines: customRoutines } = useCustomRoutines();
 
   const list = useMemo(() => {
     if (!exercises) return [];
@@ -132,6 +136,57 @@ export default function LibraryScreen() {
             contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}
             style={{ flex: 1 }}
           >
+            {/* Custom Routines — F13. Builder entry + user's saved routines. */}
+            <Pressable
+              onPress={() => {
+                Haptics.selectionAsync();
+                router.push('/library/create-routine' as never);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={t('cr_builder_title')}
+              style={({ pressed }) => [pressed && styles.pressed, { marginBottom: spacing.md }]}
+            >
+              <GlassCard tint="lavender" radius="xl" padding={spacing.lg}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                  <IconHalo icon="plus" size="md" tone="lavender" variant="tinted" />
+                  <View style={{ flex: 1, minWidth: 0 }}>
+                    <Text style={styles.rowName}>{t('cr_builder_title')}</Text>
+                    <Text style={styles.rowMeta}>{t('cr_builder_sub')}</Text>
+                  </View>
+                </View>
+              </GlassCard>
+            </Pressable>
+
+            {customRoutines.length > 0 && (
+              <View style={{ marginBottom: spacing.lg }}>
+                <Text style={styles.sectionEyebrow}>{t('cr_saved_eyebrow')}</Text>
+                {customRoutines.map((r) => (
+                  <Pressable
+                    key={r.id}
+                    onPress={() => {
+                      Haptics.selectionAsync();
+                      router.push({ pathname: '/library/saved-routine', params: { id: r.id } } as never);
+                    }}
+                    accessibilityRole="button"
+                    accessibilityLabel={r.name}
+                    style={({ pressed }) => [pressed && styles.pressed]}
+                  >
+                    <View style={[styles.row]}>
+                      <View style={styles.savedAvatar}>
+                        <Text style={styles.savedAvatarText}>{r.name.charAt(0).toUpperCase()}</Text>
+                      </View>
+                      <View style={styles.rowText}>
+                        <Text style={styles.rowName} numberOfLines={1}>{r.name}</Text>
+                        <Text style={styles.rowMeta}>
+                          {t('cr_count_exercises', { n: r.exerciseSlugs.length })}
+                        </Text>
+                      </View>
+                    </View>
+                  </Pressable>
+                ))}
+              </View>
+            )}
+
             {loading && !exercises ? (
               <View style={styles.statusWrap}>
                 <ActivityIndicator color={colors.primaryMid} />
@@ -242,6 +297,23 @@ const styles = StyleSheet.create({
   rowDivider: {
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: colors.inkHairline,
+  },
+  sectionEyebrow: {
+    ...typeScale.label,
+    color: colors.primaryDeep,
+    marginBottom: spacing.xs,
+  },
+  savedAvatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.primarySoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  savedAvatarText: {
+    ...typeScale.titleLg,
+    color: colors.primaryDeep,
   },
   rowText: {
     flex: 1,
