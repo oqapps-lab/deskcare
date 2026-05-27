@@ -11,6 +11,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { GlassCard, PillCTA } from './ui';
 import type { PostureScore } from '../hooks/usePostureScore';
+import { t } from '../lib/i18n';
 
 const COLOR_BY_LABEL: Record<PostureScore['label'], string> = {
   great: colors.mintMid,
@@ -20,21 +21,23 @@ const COLOR_BY_LABEL: Record<PostureScore['label'], string> = {
   unknown: colors.inkSubtle,
 };
 
-const TITLE_BY_LABEL: Record<PostureScore['label'], string> = {
-  great: 'Posture: great',
-  good: 'Posture: good',
-  drifting: 'Time for a posture check',
-  poor: 'Re-align your spine',
-  unknown: 'Try your first posture check',
+const TITLE_BY_LABEL = (label: PostureScore['label']): string => {
+  switch (label) {
+    case 'great': return t('posture_title_great');
+    case 'good': return t('posture_title_good');
+    case 'drifting': return t('posture_title_drifting');
+    case 'poor': return t('posture_title_poor');
+    default: return t('posture_title_unknown');
+  }
 };
 
 const SUB_BY_LABEL = (m: number | null, label: PostureScore['label']): string => {
-  if (label === 'unknown') return 'Tap to learn the 3-point alignment';
+  if (label === 'unknown') return t('posture_sub_unknown');
   if (m === null) return '';
-  if (m < 45) return `Last check ${m} min ago`;
-  if (m < 60) return `Last check ${m} min ago · time to re-check soon`;
+  if (m < 45) return t('posture_sub_recent', { min: m });
+  if (m < 60) return t('posture_sub_recheck_soon', { min: m });
   const h = Math.floor(m / 60);
-  return `Last check ${h}h ${m - h * 60}m ago`;
+  return t('posture_sub_hours', { h, m: m - h * 60 });
 };
 
 /**
@@ -59,7 +62,7 @@ export const PostureCard: React.FC<{ posture: PostureScore }> = ({ posture }) =>
 
   const tint = posture.label === 'great' || posture.label === 'good' ? 'mint' : posture.label === 'unknown' ? 'cream' : 'peach';
   const color = COLOR_BY_LABEL[posture.label];
-  const title = TITLE_BY_LABEL[posture.label];
+  const title = TITLE_BY_LABEL(posture.label);
   const sub = SUB_BY_LABEL(posture.minutesSinceCheck, posture.label);
 
   const openCheck = () => {
@@ -99,7 +102,7 @@ export const PostureCard: React.FC<{ posture: PostureScore }> = ({ posture }) =>
               </View>
             </Animated.View>
             <View style={{ flex: 1, minWidth: 0 }}>
-              <Text style={styles.eyebrow}>POSTURE</Text>
+              <Text style={styles.eyebrow}>{t('posture_eyebrow')}</Text>
               <Text style={styles.title}>{title}</Text>
               {!!sub && <Text style={styles.sub}>{sub}</Text>}
             </View>
@@ -110,15 +113,15 @@ export const PostureCard: React.FC<{ posture: PostureScore }> = ({ posture }) =>
       <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
         <Pressable style={styles.backdrop} onPress={() => setOpen(false)}>
           <Pressable onPress={() => { /* swallow */ }} style={styles.modalCard}>
-            <Text style={styles.modalEyebrow}>30-SECOND POSTURE CHECK</Text>
-            <Text style={styles.modalTitle}>Three points to align</Text>
+            <Text style={styles.modalEyebrow}>{t('posture_modal_eyebrow')}</Text>
+            <Text style={styles.modalTitle}>{t('posture_modal_title')}</Text>
             <View style={styles.cueRow}>
               <View style={styles.cueNumber}>
                 <Text style={styles.cueNumberText}>1</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.cueTitle}>Ears over shoulders</Text>
-                <Text style={styles.cueSub}>Lift the crown of your head; chin tucks lightly.</Text>
+                <Text style={styles.cueTitle}>{t('posture_cue_ears_title')}</Text>
+                <Text style={styles.cueSub}>{t('posture_cue_ears_sub')}</Text>
               </View>
             </View>
             <View style={styles.cueRow}>
@@ -126,8 +129,8 @@ export const PostureCard: React.FC<{ posture: PostureScore }> = ({ posture }) =>
                 <Text style={styles.cueNumberText}>2</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.cueTitle}>Shoulders down and back</Text>
-                <Text style={styles.cueSub}>Roll them once. Soft, not braced.</Text>
+                <Text style={styles.cueTitle}>{t('posture_cue_shoulders_title')}</Text>
+                <Text style={styles.cueSub}>{t('posture_cue_shoulders_sub')}</Text>
               </View>
             </View>
             <View style={styles.cueRow}>
@@ -135,17 +138,17 @@ export const PostureCard: React.FC<{ posture: PostureScore }> = ({ posture }) =>
                 <Text style={styles.cueNumberText}>3</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text style={styles.cueTitle}>Screen at eye level</Text>
-                <Text style={styles.cueSub}>Top of monitor ≈ eye height. Lower the chin? Raise the screen.</Text>
+                <Text style={styles.cueTitle}>{t('posture_cue_screen_title')}</Text>
+                <Text style={styles.cueSub}>{t('posture_cue_screen_sub')}</Text>
               </View>
             </View>
 
             <View style={styles.modalActions}>
               <PillCTA variant="primary" size="md" onPress={confirm}>
-                I corrected — log it
+                {t('posture_cta_corrected')}
               </PillCTA>
               <Pressable onPress={() => setOpen(false)} hitSlop={12} style={styles.dismissBtn}>
-                <Text style={styles.dismissText}>Not now</Text>
+                <Text style={styles.dismissText}>{t('posture_dismiss')}</Text>
               </Pressable>
             </View>
           </Pressable>

@@ -22,15 +22,16 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useBuddy, createBuddyInvite, acceptBuddyInvite } from '../../hooks/useBuddy';
+import { t } from '../../lib/i18n';
 
 const daysSince = (iso: string | null): string => {
-  if (!iso) return 'never';
+  if (!iso) return t('buddy_last_never');
   const d = new Date(iso + 'T00:00:00');
   const days = Math.floor((Date.now() - d.getTime()) / (24 * 60 * 60 * 1000));
-  if (days === 0) return 'today';
-  if (days === 1) return 'yesterday';
-  if (days < 7) return `${days} days ago`;
-  return `${Math.floor(days / 7)} weeks ago`;
+  if (days === 0) return t('buddy_last_today');
+  if (days === 1) return t('buddy_last_yesterday');
+  if (days < 7) return t('buddy_last_days', { n: days });
+  return t('buddy_last_weeks', { n: Math.floor(days / 7) });
 };
 
 export default function BuddyScreen() {
@@ -59,27 +60,27 @@ export default function BuddyScreen() {
     if (!code) return;
     Haptics.selectionAsync();
     await Share.share({
-      message: `Join me on DeskCare. Use my invite code: ${code}\n\nDownload: https://apps.apple.com/app/deskcare`,
+      message: t('buddy_share_message', { code }),
     });
   };
   const onAccept = async () => {
     const clean = enteredCode.trim().toUpperCase();
     if (clean.length !== 6) {
-      Alert.alert('Six characters', 'Invite codes are 6 letters/numbers.');
+      Alert.alert(t('buddy_validate_title'), t('buddy_validate_body'));
       return;
     }
     setBusy(true);
     const res = await acceptBuddyInvite(clean);
     setBusy(false);
     if ('error' in res) {
-      Alert.alert('Could not pair', res.error);
+      Alert.alert(t('buddy_err_title'), res.error);
       return;
     }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     refresh();
     setMode('overview');
     setEnteredCode('');
-    Alert.alert("You're paired", `Paired with ${res.display_name}.`);
+    Alert.alert(t('buddy_paired_alert_title'), t('buddy_paired_alert_body', { name: res.display_name }));
   };
 
   const pulse = useSharedValue(1);
@@ -100,9 +101,9 @@ export default function BuddyScreen() {
       <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
         <NavHeader showBack onBack={() => router.back()} title="" />
 
-        <Text style={styles.eyebrow}>BUDDY</Text>
+        <Text style={styles.eyebrow}>{t('buddy_eyebrow')}</Text>
         <Text style={styles.title}>
-          {buddy ? `You + ${buddy.display_name}` : 'Find a stretching buddy'}
+          {buddy ? t('buddy_title_paired', { name: buddy.display_name }) : t('buddy_title_unpaired')}
         </Text>
 
         <ScrollView
@@ -110,7 +111,7 @@ export default function BuddyScreen() {
           contentContainerStyle={{ paddingBottom: insets.bottom + spacing.huge, paddingTop: spacing.lg }}
           style={{ flex: 1 }}
         >
-          {loading && <Text style={styles.muted}>Loading…</Text>}
+          {loading && <Text style={styles.muted}>{t('buddy_loading')}</Text>}
 
           {!loading && buddy && (
             <Animated.View entering={FadeIn.duration(280)}>
@@ -124,25 +125,22 @@ export default function BuddyScreen() {
                 <View style={styles.statsRow}>
                   <View style={styles.statCol}>
                     <Text style={styles.statValue}>{buddy.current_streak}</Text>
-                    <Text style={styles.statLabel}>STREAK</Text>
+                    <Text style={styles.statLabel}>{t('buddy_stat_streak')}</Text>
                   </View>
                   <View style={styles.statDivider} />
                   <View style={styles.statCol}>
                     <Text style={styles.statValue}>{buddy.longest_streak}</Text>
-                    <Text style={styles.statLabel}>BEST</Text>
+                    <Text style={styles.statLabel}>{t('buddy_stat_best')}</Text>
                   </View>
                   <View style={styles.statDivider} />
                   <View style={styles.statCol}>
                     <Text style={styles.statValueSm}>{daysSince(buddy.last_activity_date)}</Text>
-                    <Text style={styles.statLabel}>LAST</Text>
+                    <Text style={styles.statLabel}>{t('buddy_stat_last')}</Text>
                   </View>
                 </View>
               </GlassCard>
 
-              <Text style={styles.copy}>
-                You can see each other's streak — no leaderboard, no comparing, just gentle accountability.
-                When they fall off, that's your nudge to text them.
-              </Text>
+              <Text style={styles.copy}>{t('buddy_paired_copy')}</Text>
             </Animated.View>
           )}
 
@@ -153,8 +151,8 @@ export default function BuddyScreen() {
                   <View style={styles.actionRow}>
                     <IconHalo icon="plus" size="md" tone="coral" variant="tinted" />
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.actionTitle}>Send an invite</Text>
-                      <Text style={styles.actionSub}>You get a 6-character code to share</Text>
+                      <Text style={styles.actionTitle}>{t('buddy_send_invite')}</Text>
+                      <Text style={styles.actionSub}>{t('buddy_send_invite_sub')}</Text>
                     </View>
                   </View>
                 </GlassCard>
@@ -165,32 +163,30 @@ export default function BuddyScreen() {
                   <View style={styles.actionRow}>
                     <IconHalo icon="check" size="md" tone="mint" variant="tinted" />
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.actionTitle}>I have a code</Text>
-                      <Text style={styles.actionSub}>Enter the 6-character code from your buddy</Text>
+                      <Text style={styles.actionTitle}>{t('buddy_have_code')}</Text>
+                      <Text style={styles.actionSub}>{t('buddy_have_code_sub')}</Text>
                     </View>
                   </View>
                 </GlassCard>
               </Pressable>
 
-              <Text style={styles.helperCopy}>
-                People with a stretching buddy retain 2x longer. No leaderboard, no shame — just the quiet motivation of someone else doing it too.
-              </Text>
+              <Text style={styles.helperCopy}>{t('buddy_intro_copy')}</Text>
             </Animated.View>
           )}
 
           {!loading && !buddy && mode === 'invite' && code && (
             <Animated.View entering={FadeIn.duration(360)}>
               <GlassCard tint="coral" radius="xl" padding={spacing.xl}>
-                <Text style={styles.codeEyebrow}>YOUR INVITE CODE</Text>
+                <Text style={styles.codeEyebrow}>{t('buddy_code_eyebrow')}</Text>
                 <Text style={styles.codeValue}>{code}</Text>
-                <Text style={styles.codeSub}>Valid for 7 days. Share it with one person.</Text>
+                <Text style={styles.codeSub}>{t('buddy_code_sub')}</Text>
               </GlassCard>
               <View style={{ alignItems: 'center', marginTop: spacing.lg }}>
                 <PillCTA variant="primary" size="lg" onPress={onShare}>
-                  Share code
+                  {t('buddy_cta_share')}
                 </PillCTA>
                 <Pressable onPress={() => { setMode('overview'); setCode(null); }} hitSlop={12} style={{ marginTop: spacing.md }}>
-                  <Text style={styles.dismissText}>Done</Text>
+                  <Text style={styles.dismissText}>{t('buddy_cta_done')}</Text>
                 </Pressable>
               </View>
             </Animated.View>
@@ -199,10 +195,10 @@ export default function BuddyScreen() {
           {!loading && !buddy && mode === 'enter' && (
             <Animated.View entering={FadeIn.duration(280)}>
               <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
-                <Text style={styles.codeEyebrow}>ENTER CODE</Text>
+                <Text style={styles.codeEyebrow}>{t('buddy_enter_eyebrow')}</Text>
                 <TextInput
                   value={enteredCode}
-                  onChangeText={(t) => setEnteredCode(t.toUpperCase())}
+                  onChangeText={(tx) => setEnteredCode(tx.toUpperCase())}
                   autoCapitalize="characters"
                   autoCorrect={false}
                   maxLength={6}
@@ -213,10 +209,10 @@ export default function BuddyScreen() {
               </GlassCard>
               <View style={{ alignItems: 'center', marginTop: spacing.lg }}>
                 <PillCTA variant="primary" size="lg" onPress={onAccept} disabled={busy || enteredCode.length !== 6}>
-                  Pair with my buddy
+                  {t('buddy_cta_pair')}
                 </PillCTA>
                 <Pressable onPress={() => setMode('overview')} hitSlop={12} style={{ marginTop: spacing.md }}>
-                  <Text style={styles.dismissText}>Back</Text>
+                  <Text style={styles.dismissText}>{t('buddy_cta_back')}</Text>
                 </Pressable>
               </View>
             </Animated.View>

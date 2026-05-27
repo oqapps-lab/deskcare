@@ -6,6 +6,7 @@ import Svg, { Path } from 'react-native-svg';
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { GlassCard, IconHalo } from './ui';
 import type { CalendarSlotState } from '../hooks/useCalendarSlot';
+import { t } from '../lib/i18n';
 
 /**
  * "Your next free slot at HH:MM (N min)" — tap → preview a 2-min routine
@@ -43,15 +44,15 @@ export const CalendarSlotCard: React.FC<{
   };
 
   const title = isUnknown
-    ? 'Find time for a stretch'
+    ? t('cal_unknown_title')
     : slot && slot.minutesFromNow < 5
-    ? `Free now · ${slot.durationMinutes} min open`
+    ? t('cal_now_title', { min: slot.durationMinutes })
     : slot
-    ? `Next free at ${slot.startLabel} · ${slot.durationMinutes} min`
+    ? t('cal_next_title', { time: slot.startLabel, min: slot.durationMinutes })
     : '';
   const sub = isUnknown
-    ? 'Let DeskCare see free slots between your meetings'
-    : 'Use 2 min for neck + back · we suggest the rest';
+    ? t('cal_unknown_sub')
+    : t('cal_sub_helper');
 
   return (
     <Pressable onPress={onPress} style={({ pressed }) => [pressed && styles.pressed, styles.wrap]}>

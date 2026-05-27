@@ -12,6 +12,7 @@ import Svg, { Circle, Defs, RadialGradient as SvgRadialGradient, Stop } from 're
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { GlassCard } from './ui';
 import type { DailyChallenge } from '../hooks/useDailyChallenge';
+import { t } from '../lib/i18n';
 
 /**
  * Daily challenge card — target: 2 routines per day.
@@ -45,10 +46,10 @@ export const DailyChallengeCard: React.FC<{ challenge: DailyChallenge }> = ({ ch
     opacity: challenge.done ? 1 : 0,
   }));
 
-  const title = challenge.done ? 'Daily challenge complete' : "Today's challenge";
+  const title = challenge.done ? t('dc_title_done') : t('dc_title_default');
   const sub = challenge.done
-    ? 'Two routines done — you protected your body today.'
-    : `${challenge.completed} of ${challenge.target} routines done`;
+    ? t('dc_sub_done')
+    : t('dc_sub_progress', { completed: challenge.completed, target: challenge.target });
 
   return (
     <View style={styles.wrap}>
@@ -66,7 +67,7 @@ export const DailyChallengeCard: React.FC<{ challenge: DailyChallenge }> = ({ ch
             </Svg>
           </Animated.View>
         )}
-        <Text style={styles.eyebrow}>{challenge.done ? 'COMPLETE' : 'DAILY GOAL'}</Text>
+        <Text style={styles.eyebrow}>{challenge.done ? t('dc_eyebrow_done') : t('dc_eyebrow_goal')}</Text>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.sub}>{sub}</Text>
 

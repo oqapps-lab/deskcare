@@ -4,6 +4,7 @@ import Svg, { Defs, LinearGradient as SvgLinearGradient, Path, Stop } from 'reac
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { GlassCard } from './ui';
 import type { PainTrend } from '../hooks/usePainTrend';
+import { t } from '../lib/i18n';
 
 const WIDTH = 200;
 const HEIGHT = 60;
@@ -68,16 +69,16 @@ export const PainTrendCard: React.FC<{ trend: PainTrend }> = ({ trend }) => {
   let deltaLabel: string;
   let deltaColor: string;
   if (delta === null) {
-    deltaLabel = 'No prior data yet';
+    deltaLabel = t('pt_delta_none');
     deltaColor = colors.inkSubtle;
   } else if (delta < -5) {
-    deltaLabel = `Down ${Math.abs(delta)}% vs prior 14 days`;
+    deltaLabel = t('pt_delta_down', { pct: Math.abs(delta) });
     deltaColor = colors.mintMid;
   } else if (delta > 5) {
-    deltaLabel = `Up ${delta}% vs prior 14 days`;
+    deltaLabel = t('pt_delta_up', { pct: delta });
     deltaColor = colors.error;
   } else {
-    deltaLabel = `Steady vs prior 14 days`;
+    deltaLabel = t('pt_delta_steady');
     deltaColor = colors.inkSubtle;
   }
 
@@ -87,11 +88,11 @@ export const PainTrendCard: React.FC<{ trend: PainTrend }> = ({ trend }) => {
   return (
     <View style={styles.wrap}>
       <GlassCard tint="cream" radius="xl" padding={spacing.lg}>
-        <Text style={styles.eyebrow}>14-DAY PAIN · {zoneLabel}</Text>
+        <Text style={styles.eyebrow}>{t('pt_eyebrow', { zone: zoneLabel })}</Text>
         <View style={styles.row}>
           <View style={styles.numCol}>
             <Text style={styles.avgValue}>{avgLabel}</Text>
-            <Text style={styles.avgUnit}>/10 avg</Text>
+            <Text style={styles.avgUnit}>{t('pt_avg_unit')}</Text>
           </View>
           <View style={styles.sparkWrap}>
             {levels.length >= 2 ? (
@@ -113,7 +114,7 @@ export const PainTrendCard: React.FC<{ trend: PainTrend }> = ({ trend }) => {
                 />
               </Svg>
             ) : (
-              <Text style={styles.sparkPlaceholder}>Log more days to see the trend</Text>
+              <Text style={styles.sparkPlaceholder}>{t('pt_sparkline_placeholder')}</Text>
             )}
           </View>
         </View>

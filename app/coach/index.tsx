@@ -19,6 +19,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { COACH_ZONES, type CoachOption, type CoachZone } from '../../lib/coach';
+import { t } from '../../lib/i18n';
 
 type Step = 'pick_zone' | 'pick_option' | 'show_result';
 
@@ -67,11 +68,11 @@ export default function PainCoachScreen() {
       <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
         <NavHeader showBack onBack={back} title="" />
 
-        <Text style={styles.eyebrow}>PAIN COACH</Text>
+        <Text style={styles.eyebrow}>{t('coach_eyebrow')}</Text>
         <Text style={styles.title}>
-          {step === 'pick_zone' ? 'Where does it hurt today?' :
+          {step === 'pick_zone' ? t('coach_step1_title') :
            step === 'pick_option' ? zone?.followUp ?? '' :
-           option?.redFlag ? option.redFlag.title : 'Here\'s what to do'}
+           option?.redFlag ? option.redFlag.title : t('coach_step3_title_default')}
         </Text>
 
         <ScrollView
@@ -127,13 +128,13 @@ export default function PainCoachScreen() {
               ) : (
                 <>
                   <GlassCard tint="lavender" radius="xl" padding={spacing.lg}>
-                    <Text style={styles.resultEyebrow}>WHY THIS WORKS</Text>
+                    <Text style={styles.resultEyebrow}>{t('coach_result_why')}</Text>
                     <Text style={styles.resultBody}>{option.rationale}</Text>
                   </GlassCard>
 
                   <View style={styles.cta}>
                     <PillCTA variant="primary" size="lg" onPress={startRoutine}>
-                      Start the routine
+                      {t('coach_cta_start')}
                     </PillCTA>
                   </View>
 
@@ -146,8 +147,8 @@ export default function PainCoachScreen() {
                         <View style={styles.learnMoreRow}>
                           <IconHalo icon="book" size="md" tone="lavender" variant="tinted" />
                           <View style={{ flex: 1 }}>
-                            <Text style={styles.learnMoreTitle}>Learn more</Text>
-                            <Text style={styles.learnMoreSub}>3-5 min read on this topic</Text>
+                            <Text style={styles.learnMoreTitle}>{t('coach_learn_more')}</Text>
+                            <Text style={styles.learnMoreSub}>{t('coach_learn_more_sub')}</Text>
                           </View>
                         </View>
                       </GlassCard>

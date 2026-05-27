@@ -364,8 +364,8 @@ export default function HomeScreen() {
             <View style={styles.eyeRow}>
               <IconHalo icon="plus" size="md" tone="coral" variant="tinted" />
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={styles.eyeTitle}>Pain Coach</Text>
-                <Text style={styles.eyeSub}>Tell me where it hurts → I'll pick the right routine</Text>
+                <Text style={styles.eyeTitle}>{t('home_coach_tile_title')}</Text>
+                <Text style={styles.eyeSub}>{t('home_coach_tile_sub')}</Text>
               </View>
               <View style={styles.eyeArrow}>
                 <Svg width={16} height={16} viewBox="0 0 16 16">
@@ -391,8 +391,8 @@ export default function HomeScreen() {
             <View style={styles.eyeRow}>
               <IconHalo icon="book" size="md" tone="lavender" variant="tinted" />
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={styles.eyeTitle}>Learn about your body</Text>
-                <Text style={styles.eyeSub}>3-5 min reads on neck, eyes, sleep, ergonomics</Text>
+                <Text style={styles.eyeTitle}>{t('home_knowledge_tile_title')}</Text>
+                <Text style={styles.eyeSub}>{t('home_knowledge_tile_sub')}</Text>
               </View>
               <View style={styles.eyeArrow}>
                 <Svg width={16} height={16} viewBox="0 0 16 16">

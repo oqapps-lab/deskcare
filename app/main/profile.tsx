@@ -164,8 +164,8 @@ export default function ProfileScreen() {
       key: 'buddy',
       icon: 'plus',
       tone: 'mint',
-      title: 'Stretching buddy',
-      sub: 'Invite a friend — see each other\'s streak',
+      title: t('prof_buddy_title'),
+      sub: t('prof_buddy_sub'),
       route: '/buddy',
     },
     {
@@ -289,8 +289,8 @@ const ProfileAchievements: React.FC = () => {
   return (
     <View style={styles.achievementsWrap}>
       <View style={styles.achievementsHeader}>
-        <Eyebrow>Achievements</Eyebrow>
-        <Text style={styles.achievementsCount}>{earnedCount} / {achievements.length}</Text>
+        <Eyebrow>{t('ach_eyebrow')}</Eyebrow>
+        <Text style={styles.achievementsCount}>{t('ach_count', { earned: earnedCount, total: achievements.length })}</Text>
       </View>
       <AchievementGrid items={achievements} maxRows={2} />
     </View>

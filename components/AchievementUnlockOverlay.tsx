@@ -13,6 +13,7 @@ import Animated, {
 import Svg, { Circle, Defs, Path, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
 import { colors, spacing, typeScale } from '../constants/tokens';
 import type { UnlockedAchievement } from '../hooks/useAchievements';
+import { t } from '../lib/i18n';
 
 /**
  * Celebration overlay when one (or more) achievements unlock at end of session.
@@ -112,13 +113,13 @@ export const AchievementUnlockOverlay: React.FC<{
             </Svg>
           </View>
 
-          <Text style={styles.eyebrow}>ACHIEVEMENT UNLOCKED</Text>
+          <Text style={styles.eyebrow}>{t('ach_unlock_eyebrow')}</Text>
           <Text style={styles.title} numberOfLines={2}>{first.title}</Text>
           {first.description && (
             <Text style={styles.subtitle} numberOfLines={3}>{first.description}</Text>
           )}
           {restCount > 0 && (
-            <Text style={styles.more}>+{restCount} more</Text>
+            <Text style={styles.more}>{t('ach_unlock_more', { n: restCount })}</Text>
           )}
         </Animated.View>
       </View>

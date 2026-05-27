@@ -11,6 +11,7 @@ import {
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useArticle, i18nField, markArticleRead } from '../../hooks/useArticles';
 import { useUserId } from '../../lib/store/session';
+import { t } from '../../lib/i18n';
 
 /**
  * Minimal markdown renderer for the editorial format we use:
@@ -127,7 +128,7 @@ export default function ArticleReaderScreen() {
 
         {error && (
           <View style={styles.statusWrap}>
-            <Text style={styles.statusError}>Couldn't load this article: {error}</Text>
+            <Text style={styles.statusError}>{t('kw_article_error')} {error}</Text>
           </View>
         )}
 
@@ -150,7 +151,7 @@ export default function ArticleReaderScreen() {
             )}
 
             <Text style={styles.eyebrow}>
-              {article.reading_minutes} MIN READ
+              {t('kw_min_read', { n: article.reading_minutes })}
               {article.tags?.[0] ? ` · ${article.tags[0].replace(/_/g, ' ').toUpperCase()}` : ''}
             </Text>
 

@@ -14,6 +14,7 @@ import {
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useArticles, i18nField as articleI18n } from '../../hooks/useArticles';
 import type { BodyZoneSlug } from '../../lib/types/db';
+import { t } from '../../lib/i18n';
 
 interface ZoneFilter {
   label: string;
@@ -21,12 +22,12 @@ interface ZoneFilter {
 }
 
 const FILTERS: ReadonlyArray<ZoneFilter> = [
-  { label: 'All' },
-  { label: 'Neck',     zone: 'neck' },
-  { label: 'Back',     zone: 'back' },
-  { label: 'Eyes',     zone: 'eyes' },
-  { label: 'Wrists',   zone: 'wrists' },
-  { label: 'Sciatica', zone: 'sciatica' },
+  { label: t('kw_filter_all') },
+  { label: t('kw_filter_neck'),     zone: 'neck' },
+  { label: t('kw_filter_back'),     zone: 'back' },
+  { label: t('kw_filter_eyes'),     zone: 'eyes' },
+  { label: t('kw_filter_wrists'),   zone: 'wrists' },
+  { label: t('kw_filter_sciatica'), zone: 'sciatica' },
 ];
 
 export default function KnowledgeScreen() {
@@ -49,13 +50,13 @@ export default function KnowledgeScreen() {
       <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
         <NavHeader showBack onBack={() => router.back()} title="" />
 
-        <Text style={styles.title}>Knowledge</Text>
+        <Text style={styles.title}>{t('kw_title')}</Text>
         <Text style={styles.sub}>
           {list.length > 0
-            ? `${list.length} article${list.length === 1 ? '' : 's'} on desk health`
+            ? t(list.length === 1 ? 'kw_sub_count' : 'kw_sub_count_plural', { count: list.length })
             : loading
-            ? 'Loading…'
-            : 'No articles in this category yet'}
+            ? t('kw_sub_loading')
+            : t('kw_sub_empty')}
         </Text>
 
         <ScrollView
@@ -78,7 +79,7 @@ export default function KnowledgeScreen() {
 
         {error && (
           <View style={styles.statusWrap}>
-            <Text style={styles.statusError}>Couldn't load articles: {error}</Text>
+            <Text style={styles.statusError}>{t('kw_error_prefix')} {error}</Text>
           </View>
         )}
 
@@ -94,8 +95,8 @@ export default function KnowledgeScreen() {
               </View>
             ) : list.length === 0 ? (
               <View style={styles.emptyWrap}>
-                <Text style={styles.emptyTitle}>Nothing here yet</Text>
-                <Text style={styles.emptySub}>Tap another zone above</Text>
+                <Text style={styles.emptyTitle}>{t('kw_empty_title')}</Text>
+                <Text style={styles.emptySub}>{t('kw_empty_sub')}</Text>
               </View>
             ) : (
               list.map((a, i) => (
@@ -120,7 +121,7 @@ export default function KnowledgeScreen() {
                     )}
                     <View style={styles.cardBody}>
                       <Text style={styles.cardEyebrow}>
-                        {a.reading_minutes} MIN READ
+                        {t('kw_min_read', { n: a.reading_minutes })}
                         {a.tags?.[0] ? ` · ${a.tags[0].replace(/_/g, ' ').toUpperCase()}` : ''}
                       </Text>
                       <Text style={styles.cardTitle} numberOfLines={2}>
