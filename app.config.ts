@@ -104,6 +104,24 @@ const config: ExpoConfig = {
     'expo-image',
     'expo-video',
     [
+      // Branded launch screen — previously the iOS default white-screen +
+      // centered raw icon looked harsh against the warm in-app aesthetic.
+      // Now: coral-tinted canvas (matches in-app surfaces) with the icon
+      // sized as a logo, not stretched full-bleed. Status bar matches.
+      'expo-splash-screen',
+      {
+        image: './assets/icon.png',
+        imageWidth: 200,
+        backgroundColor: '#FFDBCE',
+        resizeMode: 'contain',
+        dark: {
+          image: './assets/icon.png',
+          backgroundColor: '#5B1C00',
+          resizeMode: 'contain',
+        },
+      },
+    ],
+    [
       'expo-notifications',
       {
         color: '#E87B4E',
