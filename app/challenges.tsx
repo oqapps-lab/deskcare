@@ -28,6 +28,7 @@ import { colors, spacing, typeScale } from '../constants/tokens';
 import { useChallenge, type ChallengeDuration } from '../hooks/useChallenge';
 import { useBuddy } from '../hooks/useBuddy';
 import { t } from '../lib/i18n';
+import { todayLocal } from '../lib/dates';
 
 const DURATIONS: ChallengeDuration[] = [7, 14, 30];
 
@@ -187,7 +188,10 @@ export default function ChallengesScreen() {
     ch.start(d);
   };
 
-  const todayStr = new Date().toISOString().slice(0, 10);
+  // Local-time today, not UTC — completedDates are stored as local YYYY-MM-DD
+  // by useChallenge.start()/logToday(). Mixing UTC + local here would mark
+  // "today" as not-logged in the early morning of UTC+N regions.
+  const todayStr = todayLocal();
   const todayLogged = !!ch.challenge?.completedDates.includes(todayStr);
 
   const logToday = () => {

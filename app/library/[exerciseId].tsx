@@ -61,9 +61,6 @@ const useExercise = (slug: string | undefined) => {
       .then(({ data, error: e }) => {
         if (cancelled) return;
         if (e) {
-          // PGRST116 is "no rows" — distinct from a real error. With
-          // .maybeSingle() the PGRST will return data:null instead, but
-          // keep this branch for defensiveness against legacy clients.
           if (e.code === 'PGRST116') setNotFound(true);
           else setError(e.message);
         } else if (!data) {
@@ -72,6 +69,10 @@ const useExercise = (slug: string | undefined) => {
           setExercise(data as Exercise);
         }
         setLoading(false);
+      }, () => {
+        // D1 fix: PromiseLike rejection (network down, offline) — without
+        // this onRejected handler, loading state stayed true forever.
+        if (!cancelled) setLoading(false);
       });
     return () => {
       cancelled = true;

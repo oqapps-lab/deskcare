@@ -91,6 +91,8 @@ export const useArticle = (slug: string | undefined) => {
         if (err) setError(err.message);
         else setArticle((data as Article) || null);
         setLoading(false);
+      }, () => {
+        if (!cancelled) setLoading(false);
       });
     return () => {
       cancelled = true;

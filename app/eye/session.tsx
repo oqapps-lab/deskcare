@@ -60,21 +60,29 @@ export default function EyeSessionScreen() {
     );
   }, [reduceMotion, eyeScale]);
 
-  // Tick timer
+  // Tick timer — completion navigates after 500ms. Same shape as the routine
+  // player (D2): bind the nav setTimeout to a named variable so effect cleanup
+  // can cancel it, otherwise pausing/backing-out in those 500ms can leave a
+  // delayed router.replace in flight that fires after another screen has
+  // mounted, causing the "after first step jumps to pain check-in" bug.
   useEffect(() => {
     if (paused) return;
+    let navTimer: ReturnType<typeof setTimeout> | null = null;
     const id = setInterval(() => {
       setElapsed((e) => {
         if (e + 1 >= DURATION_SEC) {
           clearInterval(id);
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          setTimeout(() => router.replace('/pain/check-in'), 500);
+          navTimer = setTimeout(() => router.replace('/pain/check-in'), 500);
           return DURATION_SEC;
         }
         return e + 1;
       });
     }, 1000);
-    return () => clearInterval(id);
+    return () => {
+      clearInterval(id);
+      if (navTimer) clearTimeout(navTimer);
+    };
   }, [paused]);
 
   // Sync progress to elapsed

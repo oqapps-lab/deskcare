@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useUserId } from '../lib/store/session';
 import type { BodyZoneSlug } from '../lib/types/db';
+import { toYmdLocal } from '../lib/dates';
 
 export interface PainTrendPoint {
   date: string; // YYYY-MM-DD
@@ -52,10 +53,11 @@ export const usePainTrend = (primaryZoneSlug?: BodyZoneSlug): PainTrend => {
         .maybeSingle();
       if (cancelled || !zone.data) return;
 
-      // Fetch last 28 days of entries for this zone.
+      // Fetch last 28 days of entries for this zone. pain_entries.recorded_date
+      // is stored in local YYYY-MM-DD by check-in, so the filter must be local.
       const since = new Date();
       since.setDate(since.getDate() - 28);
-      const sinceStr = since.toISOString().split('T')[0];
+      const sinceStr = toYmdLocal(since);
 
       const { data } = await supabase
         .from('pain_entries')

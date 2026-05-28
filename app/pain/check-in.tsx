@@ -29,6 +29,7 @@ import { colors, shadows, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
 import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
+import { todayLocal } from '../../lib/dates';
 
 // Map UI PainZone (selected on screen) → DB body_zones.slug.
 // We don't have separate "shoulder" / "chest" slugs in DB — fold them into 'back'.
@@ -151,7 +152,9 @@ export default function PainCheckInScreen() {
           .select('id, slug')
           .in('slug', slugs);
 
-        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD local-ish (UTC date)
+        // Local-time today. UTC slice would attribute pain entries to
+        // yesterday in early local morning of UTC+N regions.
+        const today = todayLocal();
         const rows = (zones ?? []).map((z: { id: string; slug: string }) => ({
           user_id: userId,
           body_zone_id: z.id,

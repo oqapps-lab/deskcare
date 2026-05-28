@@ -13,6 +13,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
+import { toYmdLocal } from '../../lib/dates';
 import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
 
@@ -52,7 +53,9 @@ export default function PainHistoryScreen() {
 
     const since = new Date();
     since.setDate(since.getDate() - 13);
-    const sinceIso = since.toISOString().slice(0, 10);
+    // pain_entries.recorded_date is stored as a local YYYY-MM-DD by the
+    // check-in upsert, so the query filter must also be local.
+    const sinceIso = toYmdLocal(since);
 
     Promise.all([
       supabase
@@ -87,7 +90,7 @@ export default function PainHistoryScreen() {
     for (let i = 13; i >= 0; i--) {
       const d = new Date(now);
       d.setDate(now.getDate() - i);
-      buckets.set(d.toISOString().slice(0, 10), 0);
+      buckets.set(toYmdLocal(d), 0);
     }
     entries.forEach((e) => {
       if (buckets.has(e.recorded_date)) {

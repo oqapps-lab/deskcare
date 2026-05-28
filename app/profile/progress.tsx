@@ -13,6 +13,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { supabase } from '../../lib/supabase';
+import { toYmdLocal, fromYmdLocal } from '../../lib/dates';
 import { useUserId } from '../../lib/store/session';
 import type { Streak } from '../../lib/types/db';
 import { t } from '../../lib/i18n';
@@ -111,23 +112,26 @@ export default function ProgressScreen() {
   // (zero-min placeholder) when there are none yet.
   const weekChart = useMemo(() => {
     if (!sessions || sessions.length === 0) return buildEmptyWeek();
+    // Bucket by LOCAL date — using UTC slice would misattribute sessions
+    // around midnight to the wrong day. started_at is an ISO timestamp; we
+    // parse it as Date (timezone-aware) then format via local helpers.
     const buckets = new Map<string, number>();
     const now = new Date();
     for (let i = 6; i >= 0; i--) {
       const d = new Date(now);
       d.setDate(now.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
-      buckets.set(key, 0);
+      buckets.set(toYmdLocal(d), 0);
     }
     sessions.forEach((s) => {
-      const key = s.started_at.slice(0, 10);
+      const key = toYmdLocal(new Date(s.started_at));
       if (buckets.has(key)) {
         buckets.set(key, (buckets.get(key) ?? 0) + s.duration_seconds / 60);
       }
     });
     const entries: { day: string; min: number }[] = [];
     for (const [iso, min] of buckets.entries()) {
-      const date = new Date(iso);
+      // fromYmdLocal so weekday is the LOCAL weekday, not UTC.
+      const date = fromYmdLocal(iso);
       entries.push({ day: DAY_LABELS[date.getDay()], min: Math.round(min * 10) / 10 });
     }
     return entries;

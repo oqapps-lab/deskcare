@@ -88,19 +88,28 @@ export default function SessionCompleteScreen() {
   useEffect(() => {
     if (!userId || writtenRef.current || durationSec === 0) return;
     writtenRef.current = true;
+    let cancelled = false;
+    let badgeTimer: ReturnType<typeof setTimeout> | null = null;
     (async () => {
       try {
         await logCompletedSession(durationSec, movesCount);
-        // After streak/sessions bump, check what unlocked. Wait 600ms so
+        // After streak/sessions bump, check what unlocked. Wait 700ms so
         // the burst animation lands first, then layer the badge celebration.
         const newly = await checkAndUnlockAchievements();
+        if (cancelled) return;
         if (newly.length > 0) {
-          setTimeout(() => setUnlocked(newly), 700);
+          badgeTimer = setTimeout(() => {
+            if (!cancelled) setUnlocked(newly);
+          }, 700);
         }
       } catch {
         // Best-effort; silent on RLS / network.
       }
     })();
+    return () => {
+      cancelled = true;
+      if (badgeTimer) clearTimeout(badgeTimer);
+    };
   }, [userId, durationSec, movesCount]);
 
   const burst = useSharedValue(0.9);

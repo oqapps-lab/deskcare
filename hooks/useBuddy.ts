@@ -41,6 +41,11 @@ export const useBuddy = (): BuddyState => {
           setBuddy((data as BuddySnapshot[])[0]);
         }
         setLoading(false);
+      }, () => {
+        if (!cancelled) {
+          setBuddy(null);
+          setLoading(false);
+        }
       });
     return () => {
       cancelled = true;
