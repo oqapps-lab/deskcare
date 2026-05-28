@@ -59,13 +59,18 @@ export default function PaywallScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
   const [plan, setPlan] = useState<Plan>('yearly');
+  // Begin button busy state. Without this the user sees the CTA looking
+  // identical during the (possibly slow) Adapty.getPaywall call → tester
+  // feedback: "сильно тупит, пропускает только если множественно нажимать".
+  const [busy, setBusy] = useState(false);
 
   const headOpacity = useSharedValue(0);
   const headY = useSharedValue(12);
   const contentOpacity = useSharedValue(0);
   const ctaOpacity = useSharedValue(0);
-  // Close (×) intentionally hidden for the first ~3s so users actually read
-  // the offer before bailing. Standard practice on Calm/Spotify/Tinder paywalls.
+  // Close (×) used to be hidden for 3s, but combined with a slow Adapty
+  // call that left the user feeling trapped on this screen. Now visible
+  // from t=0 (still fades in for animation polish, but only over 600ms).
   const closeOpacity = useSharedValue(0);
 
   useEffect(() => {
@@ -74,7 +79,7 @@ export default function PaywallScreen() {
     headY.value = withTiming(0, { duration: 480, easing: Easing.out(Easing.cubic) });
     contentOpacity.value = withDelay(d * 2, withTiming(1, { duration: 520 }));
     ctaOpacity.value = withDelay(d * 4, withTiming(1, { duration: 420 }));
-    closeOpacity.value = withDelay(reduceMotion ? 0 : 3000, withTiming(1, { duration: 360 }));
+    closeOpacity.value = withTiming(1, { duration: 600 });
   }, [reduceMotion, headOpacity, headY, contentOpacity, ctaOpacity, closeOpacity]);
 
   const headStyle = useAnimatedStyle(() => ({
@@ -97,6 +102,7 @@ export default function PaywallScreen() {
   };
 
   const begin = async () => {
+    if (busy) return; // ignore double-taps
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     // TF-internal: paywall is purely cosmetic — premium content is unlocked
     // app-wide via PREMIUM_BYPASS. Tap routes directly to home.
@@ -109,16 +115,26 @@ export default function PaywallScreen() {
     // Until then, this branch routes to home and the user remains free.
     const adapty = loadAdapty();
     if (!adapty) {
-      // Expo Go OR module unavailable — short-circuit to home.
       router.replace('/main/home');
       return;
     }
+    setBusy(true);
+    // Hard 5 s ceiling on Adapty calls so the button can never look frozen.
+    // If Adapty doesn't reply, race resolves to a 'timeout' sentinel and we
+    // route to home (TF-internal users still get full access via the bypass).
+    const TIMEOUT_MS = 5000;
+    const timeoutSentinel = Symbol('adapty-timeout');
+    const withTimeout = <T,>(p: Promise<T>) =>
+      Promise.race<T | typeof timeoutSentinel>([
+        p,
+        new Promise<typeof timeoutSentinel>((res) => setTimeout(() => res(timeoutSentinel), TIMEOUT_MS)),
+      ]);
     try {
-      const paywall = await adapty.getPaywall('default');
-      const products = await adapty.getPaywallProducts(paywall);
+      const paywall = await withTimeout(adapty.getPaywall('default'));
+      if (paywall === timeoutSentinel) throw new Error('adapty getPaywall timeout');
+      const products = await withTimeout(adapty.getPaywallProducts(paywall));
+      if (products === timeoutSentinel) throw new Error('adapty getPaywallProducts timeout');
       const product = (products as any[]).find((p) => {
-        // Adapty SDK shape: AdaptyPaywallProduct.subscription.subscriptionPeriod.{unit, numberOfUnits}.
-        // Fallback to top-level for SDK forward-compat.
         const unit =
           p?.subscription?.subscriptionPeriod?.unit ??
           p?.subscriptionPeriod?.unit;
@@ -127,11 +143,14 @@ export default function PaywallScreen() {
         return unit === 'week';
       });
       if (!product) throw new Error('No matching product in Adapty paywall');
-      await adapty.makePurchase(product);
+      const purchase = await withTimeout(adapty.makePurchase(product));
+      if (purchase === timeoutSentinel) throw new Error('adapty makePurchase timeout');
       router.replace('/main/home');
     } catch (e) {
       console.warn('[deskcare] Paywall purchase fell back to home:', e);
       router.replace('/main/home');
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -372,8 +391,8 @@ export default function PaywallScreen() {
             pointerEvents="none"
           />
           <View style={styles.ctaBgSolid} pointerEvents="none" />
-          <PillCTA variant="primary" size="lg" breath onPress={begin}>
-            {t('pw_cta')}
+          <PillCTA variant="primary" size="lg" breath onPress={begin} disabled={busy}>
+            {busy ? t('common_loading') : t('pw_cta')}
           </PillCTA>
           <View style={{ height: spacing.xs }} />
           <Text style={styles.afterText}>

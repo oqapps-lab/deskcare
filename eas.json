@@ -50,6 +50,9 @@
       "autoIncrement": true,
       "ios": {
         "buildConfiguration": "Release"
+      },
+      "env": {
+        "EXPO_PUBLIC_PREMIUM_BYPASS": "1"
       }
     }
   },
