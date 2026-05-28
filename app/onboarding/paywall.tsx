@@ -87,7 +87,13 @@ export default function PaywallScreen() {
 
   const close = () => {
     Haptics.selectionAsync();
-    router.replace('/main/home');
+    // Same paywall serves both the onboarding stack (welcome → quiz → … →
+    // paywall) and the in-app upsell (Programs / Library tile → paywall).
+    // Going back respects whichever flow opened it. Only fall through to
+    // /main/home when there's no history — i.e. the paywall is the root
+    // screen of a deep-link.
+    if (router.canGoBack()) router.back();
+    else router.replace('/main/home');
   };
 
   const begin = async () => {
