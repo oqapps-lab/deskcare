@@ -31,12 +31,15 @@ import { t } from '../lib/i18n';
 
 const DURATIONS: ChallengeDuration[] = [7, 14, 30];
 
-const TickGrid: React.FC<{ duration: number; doneCount: number; dayNumber: number }> = ({ duration, doneCount, dayNumber }) => {
+const TickGrid: React.FC<{ duration: number; loggedDayNumbers: Set<number>; dayNumber: number }> = ({ duration, loggedDayNumbers, dayNumber }) => {
   const reduceMotion = useReducedMotion();
   const cells: { state: 'done' | 'today' | 'future' | 'missed' }[] = [];
+  // Per DC3 fix: each cell coloured by whether THAT specific day was logged,
+  // not by an aggregate count. Skipping day 2 + logging day 3 now correctly
+  // shows day 2 = 'missed' and day 3 = 'done'.
   for (let i = 1; i <= duration; i++) {
-    if (i < dayNumber) cells.push({ state: i <= doneCount ? 'done' : 'missed' });
-    else if (i === dayNumber) cells.push({ state: 'today' });
+    if (i < dayNumber) cells.push({ state: loggedDayNumbers.has(i) ? 'done' : 'missed' });
+    else if (i === dayNumber) cells.push({ state: loggedDayNumbers.has(i) ? 'done' : 'today' });
     else cells.push({ state: 'future' });
   }
   return (
@@ -97,6 +100,7 @@ const ActiveView: React.FC<{
   duration: number;
   dayNumber: number;
   doneCount: number;
+  loggedDayNumbers: Set<number>;
   daysLeft: number;
   progress: number;
   todayLogged: boolean;
@@ -105,7 +109,7 @@ const ActiveView: React.FC<{
   onLogToday: () => void;
   onShare: () => void;
   onCancel: () => void;
-}> = ({ duration, dayNumber, doneCount, daysLeft, progress, todayLogged, buddyName, buddyStreak, onLogToday, onShare, onCancel }) => {
+}> = ({ duration, dayNumber, doneCount, loggedDayNumbers, daysLeft, progress, todayLogged, buddyName, buddyStreak, onLogToday, onShare, onCancel }) => {
   const pulse = useSharedValue(1);
   const reduceMotion = useReducedMotion();
   React.useEffect(() => {
@@ -132,7 +136,7 @@ const ActiveView: React.FC<{
       <Animated.View entering={FadeInDown.delay(120).duration(280)}>
         <GlassCard tint="cream" radius="xl" padding={spacing.lg} style={{ marginTop: spacing.lg }}>
           <Eyebrow>{t('ch_grid_eyebrow')}</Eyebrow>
-          <TickGrid duration={duration} doneCount={doneCount} dayNumber={dayNumber} />
+          <TickGrid duration={duration} loggedDayNumbers={loggedDayNumbers} dayNumber={dayNumber} />
         </GlassCard>
       </Animated.View>
 
@@ -223,7 +227,13 @@ export default function ChallengesScreen() {
       <DecorativeArc position="top-right" tone="peach" size={240} opacity={0.20} />
       <DecorativeArc position="bottom-left" tone="mint" size={200} opacity={0.14} />
 
-      <NavHeader title={t('ch_nav_title')} onBack={() => router.back()} />
+      <NavHeader
+        title={t('ch_nav_title')}
+        onBack={() => {
+          if (router.canGoBack()) router.back();
+          else router.replace('/main/profile');
+        }}
+      />
 
       <ScrollView
         contentContainerStyle={{
@@ -240,6 +250,7 @@ export default function ChallengesScreen() {
             duration={ch.challenge.duration}
             dayNumber={ch.dayNumber}
             doneCount={ch.doneCount}
+            loggedDayNumbers={ch.loggedDayNumbers}
             daysLeft={ch.daysLeft}
             progress={ch.progress}
             todayLogged={todayLogged}

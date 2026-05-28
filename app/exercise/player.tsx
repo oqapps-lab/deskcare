@@ -48,14 +48,19 @@ const useSingleExerciseAsRoutine = (exerciseSlug?: string) => {
     if (!exerciseSlug) return;
     let cancelled = false;
     setLoading(true);
-    supabase
-      .from('exercises')
-      .select(
-        'id, code, slug, title, title_en, title_i18n, description, description_i18n, video_url, thumbnail_url, duration_seconds, reps_inside_atom, difficulty, exercise_type, is_premium, cautions, modifications',
-      )
-      .eq('slug', exerciseSlug)
-      .maybeSingle()
-      .then(({ data }) => {
+    // D1 fix: wrap in an async IIFE so we get a real Promise we can
+    // .catch() on. The supabase PromiseLike returned by .maybeSingle()
+    // doesn't expose .catch() directly — without this wrapper, network
+    // errors (offline, timeout) would leave the loading spinner stuck.
+    (async () => {
+      try {
+        const { data } = await supabase
+          .from('exercises')
+          .select(
+            'id, code, slug, title, title_en, title_i18n, description, description_i18n, video_url, thumbnail_url, duration_seconds, reps_inside_atom, difficulty, exercise_type, is_premium, cautions, modifications',
+          )
+          .eq('slug', exerciseSlug)
+          .maybeSingle();
         if (cancelled || !data) {
           if (!cancelled) setLoading(false);
           return;
@@ -67,9 +72,6 @@ const useSingleExerciseAsRoutine = (exerciseSlug?: string) => {
             routine_id: 'synthetic',
             exercise_id: ex.id,
             sort_order: 0,
-            // reps is numeric (routine_exercises.reps); reps_inside_atom is the
-            // human-readable string like "1 cycle". For a single-exercise run
-            // we play the atom once.
             reps: 1,
             overlay_text: null,
             rest_seconds: 0,
@@ -77,7 +79,10 @@ const useSingleExerciseAsRoutine = (exerciseSlug?: string) => {
           } as unknown as RoutineItem,
         ]);
         setLoading(false);
-      });
+      } catch {
+        if (!cancelled) setLoading(false);
+      }
+    })();
     return () => {
       cancelled = true;
     };
@@ -171,6 +176,7 @@ export default function ExercisePlayerScreen() {
   // Tick when items loaded + not paused + ready.
   useEffect(() => {
     if (!step || paused || !ready) return;
+    let navTimer: ReturnType<typeof setTimeout> | null = null;
     const id = setInterval(() => {
       setElapsed((e) => {
         if (e + 1 >= stepDur) {
@@ -188,7 +194,12 @@ export default function ExercisePlayerScreen() {
             (acc, it) => acc + (it.exercise?.duration_seconds ?? 0) * it.reps,
             0,
           );
-          setTimeout(
+          // D2 fix: bind the 400ms completion-navigate to a named timer so
+          // cleanup can cancel it. Without this, useEffect cleanup left the
+          // setTimeout in flight — if effect deps changed in that 400ms window
+          // (background, pause, etc.), router.replace could fire after a
+          // re-render, causing double-navigation.
+          navTimer = setTimeout(
             () =>
               router.replace({
                 pathname: '/exercise/complete',
@@ -201,7 +212,10 @@ export default function ExercisePlayerScreen() {
         return e + 1;
       });
     }, 1000);
-    return () => clearInterval(id);
+    return () => {
+      clearInterval(id);
+      if (navTimer) clearTimeout(navTimer);
+    };
   }, [paused, stepDur, stepIdx, items.length, step, ready]);
 
   useEffect(() => {
