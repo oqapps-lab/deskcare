@@ -133,7 +133,7 @@ export default function LibraryScreen() {
         {!error && (
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: insets.bottom + 130 }}
+            contentContainerStyle={{ paddingTop: spacing.md, paddingBottom: insets.bottom + 130 }}
             style={{ flex: 1 }}
           >
             {/* Custom Routines — F13. Builder entry + user's saved routines. */}

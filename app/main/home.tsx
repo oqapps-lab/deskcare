@@ -53,7 +53,9 @@ const buildStateConfig = (state: HomeState): StateCfg => {
   const k = (suffix: string) => t(`home_state_${state}_${suffix}` as never);
   return {
     greeting: k('greeting'),
-    streakValue: state === 'first' ? '0' : '6',
+    // Honest fallback: signed-out / pre-data users see 0, not a demo number.
+    // Live override on line ~106 replaces with the real streak when signed in.
+    streakValue: '0',
     streakSubLine: k('streak_sub'),
     routineName: k('routine_name'),
     routineHint: k('routine_hint'),
@@ -560,7 +562,7 @@ const styles = StyleSheet.create({
     fontFamily: typeScale.titleLg.fontFamily,
   },
   eyeRowWrap: {
-    marginTop: spacing.md,
+    marginTop: spacing.xxl,
     marginBottom: spacing.sm,
   },
   eyeRow: {

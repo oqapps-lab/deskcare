@@ -163,13 +163,16 @@ export const fonts = {
 // Perf-tuned for iOS: shadowRadius >24 forces offscreen rasterization on every
 // scroll frame. Halved across the board (2026-05-16) — visually nearly
 // indistinguishable but eliminates the scroll-lag on Home/Paywall/Library.
+// Further reduced (2026-05-28) so cards inside vertical lists never clip
+// their own shadow against tight parent padding. Subtle lift, no asymmetric
+// "shadow only on sides" visual bug.
 export const shadows = {
   soft: {
     shadowColor: '#7E2C03',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.13,
-    shadowRadius: 14,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
+    elevation: 3,
   },
   lift: {
     shadowColor: '#7E2C03',
