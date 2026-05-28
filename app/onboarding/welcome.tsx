@@ -11,16 +11,10 @@ import Animated, {
   withRepeat,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, {
-  Circle,
-  Defs,
-  LinearGradient as SvgLinearGradient,
-  Path,
-  Stop,
-} from 'react-native-svg';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import {
-  AtmosphericBackground,
   BgPattern,
   DecorativeArc,
   Eyebrow,
@@ -28,6 +22,16 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { t } from '../../lib/i18n';
+
+/**
+ * Background video for the welcome hero. Cat-cow loop — the most universal
+ * stretching motion + visually matches "Two minutes a day. Your neck stops
+ * aching." copy. Muted, looping, autoplay; falls through gracefully when
+ * the player isn't ready (overlay gradient + brand color keep the screen
+ * looking intentional even on a black frame).
+ */
+const HERO_VIDEO_URL =
+  'https://wnmjdxmrpmucfoluxhly.supabase.co/storage/v1/object/public/exercise-videos/seated-cat-cow/video.mp4';
 
 /**
  * Welcome — the first screen after splash. Quiet sell: a promise + CTA.
@@ -85,10 +89,26 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <AtmosphericBackground>
-      <BgPattern variant="waves" opacity={0.05} tone="coral" />
-      <DecorativeArc position="top-right" tone="coral" size={260} opacity={0.20} />
-      <DecorativeArc position="bottom-left" tone="peach" size={220} opacity={0.18} />
+    <View style={{ flex: 1, backgroundColor: colors.canvas }}>
+      {/* Looping cat-cow video as ambient background — muted, autoplays.
+          Sits behind a brand-coral gradient scrim so the copy stays
+          readable regardless of which frame is on-screen. */}
+      <HeroVideo />
+
+      {/* Warm-to-canvas gradient scrim — keeps text readable + ties the
+          video into the app's color world. Top of screen darker for the
+          eyebrow/copy, bottom blends into canvas for the CTAs. */}
+      <LinearGradient
+        colors={[
+          'rgba(94,33,3,0.72)',
+          'rgba(126,44,3,0.45)',
+          'rgba(251,249,245,0.55)',
+          'rgba(251,249,245,0.98)',
+        ]}
+        locations={[0, 0.42, 0.72, 1]}
+        style={StyleSheet.absoluteFill}
+        pointerEvents="none"
+      />
 
       <View
         style={[
@@ -100,16 +120,16 @@ export default function WelcomeScreen() {
         ]}
       >
         <Animated.View style={[styles.eyebrowRow]}>
-          <Eyebrow variant="accent">{t('brand_eyebrow')}</Eyebrow>
+          <Eyebrow variant="accent" style={styles.eyebrowOnVideo}>{t('brand_eyebrow')}</Eyebrow>
         </Animated.View>
 
-        <Animated.View style={[styles.illoWrap, illoStyle]}>
-          <DeskPersonIllustration />
-        </Animated.View>
+        {/* Spacer where the SVG illo used to be — now the video itself
+            is the visual. Keeps the layout's vertical rhythm. */}
+        <Animated.View style={[styles.illoSpacer, illoStyle]} />
 
         <Animated.View style={[styles.copy, headStyle]}>
-          <Text style={styles.title}>{t('welcome_title')}</Text>
-          <Text style={styles.sub}>{t('welcome_sub')}</Text>
+          <Text style={[styles.title, styles.titleOnVideo]}>{t('welcome_title')}</Text>
+          <Text style={[styles.sub, styles.subOnVideo]}>{t('welcome_sub')}</Text>
         </Animated.View>
 
         <Animated.View style={[styles.ctaBlock, ctaStyle]}>
@@ -130,103 +150,29 @@ export default function WelcomeScreen() {
           </Pressable>
         </Animated.View>
       </View>
-    </AtmosphericBackground>
+
+      {/* Atmospheric overlays sit ABOVE the video so the brand wash isn't
+          completely lost — but at low opacity so the video reads cleanly. */}
+      <BgPattern variant="waves" opacity={0.04} tone="coral" />
+      <DecorativeArc position="top-right" tone="coral" size={260} opacity={0.16} />
+    </View>
   );
 }
 
-/**
- * Continuous-line silhouette of a person mid shoulder-roll at a desk.
- * Coral gradient strokes — one thin, one thick — composed to feel "drawn".
- */
-const DeskPersonIllustration: React.FC = () => {
+const HeroVideo: React.FC = () => {
+  const player = useVideoPlayer(HERO_VIDEO_URL, (p) => {
+    p.loop = true;
+    p.muted = true;
+    p.play();
+  });
   return (
-    <Svg width={260} height={220} viewBox="0 0 260 220">
-      <Defs>
-        <SvgLinearGradient id="welcomeInk" x1="0" y1="0" x2="1" y2="1">
-          <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="1" />
-          <Stop offset="0.5" stopColor={colors.primaryMid} stopOpacity="1" />
-          <Stop offset="1" stopColor={colors.primary} stopOpacity="1" />
-        </SvgLinearGradient>
-        <SvgLinearGradient id="welcomeDesk" x1="0" y1="0" x2="0" y2="1">
-          <Stop offset="0" stopColor={colors.primarySoft} stopOpacity="1" />
-          <Stop offset="1" stopColor={colors.primaryLight} stopOpacity="1" />
-        </SvgLinearGradient>
-      </Defs>
-
-      {/* Desk surface — soft peach rectangle */}
-      <Path
-        d="M40 170 L220 170 L220 178 L40 178 Z"
-        fill="url(#welcomeDesk)"
-      />
-
-      {/* Monitor */}
-      <Path
-        d="M82 100 Q82 92 90 92 L170 92 Q178 92 178 100 L178 156 Q178 164 170 164 L90 164 Q82 164 82 156 Z"
-        fill="none"
-        stroke="url(#welcomeInk)"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      {/* Monitor stand */}
-      <Path d="M126 164 L126 170 M112 170 L148 170" stroke="url(#welcomeInk)" strokeWidth="2" strokeLinecap="round" />
-
-      {/* Person — head */}
-      <Circle
-        cx="210"
-        cy="82"
-        r="14"
-        fill="none"
-        stroke="url(#welcomeInk)"
-        strokeWidth="2.5"
-      />
-
-      {/* Neck + tilted head nod (mid-roll release) */}
-      <Path
-        d="M210 96 L210 104"
-        stroke="url(#welcomeInk)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
-
-      {/* Torso — back curve, slight lean forward */}
-      <Path
-        d="M210 104 Q214 130 212 156"
-        fill="none"
-        stroke="url(#welcomeInk)"
-        strokeWidth="3"
-        strokeLinecap="round"
-      />
-
-      {/* Shoulder arc — the "roll" gesture — curved arrow-like */}
-      <Path
-        d="M198 110 Q180 100 186 120 Q190 126 202 120"
-        fill="none"
-        stroke="url(#welcomeInk)"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-
-      {/* Arm reaching toward keyboard — relaxed */}
-      <Path
-        d="M204 120 Q188 140 158 150"
-        fill="none"
-        stroke="url(#welcomeInk)"
-        strokeWidth="2.2"
-        strokeLinecap="round"
-      />
-
-      {/* Small "release" mark — 3 tiny dots above the shoulder */}
-      <Circle cx="172" cy="86" r="2" fill={colors.primaryMid} />
-      <Circle cx="182" cy="80" r="1.6" fill={colors.primaryLight} />
-      <Circle cx="164" cy="92" r="1.4" fill={colors.primaryLight} />
-
-      {/* Keyboard indication — 4 soft dashes */}
-      <Path d="M92 150 L106 150 M112 150 L126 150 M132 150 L146 150 M152 150 L166 150"
-        stroke={colors.primarySoft}
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </Svg>
+    <VideoView
+      player={player}
+      style={StyleSheet.absoluteFill}
+      contentFit="cover"
+      nativeControls={false}
+      allowsPictureInPicture={false}
+    />
   );
 };
 
@@ -239,9 +185,11 @@ const styles = StyleSheet.create({
   eyebrowRow: {
     alignItems: 'center',
   },
-  illoWrap: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  eyebrowOnVideo: {
+    color: '#FFE4D2',
+  },
+  illoSpacer: {
+    height: 260,
   },
   copy: {
     alignItems: 'center',
@@ -251,11 +199,23 @@ const styles = StyleSheet.create({
     color: colors.ink,
     textAlign: 'center',
   },
+  titleOnVideo: {
+    color: colors.canvas,
+    textShadowColor: 'rgba(0,0,0,0.35)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 8,
+  },
   sub: {
     ...typeScale.body,
     color: colors.inkMuted,
     textAlign: 'center',
     marginTop: spacing.md,
+  },
+  subOnVideo: {
+    color: 'rgba(251,249,245,0.92)',
+    textShadowColor: 'rgba(0,0,0,0.32)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
   },
   ctaBlock: {
     alignItems: 'center',
