@@ -31,7 +31,7 @@ interface PlanDef {
 
 const PLAN: PlanDef[] = [
   { slug: 'wrists-quick-2min',  titleKey: 'prog_carpal_day1_title', detailKey: 'prog_carpal_day1_detail', minutes: 2 },
-  { slug: 'wrists-relief-2min', titleKey: 'prog_carpal_day2_title', detailKey: 'prog_carpal_day2_detail', minutes: 2 },
+  { slug: 'wrists-full-3min', titleKey: 'prog_carpal_day2_title', detailKey: 'prog_carpal_day2_detail', minutes: 2 },
   {                             titleKey: 'prog_carpal_day3_title', detailKey: 'prog_carpal_day3_detail', minutes: 3 },
   {                             titleKey: 'prog_carpal_day4_title', detailKey: 'prog_carpal_day4_detail', minutes: 4 },
   {                             titleKey: 'prog_carpal_day5_title', detailKey: 'prog_carpal_day5_detail', minutes: 4 },

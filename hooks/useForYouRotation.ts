@@ -15,13 +15,13 @@ export interface ForYouCard {
 
 const POOL: ReadonlyArray<ForYouCard> = [
   { id: 'neck-2',   pose: 'neck-roll',     title: 'Neck reset',         minutes: 2, routineSlug: 'neck-quick-2min',   tone: 'coral' },
-  { id: 'neck-3',   pose: 'neck-roll',     title: 'Shoulder release',   minutes: 3, routineSlug: 'neck-relief-3min',  tone: 'peach' },
+  { id: 'neck-3',   pose: 'neck-roll',     title: 'Shoulder release',   minutes: 3, routineSlug: 'neck-full-3min',  tone: 'peach' },
   { id: 'back-3',   pose: 'back-arch',     title: 'Back reset',         minutes: 3, routineSlug: 'back-quick-3min',   tone: 'peach' },
-  { id: 'back-3b',  pose: 'back-arch',     title: 'Lower-back relief',  minutes: 3, routineSlug: 'back-relief-3min',  tone: 'coral' },
-  { id: 'eyes-2',   pose: 'eye-rest',      title: 'Eye softener',       minutes: 2, routineSlug: 'eye-relief-2min',   tone: 'lavender' },
-  { id: 'eyes-1',   pose: 'eye-rest',      title: '20-20-20 reset',     minutes: 1, routineSlug: 'eye-quick-60s',     tone: 'lavender' },
+  { id: 'back-3b',  pose: 'back-arch',     title: 'Lower-back relief',  minutes: 3, routineSlug: 'back-full-5min',  tone: 'coral' },
+  { id: 'eyes-2',   pose: 'eye-rest',      title: 'Eye softener',       minutes: 2, routineSlug: 'eye-full-3min',   tone: 'lavender' },
+  { id: 'eyes-1',   pose: 'eye-rest',      title: '20-20-20 reset',     minutes: 1, routineSlug: 'break-eyes-60s',     tone: 'lavender' },
   { id: 'wrists-2', pose: 'wrist-stretch', title: 'Wrist mobility',     minutes: 2, routineSlug: 'wrists-quick-2min', tone: 'mint' },
-  { id: 'wrists-r', pose: 'wrist-stretch', title: 'Wrist relief',       minutes: 2, routineSlug: 'wrists-relief-2min', tone: 'mint' },
+  { id: 'wrists-r', pose: 'wrist-stretch', title: 'Wrist relief',       minutes: 2, routineSlug: 'wrists-full-3min', tone: 'mint' },
 ];
 
 /**

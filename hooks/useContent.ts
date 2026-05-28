@@ -67,9 +67,13 @@ export const useExercises = (
 
       if (zoneSlug && zoneSlug !== 'all') {
         // First resolve zone id, then filter via M:N table.
-        const zone = await supabase.from('body_zones').select('id').eq('slug', zoneSlug).single();
+        const zone = await supabase.from('body_zones').select('id').eq('slug', zoneSlug).maybeSingle();
         if (zone.error) {
           if (!cancelled) setError(zone.error.message);
+          return;
+        }
+        if (!zone.data) {
+          if (!cancelled) setExercises([]);
           return;
         }
         const links = await supabase
@@ -134,9 +138,13 @@ export const useRoutines = (zoneSlug?: BodyZoneSlug | 'all') => {
         .select('id, slug, title, title_i18n, description, description_i18n, body_zone_id, duration_seconds, is_premium, routine_type, sort_order')
         .order('sort_order');
       if (zoneSlug && zoneSlug !== 'all') {
-        const zone = await supabase.from('body_zones').select('id').eq('slug', zoneSlug).single();
+        const zone = await supabase.from('body_zones').select('id').eq('slug', zoneSlug).maybeSingle();
         if (zone.error) {
           if (!cancelled) setError(zone.error.message);
+          return;
+        }
+        if (!zone.data) {
+          if (!cancelled) setRoutines([]);
           return;
         }
         query = query.eq('body_zone_id', zone.data.id);
@@ -181,12 +189,17 @@ export const useRoutineWithItems = (routineSlug?: string) => {
         .from('routines')
         .select('id, slug, title, title_i18n, description, description_i18n, body_zone_id, duration_seconds, is_premium, routine_type, sort_order')
         .eq('slug', routineSlug)
-        .single();
+        .maybeSingle();
       if (r.error) {
         if (!cancelled) setError(r.error.message);
         return;
       }
       if (cancelled) return;
+      if (!r.data) {
+        // Routine slug doesn't exist in DB — show clean "not found" state instead of throwing.
+        if (!cancelled) setError(null);
+        return;
+      }
       setRoutine(r.data as Routine);
 
       const it = await supabase
