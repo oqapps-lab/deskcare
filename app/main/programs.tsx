@@ -51,6 +51,16 @@ const buildPrograms = () => [
     premium: true,
     route: '/programs/carpal-tunnel',
   },
+  {
+    id: 'office',
+    title: t('prog_office_title'),
+    blurb: t('prog_office_blurb'),
+    meta: t('prog_office_meta'),
+    tone: 'peach' as const,
+    icon: 'crown' as const,
+    premium: true,
+    route: '/programs/office-athlete',
+  },
 ];
 
 export default function ProgramsScreen() {
