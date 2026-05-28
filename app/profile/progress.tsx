@@ -102,6 +102,8 @@ export default function ProgressScreen() {
       setStreak((s.data as Streak) ?? null);
       setSessions((list.data as unknown as SessionRow[]) ?? []);
       setLoading(false);
+    }).catch(() => {
+      if (!cancelled) setLoading(false);
     });
     return () => {
       cancelled = true;

@@ -74,6 +74,8 @@ export default function PainHistoryScreen() {
       });
       setZoneMap(map);
       setLoading(false);
+    }).catch(() => {
+      if (!cancelled) setLoading(false);
     });
 
     return () => {

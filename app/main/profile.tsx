@@ -137,6 +137,9 @@ export default function ProfileScreen() {
       if (cancelled) return;
       if (subRes.data) setSub(subRes.data as SubInfo);
       if (painRes.data?.created_at) setEarliestPain(painRes.data.created_at as string);
+    }).catch(() => {
+      // No loading state to clear here — sub + earliestPain stay null;
+      // the row sub-text gracefully falls back to defaults.
     });
     return () => {
       cancelled = true;
