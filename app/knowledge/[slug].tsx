@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useLocalSearchParams, router } from 'expo-router';
-import { Image as ExpoImage } from 'expo-image';
+import { ArticleCover } from '../../components/ArticleCover';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -138,17 +138,7 @@ export default function ArticleReaderScreen() {
             contentContainerStyle={{ paddingBottom: insets.bottom + spacing.huge }}
             style={{ flex: 1 }}
           >
-            {article.cover_image_url ? (
-              <ExpoImage
-                source={{ uri: article.cover_image_url }}
-                style={styles.cover}
-                contentFit="cover"
-                cachePolicy="memory-disk"
-                transition={250}
-              />
-            ) : (
-              <View style={styles.coverPlaceholder} />
-            )}
+            <ArticleCover tags={article.tags as string[] | null | undefined} />
 
             <Text style={styles.eyebrow}>
               {t('kw_min_read', { n: article.reading_minutes })}

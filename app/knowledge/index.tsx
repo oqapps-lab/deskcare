@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import { Image as ExpoImage } from 'expo-image';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   AtmosphericBackground,
@@ -11,6 +10,7 @@ import {
   NavHeader,
   PillChip,
 } from '../../components/ui';
+import { ArticleCover } from '../../components/ArticleCover';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useArticles, i18nField as articleI18n } from '../../hooks/useArticles';
 import type { BodyZoneSlug } from '../../lib/types/db';
@@ -108,17 +108,11 @@ export default function KnowledgeScreen() {
                   style={({ pressed }) => [pressed && styles.pressed]}
                 >
                   <View style={[styles.card, i > 0 && { marginTop: spacing.md }]}>
-                    {a.cover_image_url ? (
-                      <ExpoImage
-                        source={{ uri: a.cover_image_url }}
-                        style={styles.cover}
-                        contentFit="cover"
-                        cachePolicy="memory-disk"
-                        transition={200}
-                      />
-                    ) : (
-                      <View style={styles.coverPlaceholder} />
-                    )}
+                    {/* Cover: programmatic SVG illustration keyed off article
+                        tags. CDN cover_image_url is currently dead so we render
+                        these instead — each topic family gets a distinct
+                        palette + motif. */}
+                    <ArticleCover tags={a.tags as string[] | null | undefined} />
                     <View style={styles.cardBody}>
                       <Text style={styles.cardEyebrow}>
                         {t('kw_min_read', { n: a.reading_minutes })}
