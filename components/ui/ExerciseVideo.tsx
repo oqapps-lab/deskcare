@@ -21,6 +21,13 @@ interface Props {
   showPlay?: boolean;
   /** Override container style if needed. */
   style?: ViewStyle;
+  /**
+   * Fires once the video reaches first-frame / readyToPlay. The Routine
+   * Player listens to this so the timer only starts after the user can
+   * actually see the exercise — no more "timer counting on a black frame".
+   * Also fires immediately with `true` for the SVG fallback (no buffering).
+   */
+  onReady?: () => void;
 }
 
 /**
@@ -46,7 +53,14 @@ export const ExerciseVideo: React.FC<Props> = ({
   compact = false,
   showPlay = true,
   style,
+  onReady,
 }) => {
+  // SVG fallback path: no buffering, fire ready synchronously on mount so the
+  // routine player doesn't stall waiting for a video that will never load.
+  useEffect(() => {
+    if (!videoUrl && onReady) onReady();
+  }, [videoUrl, onReady]);
+
   if (!videoUrl) {
     return (
       <VideoPlaceholder
@@ -71,12 +85,12 @@ export const ExerciseVideo: React.FC<Props> = ({
         style,
       ]}
     >
-      <VideoBody videoUrl={videoUrl} />
+      <VideoBody videoUrl={videoUrl} onReady={onReady} />
     </View>
   );
 };
 
-const VideoBody: React.FC<{ videoUrl: string }> = ({ videoUrl }) => {
+const VideoBody: React.FC<{ videoUrl: string; onReady?: () => void }> = ({ videoUrl, onReady }) => {
   const player = useVideoPlayer(videoUrl, (p) => {
     p.loop = true;
     p.muted = true;
@@ -89,6 +103,22 @@ const VideoBody: React.FC<{ videoUrl: string }> = ({ videoUrl }) => {
   useEffect(() => {
     player.play();
   }, [videoUrl, player]);
+
+  // Subscribe to statusChange and emit onReady when the player reaches
+  // `readyToPlay`. Without this signal the routine player would either start
+  // the timer too early (timer counting on a buffering black frame) or fall
+  // back to a fixed grace timeout that's wrong on slow networks.
+  useEffect(() => {
+    if (!onReady) return;
+    if (player.status === 'readyToPlay') {
+      onReady();
+      return;
+    }
+    const sub = player.addListener('statusChange', (evt: { status: string }) => {
+      if (evt.status === 'readyToPlay') onReady();
+    });
+    return () => sub.remove();
+  }, [player, onReady]);
 
   return (
     <VideoView

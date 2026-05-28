@@ -128,9 +128,10 @@ export default function ExercisePlayerScreen() {
   const [stepIdx, setStepIdx] = useState(0);
   const [elapsed, setElapsed] = useState(0);
   const [paused, setPaused] = useState(false);
-  // ready: blocks the timer until items + video have had ~600ms to settle.
-  // Without this, the countdown began the instant Supabase returned, while
-  // the user was still seeing a loading spinner / a black video frame.
+  // ready: blocks the timer until the current step's video reaches
+  // first-frame (readyToPlay). For atoms without video, fires immediately
+  // via ExerciseVideo's onReady-on-mount path. Reset on every step change so
+  // each item's buffering window blocks its own countdown.
   const [ready, setReady] = useState(false);
 
   // Reset all transient session state when the user opens the player with
@@ -145,20 +146,27 @@ export default function ExercisePlayerScreen() {
     setReady(false);
   }, [routineSlug, exerciseSlug]);
 
+  // Each step's video buffering blocks its own timer. Reset ready when the
+  // step index changes so the countdown waits for the next atom's video.
+  useEffect(() => {
+    setReady(false);
+  }, [stepIdx]);
+
   const step = items[stepIdx];
   // Per Russell's atom×reps spec: real item duration = atom.duration_seconds × reps.
   const stepDur = step ? (step.exercise?.duration_seconds ?? 5) * step.reps : 1;
 
   const progress = useSharedValue(0);
 
-  // Grace period: once items have loaded, wait ~600ms before unblocking the
-  // timer. expo-video typically reaches first-frame within this window, so
-  // the user never sees the countdown decrement on top of a blank frame.
+  // Safety net: if the video player never emits readyToPlay within 4s (slow
+  // network, malformed video, broken URL), unblock anyway so the user isn't
+  // staring at a static frame forever. ExerciseVideo's onReady fires earlier
+  // in the happy path.
   useEffect(() => {
     if (loading || items.length === 0 || ready) return;
-    const id = setTimeout(() => setReady(true), 600);
+    const id = setTimeout(() => setReady(true), 4000);
     return () => clearTimeout(id);
-  }, [loading, items.length, ready]);
+  }, [loading, items.length, ready, stepIdx]);
 
   // Tick when items loaded + not paused + ready.
   useEffect(() => {
@@ -287,6 +295,7 @@ export default function ExercisePlayerScreen() {
             height={VIDEO_H}
             radius="xl"
             showPlay={false}
+            onReady={() => setReady(true)}
           />
           <Svg
             width={SVG_W}
