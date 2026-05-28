@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Alert, Pressable, ScrollView, Share, StyleSheet, Text, TextInput, View } from 'react-native';
-import { router } from 'expo-router';
+import { safeBack } from '../../lib/nav';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
@@ -53,7 +53,7 @@ export default function BuddyScreen() {
       setCode(res.code);
       setMode('invite');
     } else {
-      Alert.alert('Could not generate code', 'Please try again in a moment.');
+      Alert.alert(t('buddy_invite_err_title'), t('buddy_invite_err_body'));
     }
   };
   const onShare = async () => {
@@ -99,7 +99,7 @@ export default function BuddyScreen() {
       <DecorativeArc position="top-right" tone="mint" size={220} opacity={0.18} />
 
       <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
-        <NavHeader showBack onBack={() => router.back()} title="" />
+        <NavHeader showBack onBack={() => safeBack('/main/profile')} title="" />
 
         <Text style={styles.eyebrow}>{t('buddy_eyebrow')}</Text>
         <Text style={styles.title}>

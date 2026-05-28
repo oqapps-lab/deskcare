@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { safeBack } from '../../lib/nav';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -67,7 +68,7 @@ export default function SavedRoutineScreen() {
           style: 'destructive',
           onPress: async () => {
             await remove(routine.id);
-            router.back();
+            safeBack('/main/library');
           },
         },
       ],
@@ -77,7 +78,7 @@ export default function SavedRoutineScreen() {
   if (!routine) {
     return (
       <AtmosphericBackground>
-        <NavHeader title="" onBack={() => router.back()} />
+        <NavHeader title="" onBack={() => safeBack('/main/library')} />
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.huge }}>
           <Text style={{ ...typeScale.body, color: colors.inkMuted, textAlign: 'center' }}>
             {t('cr_not_found')}
@@ -92,7 +93,7 @@ export default function SavedRoutineScreen() {
       <BgPattern variant="dots" opacity={0.05} tone="coral" />
       <DecorativeArc position="top-right" tone="lavender" size={220} opacity={0.18} />
 
-      <NavHeader title={routine.name} onBack={() => router.back()} />
+      <NavHeader title={routine.name} onBack={() => safeBack('/main/library')} />
 
       <ScrollView
         contentContainerStyle={{

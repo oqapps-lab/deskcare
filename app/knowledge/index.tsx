@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { safeBack } from '../../lib/nav';
 import * as Haptics from 'expo-haptics';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -48,7 +49,7 @@ export default function KnowledgeScreen() {
       <DecorativeArc position="top-right" tone="lavender" size={220} opacity={0.16} />
 
       <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
-        <NavHeader showBack onBack={() => router.back()} title="" />
+        <NavHeader showBack onBack={() => safeBack()} title="" />
 
         <Text style={styles.title}>{t('kw_title')}</Text>
         <Text style={styles.sub}>

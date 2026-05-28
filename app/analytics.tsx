@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { safeBack } from '../lib/nav';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -76,7 +76,7 @@ export default function AnalyticsScreen() {
       <DecorativeArc position="top-right" tone="lavender" size={220} opacity={0.18} />
 
       <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
-        <NavHeader showBack onBack={() => router.back()} title="" />
+        <NavHeader showBack onBack={() => safeBack('/main/profile')} title="" />
 
         <Text style={styles.eyebrow}>{t('an_eyebrow')}</Text>
         <Text style={styles.title}>{t('an_title')}</Text>

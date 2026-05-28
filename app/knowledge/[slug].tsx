@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
+import { safeBack } from '../../lib/nav';
 import { ArticleCover } from '../../components/ArticleCover';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -118,7 +119,7 @@ export default function ArticleReaderScreen() {
       <BgPattern variant="dots" opacity={0.04} tone="coral" />
 
       <View style={[styles.root, { paddingTop: insets.top + spacing.lg }]}>
-        <NavHeader showBack onBack={() => router.back()} title="" />
+        <NavHeader showBack onBack={() => safeBack('/knowledge')} title="" />
 
         {loading && (
           <View style={styles.statusWrap}>

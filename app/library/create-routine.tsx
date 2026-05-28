@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
+import { safeBack } from '../../lib/nav';
 import * as Haptics from 'expo-haptics';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import Svg, { Path } from 'react-native-svg';
@@ -74,14 +75,14 @@ export default function CreateRoutineScreen() {
     const trimmed = name.trim() || t('cr_default_name');
     await add(trimmed, Array.from(selected));
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    router.back();
+    safeBack('/main/library');
   };
 
   if (!isPremium) {
     return (
       <AtmosphericBackground>
         <BgPattern variant="dots" opacity={0.05} tone="coral" />
-        <NavHeader title={t('cr_title')} onBack={() => router.back()} />
+        <NavHeader title={t('cr_title')} onBack={() => safeBack('/main/library')} />
         <View style={[styles.lockWrap, { paddingTop: insets.top + 100 }]}>
           <GlassCard tint="coral" radius="xl" padding={spacing.xl} innerGradient>
             <Text style={styles.lockEyebrow}>{t('cr_lock_eyebrow')}</Text>
@@ -103,7 +104,7 @@ export default function CreateRoutineScreen() {
       <BgPattern variant="dots" opacity={0.05} tone="lavender" />
       <DecorativeArc position="top-right" tone="lavender" size={220} opacity={0.18} />
 
-      <NavHeader title={t('cr_title')} onBack={() => router.back()} />
+      <NavHeader title={t('cr_title')} onBack={() => safeBack('/main/library')} />
 
       <View style={[styles.root, { paddingTop: spacing.md }]}>
         <View style={{ paddingHorizontal: spacing.xxl }}>

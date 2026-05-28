@@ -756,6 +756,8 @@ const en: Dict = {
   buddy_validate_title: 'Six characters',
   buddy_validate_body: 'Invite codes are 6 letters/numbers.',
   buddy_err_title: 'Could not pair',
+  buddy_invite_err_title: 'Could not generate code',
+  buddy_invite_err_body: 'Please try again in a moment.',
   buddy_paired_alert_title: "You're paired",
   buddy_paired_alert_body: 'Paired with {name}.',
   buddy_stat_streak: 'STREAK',

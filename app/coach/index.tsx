@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
+import { safeBack } from '../../lib/nav';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
@@ -47,7 +48,7 @@ export default function PainCoachScreen() {
       setStep('pick_zone');
       setZone(null);
     } else {
-      router.back();
+      safeBack();
     }
   };
   const startRoutine = () => {
