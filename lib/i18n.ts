@@ -245,6 +245,8 @@ const en: Dict = {
   pw_save_badge: 'SAVE 83%',
   pw_cta: 'Begin 7 days free',
   pw_cta_sub: 'Then $34.99 / year · cancel anytime',
+  // 3.1.2(c) compliance — auto-renewal disclosure required on every paywall.
+  pw_auto_renew_disclosure: 'Subscription auto-renews unless cancelled at least 24h before the end of the period. Manage in Settings → Apple ID → Subscriptions.',
   // ─── Onboarding · permission ───
   onb_perm_title: 'Allow gentle\nnudges',
   onb_perm_body: "We'll softly remind you when it's time\nto roll your shoulders or look away.\nNo spam, ever.",

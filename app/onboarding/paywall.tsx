@@ -340,6 +340,10 @@ export default function PaywallScreen() {
             </View>
           </Animated.View>
 
+          <Animated.View style={[styles.autoRenewBlock, contentStyle]}>
+            <Text style={styles.autoRenewText}>{t('pw_auto_renew_disclosure')}</Text>
+          </Animated.View>
+
           <Animated.View style={[styles.legalRow, contentStyle]}>
             <Pressable
               hitSlop={10}
@@ -604,6 +608,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.sm,
+  },
+  autoRenewBlock: {
+    paddingHorizontal: spacing.lg,
+    marginTop: spacing.md,
+    marginBottom: spacing.sm,
+  },
+  autoRenewText: {
+    ...typeScale.bodySm,
+    fontSize: 11,
+    lineHeight: 15,
+    color: colors.inkSubtle,
+    textAlign: 'center',
   },
   legalLink: {
     ...typeScale.bodySm,
