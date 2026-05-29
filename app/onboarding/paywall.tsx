@@ -5,7 +5,7 @@ import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { LEGAL_URLS } from '../../lib/legal';
 import { IS_EXPO_GO } from '../../lib/native-runtime';
-import { PREMIUM_BYPASS } from '../../lib/premium';
+import { PREMIUM_BYPASS, setPremiumFromProfile } from '../../lib/premium';
 
 // Adapty is a native TurboModule and crashes at import time inside Expo Go.
 // Lazy-load it so the screen still renders for visual QA on Expo Go.
@@ -145,7 +145,26 @@ export default function PaywallScreen() {
       if (!product) throw new Error('No matching product in Adapty paywall');
       const purchase = await withTimeout(adapty.makePurchase(product));
       if (purchase === timeoutSentinel) throw new Error('adapty makePurchase timeout');
-      router.replace('/main/home');
+      // AdaptyPurchaseResult is a discriminated union — only type:'success'
+      // carries a profile + an actual transaction. user_cancelled / pending
+      // must NOT be treated as a purchase, otherwise the user lands on home
+      // without premium and gets gated again on the next premium tile.
+      const pr = purchase as { type?: string; profile?: unknown };
+      if (pr.type === 'user_cancelled') {
+        // Apple's StoreKit sheet cancel — silent, no error UI. Stay on paywall.
+        return;
+      }
+      if (pr.type === 'success') {
+        // Flip the local premium store immediately, no need to wait for the
+        // onLatestProfileLoad event to fire.
+        if (pr.profile) setPremiumFromProfile(pr.profile);
+        router.replace('/main/home');
+        return;
+      }
+      // type === 'pending' (Ask-to-Buy / Family Sharing approval) or any
+      // shape Adapty might add later — be conservative: leave the user on
+      // paywall with the CTA re-enabled, no fake premium flip.
+      return;
     } catch (e) {
       console.warn('[deskcare] Paywall purchase fell back to home:', e);
       router.replace('/main/home');
@@ -196,8 +215,15 @@ export default function PaywallScreen() {
       // Adapty surfaces active sub state through accessLevels[<key>].isActive.
       // The "premium" key is the app's access-level identifier in Adapty.
       const hasActive = !!profile?.accessLevels?.premium?.isActive;
-      if (hasActive) showFound();
-      else showNotFound();
+      if (hasActive) {
+        // Flip the local premium store immediately rather than waiting for
+        // Adapty's onLatestProfileLoad event — without this, the UI lags by
+        // up to a few seconds even after the success Alert dismisses.
+        setPremiumFromProfile(profile);
+        showFound();
+      } else {
+        showNotFound();
+      }
     } catch {
       showError();
     }
