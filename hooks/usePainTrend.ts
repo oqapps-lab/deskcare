@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { supabase } from '../lib/supabase';
 import { useUserId } from '../lib/store/session';
 import type { BodyZoneSlug } from '../lib/types/db';
@@ -40,6 +41,7 @@ export const usePainTrend = (primaryZoneSlug?: BodyZoneSlug): PainTrend => {
     deltaPct: null,
     hasAnyEntry: false,
   });
+  const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
     if (!userId || !primaryZoneSlug) return;
@@ -105,7 +107,15 @@ export const usePainTrend = (primaryZoneSlug?: BodyZoneSlug): PainTrend => {
     return () => {
       cancelled = true;
     };
-  }, [userId, primaryZoneSlug]);
+  }, [userId, primaryZoneSlug, refreshTick]);
+
+  // Refetch on focus so the pain-trend sparkline reflects a freshly-added
+  // pain check-in entry when the user comes back to home.
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshTick((t) => t + 1);
+    }, [])
+  );
 
   return trend;
 };

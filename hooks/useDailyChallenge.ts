@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { supabase } from '../lib/supabase';
 import { useUserId } from '../lib/store/session';
 
@@ -18,6 +19,7 @@ export interface DailyChallenge {
 export const useDailyChallenge = (target = DEFAULT_TARGET): DailyChallenge => {
   const userId = useUserId();
   const [completed, setCompleted] = useState(0);
+  const [refreshTick, setRefreshTick] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -60,7 +62,15 @@ export const useDailyChallenge = (target = DEFAULT_TARGET): DailyChallenge => {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId, refreshTick]);
+
+  // Refetch on focus so 'today's completed sessions' updates after the
+  // user finishes a routine elsewhere and returns to the home tab.
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshTick((t) => t + 1);
+    }, [])
+  );
 
   const done = completed >= target;
   const progress = Math.min(1, completed / target);
