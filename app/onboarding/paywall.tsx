@@ -156,7 +156,7 @@ export default function PaywallScreen() {
 
   const restore = async () => {
     Haptics.selectionAsync();
-    const showSuccess = () => {
+    const showFound = () => {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       Alert.alert(
         t('pw_restore_success_title'),
@@ -164,22 +164,42 @@ export default function PaywallScreen() {
         [{ text: t('common_close') }],
       );
     };
+    const showNotFound = () => {
+      Haptics.selectionAsync();
+      Alert.alert(
+        t('pw_restore_none_title'),
+        t('pw_restore_none_body'),
+        [{ text: t('common_close') }],
+      );
+    };
+    const showError = () => {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      Alert.alert(
+        t('pw_restore_err_title'),
+        t('pw_restore_err_body'),
+        [{ text: t('common_close') }],
+      );
+    };
     if (PREMIUM_BYPASS) {
-      // No real subscription state on TF-internal — nothing to restore.
-      showSuccess();
+      // TF-internal premium bypass — pretend success so QA can verify the
+      // happy-path Alert renders. Real users never hit this branch.
+      showFound();
       return;
     }
     const adapty = loadAdapty();
     if (!adapty) {
-      showSuccess();
+      showError();
       return;
     }
     try {
-      await adapty.restorePurchases();
-      showSuccess();
-    } catch (e) {
-      console.warn('[deskcare] Restore purchases failed:', e);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      const profile = await adapty.restorePurchases();
+      // Adapty surfaces active sub state through accessLevels[<key>].isActive.
+      // The "premium" key is the app's access-level identifier in Adapty.
+      const hasActive = !!profile?.accessLevels?.premium?.isActive;
+      if (hasActive) showFound();
+      else showNotFound();
+    } catch {
+      showError();
     }
   };
 
