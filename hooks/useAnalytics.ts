@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { supabase } from '../lib/supabase';
 import { useUserId } from '../lib/store/session';
 import { toYmdLocal } from '../lib/dates';
@@ -44,6 +45,7 @@ const startOfDayISO = (offsetDays: number): string => {
 export const useAnalytics = (): AnalyticsSnapshot => {
   const userId = useUserId();
   const [snap, setSnap] = useState<AnalyticsSnapshot>(empty);
+  const [refreshTick, setRefreshTick] = useState(0);
 
   useEffect(() => {
     if (!userId) {
@@ -194,7 +196,15 @@ export const useAnalytics = (): AnalyticsSnapshot => {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId, refreshTick]);
+
+  // Refetch on focus so KPIs + 14d chart reflect a freshly-completed
+  // routine when the user navigates to Analytics from /exercise/complete.
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshTick((t) => t + 1);
+    }, [])
+  );
 
   return snap;
 };
