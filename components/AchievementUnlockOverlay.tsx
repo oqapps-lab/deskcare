@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import Animated, {
@@ -32,6 +32,11 @@ export const AchievementUnlockOverlay: React.FC<{
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.85);
   const haloScale = useSharedValue(0.8);
+  // Track in-flight dismiss timer so the cleanup can cancel it on unmount.
+  // Previously, the inner setTimeout(onDismiss, 240) was unbound — when the
+  // user navigated away mid-fade-out, onDismiss fired on an unmounted
+  // component (state-set-on-unmounted warning + occasional render glitch).
+  const dismissTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (items.length === 0) return;
@@ -46,12 +51,13 @@ export const AchievementUnlockOverlay: React.FC<{
     haloScale.value = withDelay(reduceMotion ? 0 : 80, withTiming(1, { duration: 700, easing: Easing.out(Easing.cubic) }));
 
     const t = setTimeout(() => {
-      opacity.value = withTiming(0, { duration: 220 }, () => {
-        // run after fade-out — but RN reanimated worklet → use callback
-      });
-      setTimeout(onDismiss, 240);
+      opacity.value = withTiming(0, { duration: 220 });
+      dismissTimerRef.current = setTimeout(onDismiss, 240);
     }, 4000);
-    return () => clearTimeout(t);
+    return () => {
+      clearTimeout(t);
+      if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+    };
     // Re-fire only when the items list identity changes (length 0 → 1 etc.)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [items.length]);
@@ -75,7 +81,8 @@ export const AchievementUnlockOverlay: React.FC<{
       onPress={() => {
         Haptics.selectionAsync();
         opacity.value = withTiming(0, { duration: 200 });
-        setTimeout(onDismiss, 220);
+        if (dismissTimerRef.current) clearTimeout(dismissTimerRef.current);
+        dismissTimerRef.current = setTimeout(onDismiss, 220);
       }}
       accessibilityRole="button"
       accessibilityLabel={`Achievement unlocked: ${first.title}`}
