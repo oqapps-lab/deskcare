@@ -114,8 +114,15 @@ const VideoBody: React.FC<{ videoUrl: string; onReady?: () => void }> = ({ video
       onReady();
       return;
     }
+    // Also unblock the parent timer on error — without this, a 404 video URL
+    // would leave the routine player stuck on the per-exercise fallback
+    // setTimeout for its full duration, showing a black frame the whole time.
+    if (player.status === 'error') {
+      onReady();
+      return;
+    }
     const sub = player.addListener('statusChange', (evt: { status: string }) => {
-      if (evt.status === 'readyToPlay') onReady();
+      if (evt.status === 'readyToPlay' || evt.status === 'error') onReady();
     });
     return () => sub.remove();
   }, [player, onReady]);
