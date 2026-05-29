@@ -41,12 +41,7 @@ export default function RateAppScreen() {
     } else if (rating > 0) {
       const subject = encodeURIComponent('DeskCare feedback (' + rating + '/5)');
       const body = encodeURIComponent(
-        'Hi DeskCare team,
-
-My rating: ' + rating + '/5.
-
-What could be better:
-',
+        'Hi DeskCare team,\n\nMy rating: ' + rating + '/5.\n\nWhat could be better:\n',
       );
       Linking.openURL('mailto:' + SUPPORT_EMAIL + '?subject=' + subject + '&body=' + body).catch(
         () => {
