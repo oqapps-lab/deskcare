@@ -8,6 +8,13 @@ export interface AuthResult {
   ok: boolean;
   /** When `cancelled: true`, treat as a soft cancel (no UI error). */
   cancelled?: boolean;
+  /**
+   * When `verificationPending: true`, signUp succeeded server-side but the
+   * Supabase project has email confirmation ON — the user must click the
+   * link in their inbox before a session is created. Caller should show a
+   * "check your email" message instead of routing straight to onboarding.
+   */
+  verificationPending?: boolean;
   error?: string;
 }
 
@@ -87,13 +94,19 @@ export const useAuth = () => {
     setLoading(true);
     setError(null);
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email: email.trim().toLowerCase(),
         password,
       });
       if (error) {
         setError(error.message);
         return { ok: false, error: error.message };
+      }
+      // When Supabase project has email confirmation ON, signUp returns a
+      // user with no session. Surface this to the caller so they can show
+      // "check your email" instead of dropping into onboarding silently.
+      if (!data.session && data.user) {
+        return { ok: true, verificationPending: true };
       }
       return { ok: true };
     } finally {

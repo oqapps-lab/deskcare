@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, KeyboardAvoidingView, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path } from 'react-native-svg';
@@ -41,7 +41,20 @@ export default function SignUpScreen() {
   const create = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     const r = await doSignUp(email, password);
-    if (r.ok) router.replace('/onboarding/welcome');
+    if (!r.ok) return;
+    // When Supabase has email confirmation ON, signUp succeeds but no session
+    // is created until the user clicks the link in their inbox. Without this
+    // path the app silently drops the user into onboarding while useUserId()
+    // returns undefined — quietly broken, also App Review 2.1(a) reject risk.
+    if (r.verificationPending) {
+      Alert.alert(
+        t('auth_verify_email_title'),
+        t('auth_verify_email_body', { email: email.trim().toLowerCase() }),
+        [{ text: t('common_ok'), onPress: () => router.replace('/auth/sign-in') }],
+      );
+      return;
+    }
+    router.replace('/onboarding/welcome');
   };
   const signIn = () => {
     Haptics.selectionAsync();
