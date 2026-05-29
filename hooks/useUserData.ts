@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 import { supabase } from '../lib/supabase';
 import { useUserId } from '../lib/store/session';
 import { useIsPremium } from '../lib/premium';
@@ -35,6 +36,7 @@ export const useHomeSnapshot = (): HomeUserSnapshot => {
   // Adapty Zustand source — updates instantly on purchase/restore/expiry,
   // tolerates Adapty→Supabase webhook delay or misconfiguration.
   const isPremiumFromAdapty = useIsPremium();
+  const [refreshTick, setRefreshTick] = useState(0);
   const [snap, setSnap] = useState<HomeUserSnapshot>({
     profile: null,
     onboardingData: {},
@@ -142,7 +144,16 @@ export const useHomeSnapshot = (): HomeUserSnapshot => {
     return () => {
       cancelled = true;
     };
-  }, [userId]);
+  }, [userId, refreshTick]);
+
+  // Bump refreshTick on focus so the snapshot re-fetches when the user
+  // returns to home (e.g. after completing a routine). Without this, the
+  // tab cache shows STALE streak / sessions until the app is killed.
+  useFocusEffect(
+    useCallback(() => {
+      setRefreshTick((t) => t + 1);
+    }, [])
+  );
 
   // OR Supabase (canonical, set by Adapty webhook) with Adapty Zustand
   // (instant client-side after purchase). Either truthy → premium.
