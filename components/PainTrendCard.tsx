@@ -5,6 +5,7 @@ import { colors, spacing, typeScale } from '../constants/tokens';
 import { GlassCard } from './ui';
 import type { PainTrend } from '../hooks/usePainTrend';
 import { t } from '../lib/i18n';
+import { toYmdLocal } from '../lib/dates';
 
 const WIDTH = 200;
 const HEIGHT = 60;
@@ -58,7 +59,7 @@ export const PainTrendCard: React.FC<{ trend: PainTrend }> = ({ trend }) => {
       const today = new Date();
       const cutoff = new Date();
       cutoff.setDate(today.getDate() - 14);
-      return p.date > cutoff.toISOString().split('T')[0];
+      return p.date > toYmdLocal(cutoff);
     })
     .sort((a, b) => a.date.localeCompare(b.date));
   const levels = recent14.map((p) => p.level);

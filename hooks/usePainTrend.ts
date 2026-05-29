@@ -78,7 +78,7 @@ export const usePainTrend = (primaryZoneSlug?: BodyZoneSlug): PainTrend => {
       const today = new Date();
       const cutoff = new Date();
       cutoff.setDate(today.getDate() - 14);
-      const cutoffStr = cutoff.toISOString().split('T')[0];
+      const cutoffStr = toYmdLocal(cutoff);
       const recent = points.filter((p) => p.date > cutoffStr).map((p) => p.level);
       const prior = points.filter((p) => p.date <= cutoffStr).map((p) => p.level);
 

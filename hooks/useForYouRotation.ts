@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { toYmdLocal } from '../lib/dates';
 
 export type Pose = 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-stretch';
 
@@ -40,7 +41,9 @@ export const useForYouRotation = (
   return useMemo(() => {
     const now = new Date();
     const hour = now.getHours();
-    const dayKey = now.toISOString().slice(0, 10); // YYYY-MM-DD — same all day
+    // LOCAL YYYY-MM-DD — UTC slice would rotate mid-afternoon in negative-UTC
+    // regions, making "For You Today" suddenly switch to "tomorrow's" cards.
+    const dayKey = toYmdLocal(now);
 
     // Deterministic seed from day + primary zone — same selection until midnight.
     const seedSrc = dayKey + (primaryZoneSlug || 'all');

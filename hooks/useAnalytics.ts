@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useUserId } from '../lib/store/session';
+import { toYmdLocal } from '../lib/dates';
 
 export interface AnalyticsSnapshot {
   loading: boolean;
@@ -36,7 +37,9 @@ const startOfDayISO = (offsetDays: number): string => {
   return d.toISOString();
 };
 
-const ymd = (iso: string): string => iso.split('T')[0];
+// LOCAL-time YYYY-MM-DD bucketing — was previously slicing ISO (UTC) which in
+// UTC+N regions dropped "today" from the 14-day chart in the early morning.
+// Reuses lib/dates.ts so the bug class is killed at the call-site level.
 
 export const useAnalytics = (): AnalyticsSnapshot => {
   const userId = useUserId();
@@ -52,6 +55,14 @@ export const useAnalytics = (): AnalyticsSnapshot => {
     const run = async () => {
       const since14 = startOfDayISO(-14);
       const since30 = startOfDayISO(-30);
+      // pain_entries.recorded_date is stored as local YYYY-MM-DD by the
+      // check-in upsert; the query filter must be local too, otherwise
+      // we drop the most recent day in negative-UTC regions.
+      const since30Local = (() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 30);
+        return toYmdLocal(d);
+      })();
 
       const [streakRes, sessions14, sessionsZones30, painRes] = await Promise.all([
         supabase
@@ -79,24 +90,26 @@ export const useAnalytics = (): AnalyticsSnapshot => {
           .select('recorded_date, pain_level, body_zone:body_zones(name)')
           .eq('user_id', userId)
           .is('deleted_at', null)
-          .gte('recorded_date', ymd(since30))
+          .gte('recorded_date', since30Local)
           .order('recorded_date', { ascending: false })
           .limit(500),
       ]);
 
       if (cancelled) return;
 
-      // Daily bins for last 14d.
+      // Daily bins for last 14d — LOCAL time. Bucketing on UTC dates would
+      // drop today's bar before local UTC offset hours had elapsed.
       const dailyMap = new Map<string, { sessions: number; minutes: number }>();
       for (let i = 13; i >= 0; i--) {
         const d = new Date();
         d.setDate(d.getDate() - i);
-        d.setHours(0, 0, 0, 0);
-        dailyMap.set(ymd(d.toISOString()), { sessions: 0, minutes: 0 });
+        dailyMap.set(toYmdLocal(d), { sessions: 0, minutes: 0 });
       }
       for (const s of (sessions14.data || []) as Array<{ completed_at: string | null; duration_seconds: number | null }>) {
         if (!s.completed_at) continue;
-        const k = ymd(s.completed_at);
+        // completed_at is full timestamp; bucket by LOCAL date so the
+        // chart matches the user's idea of which day they trained.
+        const k = toYmdLocal(new Date(s.completed_at));
         const v = dailyMap.get(k);
         if (v) {
           v.sessions += 1;
@@ -139,7 +152,11 @@ export const useAnalytics = (): AnalyticsSnapshot => {
       let painDelta: number | null = null;
       let painZoneName: string | null = null;
       let topCount = 0;
-      const cutoff = ymd(startOfDayISO(-14));
+      const cutoff = (() => {
+        const d = new Date();
+        d.setDate(d.getDate() - 14);
+        return toYmdLocal(d);
+      })();
       for (const c of counts.values()) {
         if (c.entries.length > topCount) {
           const recent = c.entries.filter((e) => e.d > cutoff).map((e) => e.lvl);
