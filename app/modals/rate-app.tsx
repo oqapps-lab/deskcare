@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
+import { SUPPORT_EMAIL } from '../../lib/legal';
 import Svg, { Path } from 'react-native-svg';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -26,6 +27,33 @@ export default function RateAppScreen() {
 
   const submit = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    // High rating → App Store write-review deep link. Low rating → mailto
+    // so user feedback lands somewhere actionable instead of evaporating.
+    // Previous behaviour: submit only closed the modal without recording
+    // the rating anywhere, so the user thought they had rated but no signal
+    // reached the App Store and no feedback reached the team.
+    if (rating >= 4) {
+      Linking.openURL(
+        'https://apps.apple.com/app/id6767548896?action=write-review',
+      ).catch(() => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+      });
+    } else if (rating > 0) {
+      const subject = encodeURIComponent('DeskCare feedback (' + rating + '/5)');
+      const body = encodeURIComponent(
+        'Hi DeskCare team,
+
+My rating: ' + rating + '/5.
+
+What could be better:
+',
+      );
+      Linking.openURL('mailto:' + SUPPORT_EMAIL + '?subject=' + subject + '&body=' + body).catch(
+        () => {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+        },
+      );
+    }
     if (router.canGoBack()) router.back();
     else router.replace('/main/home');
   };
