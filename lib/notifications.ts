@@ -39,9 +39,15 @@ export async function scheduleDailyReminder(
 ): Promise<string> {
   return Notifications.scheduleNotificationAsync({
     content: { title, body, sound: 'default' },
-    // SDK 55: trigger.type=DAILY with hour/minute. type field omitted for
-    // backwards-compat with the legacy shape; expo accepts both.
-    trigger: { hour, minute, repeats: true } as Notifications.NotificationTriggerInput,
+    // SDK 55 requires the explicit { type: DAILY, hour, minute } shape.
+    // The legacy { hour, minute, repeats: true } compiles via the loose
+    // NotificationTriggerInput union but schedules a ONE-SHOT — users got
+    // exactly one reminder, then silence. Use SchedulableTriggerInputTypes.
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DAILY,
+      hour,
+      minute,
+    },
   });
 }
 
