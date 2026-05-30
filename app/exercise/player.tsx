@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
@@ -151,10 +151,26 @@ export default function ExercisePlayerScreen() {
     setReady(false);
   }, [routineSlug, exerciseSlug]);
 
-  // Each step's video buffering blocks its own timer. Reset ready when the
-  // step index changes so the countdown waits for the next atom's video.
+  // Each step's video buffering blocks its own timer. Reset ready AND
+  // elapsed when the step index changes so the countdown waits for the
+  // next atom's video and starts at 0 — even if a stale tick from the
+  // previous step somehow re-incremented elapsed during the transition.
   useEffect(() => {
     setReady(false);
+    setElapsed(0);
+  }, [stepIdx]);
+
+  // Ref mirror of stepIdx so the live setInterval tick can detect whether
+  // it's a stale tick scheduled for a previous step. When the user taps the
+  // ✓ button WHILE the timer is running, React batches setStepIdx + the
+  // setElapsed(0) inside next(), but a pending interval tick can fire
+  // BEFORE React commits — composing as setElapsed((e)=>e+1) AFTER
+  // setElapsed(0) and leaving the new step at elapsed=1 instead of 0.
+  // Tester report (2026-05-30): "если галочку нажимаешь когда идёт счётчик
+  // — таймер продолжается на следующей странице, не сбрасывается."
+  const stepIdxRef = useRef(stepIdx);
+  useEffect(() => {
+    stepIdxRef.current = stepIdx;
   }, [stepIdx]);
 
   const step = items[stepIdx];
@@ -176,8 +192,18 @@ export default function ExercisePlayerScreen() {
   // Tick when items loaded + not paused + ready.
   useEffect(() => {
     if (!step || paused || !ready) return;
+    // Capture stepIdx at the moment this interval is scheduled. A tick that
+    // sneaks in after the user has already advanced to the next step (e.g.
+    // tap ✓ while running, before React commits the cleanup) will see
+    // stepIdxRef.current !== thisStep and bail without incrementing elapsed.
+    const thisStep = stepIdx;
     let navTimer: ReturnType<typeof setTimeout> | null = null;
     const id = setInterval(() => {
+      if (stepIdxRef.current !== thisStep) {
+        // Stale tick — the user has moved on. Drop without touching elapsed.
+        clearInterval(id);
+        return;
+      }
       setElapsed((e) => {
         if (e + 1 >= stepDur) {
           clearInterval(id);
