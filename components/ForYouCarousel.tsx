@@ -33,7 +33,7 @@ export const ForYouCarousel: React.FC<{ cards: ForYouCard[] }> = ({ cards }) => 
   );
 };
 
-const CARD_WIDTH = 220;
+const CARD_WIDTH = 160;
 
 /** Muted, looping exercise clip filling the top of the card. Replaces the
  *  hand-drawn pose illustration the tester disliked. Source is a local
@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
     opacity: 0.92,
   },
   videoWrap: {
-    height: 120,
-    borderRadius: 14,
+    height: 210, // portrait — the full standing/seated figure fits (tester R7)
+    borderRadius: 16,
     overflow: 'hidden',
     marginBottom: spacing.sm,
     backgroundColor: 'rgba(0,0,0,0.04)',
