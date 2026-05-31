@@ -384,13 +384,15 @@ export default function PaywallScreen() {
             </Pressable>
           </Animated.View>
 
+          {/* Honest trust signals — replaced a fabricated "4.8 · 2,400+
+              reviews" rating (fake social proof = App Review + integrity
+              risk, tester R6) with real, defensible product facts. */}
           <Animated.View style={[styles.trustRow, contentStyle]}>
-            <View style={styles.starRow}>
-              <Svg width={14} height={14} viewBox="0 0 14 14">
-                <Path d="M7 1 L8.7 5 L13 5.6 L9.8 8.5 L10.7 13 L7 10.8 L3.3 13 L4.2 8.5 L1 5.6 L5.3 5 Z" fill={colors.primaryMid} />
-              </Svg>
-              <Text style={styles.trustText}>{t('pw_trust_rating')}</Text>
-            </View>
+            {[t('pw_trust_a'), t('pw_trust_b'), t('pw_trust_c')].map((label, i) => (
+              <View key={i} style={styles.trustChip}>
+                <Text style={styles.trustChipText}>{label}</Text>
+              </View>
+            ))}
           </Animated.View>
 
           <Animated.View style={[styles.autoRenewBlock, contentStyle]}>
@@ -644,17 +646,23 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   trustRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
     marginBottom: spacing.md,
   },
-  starRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.xs,
+  trustChip: {
+    backgroundColor: colors.primarySoft,
+    paddingHorizontal: spacing.md,
+    paddingVertical: 5,
+    borderRadius: 999,
   },
-  trustText: {
-    ...typeScale.bodySm,
-    color: colors.inkMuted,
+  trustChipText: {
+    ...typeScale.labelSm,
+    color: colors.primaryDeep,
+    textTransform: 'uppercase',
   },
   legalRow: {
     flexDirection: 'row',
