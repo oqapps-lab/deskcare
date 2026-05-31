@@ -22,6 +22,7 @@ import { useHomeSnapshot } from '../../hooks/useUserData';
 import { usePainTrend } from '../../hooks/usePainTrend';
 import { useForYouRotation } from '../../hooks/useForYouRotation';
 import { ForYouCarousel } from '../../components/ForYouCarousel';
+import { HomeProgressCard } from '../../components/HomeProgressCard';
 import { useDailyChallenge } from '../../hooks/useDailyChallenge';
 import { useCalendarSlot } from '../../hooks/useCalendarSlot';
 import { usePostureScore } from '../../hooks/usePostureScore';
@@ -263,6 +264,9 @@ export default function HomeScreen() {
         </View>
 
         <ForYouCarousel cards={forYouCards} />
+
+        {/* Your week — 7-day activity chart + streak + achievements glance */}
+        {userId && <HomeProgressCard />}
 
         {/* Quick breaks — Eye + contextual prompts for user's pain zones */}
         <View style={styles.eyeRowWrap}>
