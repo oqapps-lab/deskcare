@@ -1,19 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import * as Haptics from 'expo-haptics';
-import Animated, {
-  Easing,
-  FadeInDown,
-  useAnimatedStyle,
-  useReducedMotion,
-  useSharedValue,
-  withDelay,
-  withRepeat,
-  withTiming,
-} from 'react-native-reanimated';
+import Animated, { FadeInDown, useReducedMotion } from 'react-native-reanimated';
+import { useVideoPlayer, VideoView } from 'expo-video';
 import { colors, spacing, typeScale } from '../constants/tokens';
-import { GlassCard, VideoPlaceholder } from './ui';
+import { GlassCard } from './ui';
 import type { ForYouCard } from '../hooks/useForYouRotation';
 
 /**
@@ -43,25 +35,27 @@ export const ForYouCarousel: React.FC<{ cards: ForYouCard[] }> = ({ cards }) => 
 
 const CARD_WIDTH = 220;
 
+/** Muted, looping exercise clip filling the top of the card. Replaces the
+ *  hand-drawn pose illustration the tester disliked. */
+const CardVideo: React.FC<{ uri: string }> = ({ uri }) => {
+  const player = useVideoPlayer(uri, (p) => {
+    p.loop = true;
+    p.muted = true;
+    p.play();
+  });
+  return (
+    <VideoView
+      player={player}
+      style={styles.video}
+      contentFit="cover"
+      nativeControls={false}
+      allowsPictureInPicture={false}
+    />
+  );
+};
+
 const BreathingCard: React.FC<{ card: ForYouCard; index: number }> = ({ card, index }) => {
   const reduceMotion = useReducedMotion();
-  const breath = useSharedValue(0.95);
-
-  useEffect(() => {
-    if (reduceMotion) return;
-    breath.value = withDelay(
-      index * 300,
-      withRepeat(
-        withTiming(1.04, { duration: 2400, easing: Easing.inOut(Easing.quad) }),
-        -1,
-        true,
-      ),
-    );
-  }, [breath, reduceMotion, index]);
-
-  const figureStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: breath.value }],
-  }));
 
   const onPress = () => {
     Haptics.selectionAsync();
@@ -78,13 +72,13 @@ const BreathingCard: React.FC<{ card: ForYouCard; index: number }> = ({ card, in
       accessibilityLabel={`${card.title}, ${card.minutes} minute routine`}
       style={({ pressed }) => [pressed && styles.pressed, styles.cardWrap]}
     >
-      <GlassCard tint={card.tone} radius="xl" padding={spacing.lg}>
-        <View style={styles.figureWrap}>
-          <Animated.View style={figureStyle}>
-            <VideoPlaceholder pose={card.pose} compact={false} />
-          </Animated.View>
+      <GlassCard tint={card.tone} radius="xl" padding={spacing.sm}>
+        <View style={styles.videoWrap}>
+          <CardVideo uri={card.videoUrl} />
+          <View style={styles.minutesBadge}>
+            <Text style={styles.minutesBadgeText}>{card.minutes} MIN</Text>
+          </View>
         </View>
-        <Text style={styles.minutesEyebrow}>{card.minutes} MIN</Text>
         <Text style={styles.title} numberOfLines={2}>{card.title}</Text>
       </GlassCard>
     </Pressable>
@@ -106,19 +100,34 @@ const styles = StyleSheet.create({
   pressed: {
     opacity: 0.92,
   },
-  figureWrap: {
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
+  videoWrap: {
+    height: 120,
+    borderRadius: 14,
+    overflow: 'hidden',
     marginBottom: spacing.sm,
+    backgroundColor: 'rgba(0,0,0,0.04)',
   },
-  minutesEyebrow: {
-    ...typeScale.label,
-    color: colors.primaryDeep,
-    marginBottom: 2,
+  video: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  minutesBadge: {
+    position: 'absolute',
+    top: spacing.xs,
+    left: spacing.xs,
+    backgroundColor: 'rgba(0,0,0,0.42)',
+    paddingHorizontal: spacing.sm,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
+  minutesBadgeText: {
+    ...typeScale.labelSm,
+    color: '#fff',
+    letterSpacing: 0.5,
   },
   title: {
     ...typeScale.titleLg,
     color: colors.ink,
+    paddingHorizontal: spacing.xs,
+    paddingBottom: spacing.xs,
   },
 });

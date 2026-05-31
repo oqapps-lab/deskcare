@@ -12,9 +12,24 @@ export interface ForYouCard {
   routineSlug: string;
   /** Subtle tone for the card. */
   tone: 'coral' | 'lavender' | 'mint' | 'peach' | 'cream';
+  /** Looping exercise clip shown as the card visual (replaces drawn poses). */
+  videoUrl: string;
 }
 
-const POOL: ReadonlyArray<ForYouCard> = [
+// Real exercise clips (Supabase storage) used as the card visual — the
+// tester hated the hand-drawn pose illustrations, so cards now show the
+// actual motion. One representative clip per pose; all are calm, non-hunching.
+const STORAGE_BASE =
+  'https://wnmjdxmrpmucfoluxhly.supabase.co/storage/v1/object/public/exercise-videos';
+const POSE_VIDEO: Record<Pose, string> = {
+  'neck-roll': `${STORAGE_BASE}/neck-rotation/video.mp4`,
+  'back-arch': `${STORAGE_BASE}/seated-back-extension/video.mp4`,
+  'eye-rest': `${STORAGE_BASE}/eye-circles/video.mp4`,
+  'wrist-stretch': `${STORAGE_BASE}/prayer-stretch/video.mp4`,
+};
+
+type PoolCard = Omit<ForYouCard, 'videoUrl'>;
+const POOL: ReadonlyArray<PoolCard> = [
   { id: 'neck-2',   pose: 'neck-roll',     title: 'Neck reset',         minutes: 2, routineSlug: 'neck-quick-2min',   tone: 'coral' },
   { id: 'neck-3',   pose: 'neck-roll',     title: 'Shoulder release',   minutes: 3, routineSlug: 'neck-full-3min',  tone: 'peach' },
   { id: 'back-3',   pose: 'back-arch',     title: 'Back reset',         minutes: 3, routineSlug: 'back-quick-3min',   tone: 'peach' },
@@ -55,7 +70,7 @@ export const useForYouRotation = (
     };
 
     // Score each candidate by time-of-day + zone match.
-    type Scored = { card: ForYouCard; score: number };
+    type Scored = { card: PoolCard; score: number };
     const scored: Scored[] = POOL.map((c) => {
       let s = 0;
       // Zone match boost
@@ -75,7 +90,7 @@ export const useForYouRotation = (
 
     // Pick top 3 with pose+tone diversity — no two cards share the same pose,
     // and tones are reassigned cyclically so the row looks visually varied.
-    const picked: ForYouCard[] = [];
+    const picked: PoolCard[] = [];
     const usedPoses = new Set<Pose>();
     for (const s of scored) {
       if (picked.length >= 3) break;
@@ -95,6 +110,7 @@ export const useForYouRotation = (
     return picked.map((c, i) => ({
       ...c,
       tone: tonePalette[(toneOffset + i * 2) % tonePalette.length],
+      videoUrl: POSE_VIDEO[c.pose],
     }));
   }, [primaryZoneSlug]);
 };
