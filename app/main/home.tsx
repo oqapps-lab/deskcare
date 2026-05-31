@@ -298,17 +298,33 @@ export default function HomeScreen() {
         <View style={styles.zoneRowWrap}>
           <Eyebrow>{t('home_zones_eyebrow')}</Eyebrow>
           <View style={styles.zoneRow}>
-            {buildZones().map((z) => (
-              <ZoneCircle
-                key={z.id}
-                label={z.label}
-                duration={z.duration}
-                icon={z.icon}
-                tone={z.tone}
-                warm={z.id === 'neck' && state !== 'first'}
-                locked={!(state === 'premium' || z.free)}
-              />
-            ))}
+            {buildZones().map((z) => {
+              const locked = !(state === 'premium' || z.free);
+              const onZonePress = () => {
+                Haptics.selectionAsync();
+                if (locked) {
+                  router.push('/modals/mini-paywall' as never);
+                  return;
+                }
+                if (z.id === 'eyes') {
+                  openEyeBreak();
+                } else {
+                  openQuickRoutine(z.routineSlug);
+                }
+              };
+              return (
+                <ZoneCircle
+                  key={z.id}
+                  label={z.label}
+                  duration={z.duration}
+                  icon={z.icon}
+                  tone={z.tone}
+                  warm={z.id === 'neck' && state !== 'first'}
+                  locked={locked}
+                  onPress={onZonePress}
+                />
+              );
+            })}
           </View>
         </View>
 
@@ -425,10 +441,10 @@ export default function HomeScreen() {
 }
 
 const buildZones = () => [
-  { id: 'neck',    label: t('zone_neck'),   duration: '3 MIN',  icon: 'infinity' as const, tone: 'coral'    as HaloTone, free: true },
-  { id: 'back',    label: t('zone_back'),   duration: '4 MIN',  icon: 'refresh'  as const, tone: 'peach'    as HaloTone, free: false },
-  { id: 'eyes',    label: t('zone_eyes'),   duration: '30 SEC', icon: 'eye'      as const, tone: 'lavender' as HaloTone, free: true },
-  { id: 'wrists',  label: t('zone_wrists'), duration: '2 MIN',  icon: 'plus'     as const, tone: 'mint'     as HaloTone, free: false },
+  { id: 'neck',    label: t('zone_neck'),   duration: '3 MIN',  icon: 'infinity' as const, tone: 'coral'    as HaloTone, free: true,  routineSlug: ROUTINE_SLUGS.NECK_QUICK_2MIN },
+  { id: 'back',    label: t('zone_back'),   duration: '4 MIN',  icon: 'refresh'  as const, tone: 'peach'    as HaloTone, free: false, routineSlug: ROUTINE_SLUGS.BACK_QUICK_3MIN },
+  { id: 'eyes',    label: t('zone_eyes'),   duration: '30 SEC', icon: 'eye'      as const, tone: 'lavender' as HaloTone, free: true,  routineSlug: ROUTINE_SLUGS.NECK_QUICK_2MIN },
+  { id: 'wrists',  label: t('zone_wrists'), duration: '2 MIN',  icon: 'plus'     as const, tone: 'mint'     as HaloTone, free: false, routineSlug: ROUTINE_SLUGS.WRISTS_QUICK_2MIN },
 ];
 
 const ZoneCircle: React.FC<{
@@ -438,8 +454,15 @@ const ZoneCircle: React.FC<{
   tone: HaloTone;
   warm?: boolean;
   locked?: boolean;
-}> = ({ label, duration, icon, tone, warm, locked }) => (
-  <View style={styles.zoneItem}>
+  onPress?: () => void;
+}> = ({ label, duration, icon, tone, warm, locked, onPress }) => (
+  <Pressable
+    onPress={onPress}
+    accessibilityRole="button"
+    accessibilityLabel={label}
+    accessibilityState={{ disabled: false }}
+    style={({ pressed }) => [styles.zoneItem, pressed && styles.pressed]}
+  >
     <View style={[styles.zoneCircle, warm && styles.zoneCircleWarm, locked && styles.zoneCircleLocked]}>
       <IconHalo icon={icon} size="md" tone={tone} variant={warm ? 'gradient' : 'tinted'} glow={warm} />
     </View>
@@ -450,7 +473,7 @@ const ZoneCircle: React.FC<{
         <PremiumLock size="xs" tone="subtle" />
       </View>
     )}
-  </View>
+  </Pressable>
 );
 
 const ProgramTile: React.FC<{ label: string; subtitle: string; tone: HaloTone }> = ({ label, subtitle, tone }) => (
