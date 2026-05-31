@@ -167,6 +167,7 @@ export default function RootLayout() {
           <Stack.Screen name="main/library" options={{ animation: 'none' }} />
           <Stack.Screen name="main/programs" options={{ animation: 'none' }} />
           <Stack.Screen name="main/profile" options={{ animation: 'none' }} />
+          <Stack.Screen name="stories/[id]" options={{ animation: 'fade_from_bottom', animationDuration: 280 }} />
           <Stack.Screen name="eye/session" options={{ animation: 'fade_from_bottom' }} />
           <Stack.Screen name="pain/check-in" options={{ animation: 'slide_from_bottom' }} />
           <Stack.Screen name="sync" options={{ animation: 'fade' }} />

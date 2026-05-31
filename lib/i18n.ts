@@ -48,6 +48,7 @@ type Dict = Record<string, string>;
 
 const en: Dict = {
   brand_eyebrow: 'DESKCARE',
+  home_stories_eyebrow: 'LEARN IN 30 SECONDS',
   home_progress_eyebrow: 'YOUR WEEK',
   home_progress_link: 'DETAILS',
   home_progress_a11y: 'Your weekly progress and achievements',

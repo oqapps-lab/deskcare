@@ -23,6 +23,7 @@ import { usePainTrend } from '../../hooks/usePainTrend';
 import { useForYouRotation } from '../../hooks/useForYouRotation';
 import { ForYouCarousel } from '../../components/ForYouCarousel';
 import { HomeProgressCard } from '../../components/HomeProgressCard';
+import { StoriesRail } from '../../components/StoriesRail';
 import { useDailyChallenge } from '../../hooks/useDailyChallenge';
 import { useCalendarSlot } from '../../hooks/useCalendarSlot';
 import { usePostureScore } from '../../hooks/usePostureScore';
@@ -264,6 +265,9 @@ export default function HomeScreen() {
         </View>
 
         <ForYouCarousel cards={forYouCards} />
+
+        {/* Stories — bite-size desk-health + focus content */}
+        <StoriesRail />
 
         {/* Your week — 7-day activity chart + streak + achievements glance */}
         {userId && <HomeProgressCard />}
