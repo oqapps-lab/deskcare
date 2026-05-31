@@ -13,7 +13,6 @@ import {
   PillChip,
   PremiumLock,
   TabBar,
-  VideoPlaceholder,
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useExercises } from '../../hooks/useContent';
@@ -42,6 +41,16 @@ const poseFor = (code: string): 'neck-roll' | 'back-arch' | 'eye-rest' | 'wrist-
   if (code.startsWith('W')) return 'wrist-stretch';
   if (code.startsWith('E')) return 'eye-rest';
   return 'neck-roll';
+};
+
+// Clean branded circle per exercise zone — replaces the old hand-drawn
+// VideoPlaceholder poses (tester: "уродские рисуночки"). Lightweight icon,
+// no streaming, consistent with the home zone circles.
+const ICON_FOR: Record<string, { icon: 'infinity' | 'refresh' | 'eye' | 'plus'; tone: 'coral' | 'peach' | 'lavender' | 'mint' }> = {
+  'neck-roll': { icon: 'infinity', tone: 'coral' },
+  'back-arch': { icon: 'refresh', tone: 'peach' },
+  'eye-rest': { icon: 'eye', tone: 'lavender' },
+  'wrist-stretch': { icon: 'plus', tone: 'mint' },
 };
 
 const formatDuration = (s: number): string => (s < 60 ? `${s} SEC` : `${Math.round(s / 60)} MIN`);
@@ -206,7 +215,7 @@ export default function LibraryScreen() {
                   style={({ pressed }) => [pressed && styles.pressed]}
                 >
                   <View style={[styles.row, i > 0 && styles.rowDivider]}>
-                    <VideoPlaceholder pose={poseFor(e.code)} circle />
+                    <IconHalo {...ICON_FOR[poseFor(e.code)]} size="md" variant="tinted" />
                     <View style={styles.rowText}>
                       <View style={styles.rowTitleRow}>
                         <Text
