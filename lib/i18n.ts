@@ -52,6 +52,7 @@ const en: Dict = {
   pw_trust_b: '2–5 min a day',
   pw_trust_c: 'Physio-informed',
   home_stories_eyebrow: 'LEARN IN 30 SECONDS',
+  home_stories_read: '30 sec read',
   home_progress_eyebrow: 'YOUR WEEK',
   home_progress_link: 'DETAILS',
   home_progress_a11y: 'Your weekly progress and achievements',

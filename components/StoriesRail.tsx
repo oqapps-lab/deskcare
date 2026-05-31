@@ -9,18 +9,19 @@ import { STORIES, type StoryTone } from '../lib/stories';
 import { t } from '../lib/i18n';
 
 const TONE_GRADIENT: Record<StoryTone, [string, string]> = {
-  coral: ['#E87B4E', '#7E2C03'],
-  lavender: ['#9B8EB4', '#3E3457'],
-  mint: ['#6BA485', '#2F5C46'],
-  peach: ['#FFB599', '#8A3D12'],
-  sky: ['#5B8CA0', '#234E5E'],
+  coral: ['#E87B4E', '#9D431A'],
+  lavender: ['#9B8EB4', '#4A3F63'],
+  mint: ['#6BA485', '#34614A'],
+  peach: ['#F0A579', '#A85726'],
+  sky: ['#6E9DB0', '#2E5566'],
 };
 
 /**
- * Horizontal "stories" rail — IG-style tappable bubbles that open the
- * full-screen tap-through story viewer. Bite-size desk-health + focus
- * content. Added 2026-05-31 to give the app залипательный content beyond
- * exercise videos.
+ * Horizontal Stories rail — bite-size desk-health + focus content.
+ * Redesigned 2026-05-31 (tester R9): the old circular letter-monogram
+ * bubbles (D/E/P/F/W) looked terrible. Now each story is a tall rounded
+ * gradient CARD with its title — premium editorial tiles, no ugly letters
+ * and no photo assets required. Tapping opens the full-screen viewer.
  */
 export const StoriesRail: React.FC = () => {
   const open = (id: string) => {
@@ -45,14 +46,18 @@ export const StoriesRail: React.FC = () => {
               onPress={() => open(s.id)}
               accessibilityRole="button"
               accessibilityLabel={s.title}
-              style={({ pressed }) => [styles.item, pressed && styles.pressed]}
+              style={({ pressed }) => [pressed && styles.pressed]}
             >
-              <LinearGradient colors={[a, b]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.bubble}>
-                <View style={styles.bubbleInner}>
-                  <Text style={[styles.glyph, { color: a }]}>{s.glyph}</Text>
-                </View>
+              <LinearGradient
+                colors={[a, b]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.card}
+              >
+                <Text style={styles.kicker}>{s.label.toUpperCase()}</Text>
+                <Text style={styles.title} numberOfLines={3}>{s.title}</Text>
+                <Text style={styles.meta}>{t('home_stories_read')}</Text>
               </LinearGradient>
-              <Text style={styles.label} numberOfLines={1}>{s.label}</Text>
             </Pressable>
           );
         })}
@@ -61,10 +66,12 @@ export const StoriesRail: React.FC = () => {
   );
 };
 
-const BUBBLE = 68;
+const CARD_W = 150;
+const CARD_H = 190;
 
 const styles = StyleSheet.create({
   wrap: {
+    marginTop: spacing.xl, // breathing room from the For You carousel (R9)
     marginBottom: spacing.lg,
   },
   scroll: {
@@ -75,38 +82,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xxl,
     gap: spacing.md,
   },
-  item: {
-    width: BUBBLE + 8,
-    alignItems: 'center',
-    gap: 6,
-  },
   pressed: {
-    opacity: 0.85,
-    transform: [{ scale: 0.96 }],
+    opacity: 0.9,
+    transform: [{ scale: 0.98 }],
   },
-  bubble: {
-    width: BUBBLE,
-    height: BUBBLE,
-    borderRadius: BUBBLE / 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 3,
+  card: {
+    width: CARD_W,
+    height: CARD_H,
+    borderRadius: 20,
+    padding: spacing.lg,
+    justifyContent: 'space-between',
   },
-  bubbleInner: {
-    flex: 1,
-    alignSelf: 'stretch',
-    borderRadius: BUBBLE / 2,
-    backgroundColor: colors.canvas,
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: 2,
-  },
-  glyph: {
-    fontSize: 28,
-  },
-  label: {
+  kicker: {
     ...typeScale.labelSm,
-    color: colors.inkMuted,
-    textAlign: 'center',
+    color: 'rgba(255,255,255,0.85)',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  title: {
+    ...typeScale.titleLg,
+    color: '#fff',
+    fontWeight: '700',
+  },
+  meta: {
+    ...typeScale.labelSm,
+    color: 'rgba(255,255,255,0.92)',
+    textTransform: 'uppercase',
   },
 });
