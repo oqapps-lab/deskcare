@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import { LEGAL_URLS } from '../../lib/legal';
 import { IS_EXPO_GO } from '../../lib/native-runtime';
@@ -58,6 +58,7 @@ const BENEFITS = [
 export default function PaywallScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
+  const { from } = useLocalSearchParams<{ from?: string }>();
   const [plan, setPlan] = useState<Plan>('yearly');
   // Begin button busy state. Without this the user sees the CTA looking
   // identical during the (possibly slow) Adapty.getPaywall call → tester
@@ -92,11 +93,17 @@ export default function PaywallScreen() {
 
   const close = () => {
     Haptics.selectionAsync();
-    // Same paywall serves both the onboarding stack (welcome → quiz → … →
-    // paywall) and the in-app upsell (Programs / Library tile → paywall).
-    // Going back respects whichever flow opened it. Only fall through to
-    // /main/home when there's no history — i.e. the paywall is the root
-    // screen of a deep-link.
+    // This is an ONBOARDING paywall, not a hard wall. When the user reaches
+    // it as the onboarding terminal (from === 'onboarding'), × drops them
+    // straight INTO the app — they get a usable free home, premium content
+    // stays gated per-feature. Previously × did router.back() into the quiz,
+    // trapping the user with no way into the app without buying (tester
+    // 2026-05-31). For in-app upsells (Programs/Library tile → paywall) we
+    // still go back to wherever they were.
+    if (from === 'onboarding') {
+      router.replace('/main/home');
+      return;
+    }
     if (router.canGoBack()) router.back();
     else router.replace('/main/home');
   };

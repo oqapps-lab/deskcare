@@ -217,7 +217,10 @@ export default function NotificationSettingsScreen() {
       if (router.canGoBack()) router.back();
       else router.replace('/main/profile');
     } else {
-      router.push('/onboarding/paywall');
+      // Onboarding terminal — tell the paywall its × should drop the user
+      // INTO the app (not back into the quiz), so it's an escapable
+      // onboarding paywall, not a hard trap.
+      router.push({ pathname: '/onboarding/paywall', params: { from: 'onboarding' } } as never);
     }
   };
 
