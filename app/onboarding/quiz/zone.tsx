@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import * as Haptics from 'expo-haptics';
 import Animated, {
   Easing,
@@ -25,6 +25,8 @@ import {
 } from '../../../components/ui';
 import { colors, spacing, typeScale } from '../../../constants/tokens';
 import { useOnboarding } from '../../../lib/store/onboarding';
+import { supabase } from '../../../lib/supabase';
+import { useUserId } from '../../../lib/store/session';
 import { t } from '../../../lib/i18n';
 
 type Zone = 'neck' | 'back' | 'eyes' | 'wrists';
@@ -48,6 +50,29 @@ export default function QuizZoneScreen() {
   const [selected, setSelected] = useState<Set<Zone>>(new Set());
   const [everything, setEverything] = useState(false);
   const setZones = useOnboarding((s) => s.setZones);
+  // Edit mode (R10): opened from home/profile to CHANGE saved zones, not as
+  // part of first-run onboarding. Preselects current zones + saves to the
+  // profile and returns, instead of advancing the quiz.
+  const { edit } = useLocalSearchParams<{ edit?: string }>();
+  const isEdit = edit === '1';
+  const userId = useUserId();
+
+  useEffect(() => {
+    if (!isEdit || !userId) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from('profiles')
+        .select('onboarding_data')
+        .eq('id', userId)
+        .maybeSingle();
+      if (cancelled) return;
+      const zones = (data?.onboarding_data as { pain_zones?: string[] } | null)?.pain_zones ?? [];
+      const valid = zones.filter((z): z is Zone => ['neck', 'back', 'eyes', 'wrists'].includes(z));
+      if (valid.length) setSelected(new Set(valid));
+    })();
+    return () => { cancelled = true; };
+  }, [isEdit, userId]);
 
   const contentOpacity = useSharedValue(0);
   const contentY = useSharedValue(16);
@@ -83,10 +108,30 @@ export default function QuizZoneScreen() {
     if (router.canGoBack()) router.back();
     else router.replace('/onboarding/welcome');
   };
-  const next = () => {
+  const next = async () => {
     if (selected.size === 0 && !everything) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    setZones(everything ? ['neck', 'back', 'eyes', 'wrists'] : Array.from(selected));
+    const zones = everything ? ['neck', 'back', 'eyes', 'wrists'] : Array.from(selected);
+    if (isEdit) {
+      // Persist the new zones to the profile, merging into onboarding_data,
+      // then return to wherever the user opened the editor from.
+      if (userId) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('onboarding_data')
+          .eq('id', userId)
+          .maybeSingle();
+        const prev = (data?.onboarding_data as Record<string, unknown> | null) ?? {};
+        await supabase
+          .from('profiles')
+          .update({ onboarding_data: { ...prev, pain_zones: zones } })
+          .eq('id', userId);
+      }
+      if (router.canGoBack()) router.back();
+      else router.replace('/main/home');
+      return;
+    }
+    setZones(zones);
     router.push('/onboarding/quiz/frequency');
   };
   const skip = () => {

@@ -311,7 +311,22 @@ export default function HomeScreen() {
 
         {/* Body zone selector */}
         <View style={styles.zoneRowWrap}>
-          <Eyebrow>{t('home_zones_eyebrow')}</Eyebrow>
+          <View style={styles.zoneHeaderRow}>
+            <Eyebrow>{t('home_zones_eyebrow')}</Eyebrow>
+            {userId && (
+              <Pressable
+                hitSlop={10}
+                onPress={() => {
+                  Haptics.selectionAsync();
+                  router.push('/onboarding/quiz/zone?edit=1' as never);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={t('home_zones_edit')}
+              >
+                <Text style={styles.zoneEditLink}>{t('home_zones_edit')}</Text>
+              </Pressable>
+            )}
+          </View>
           <View style={styles.zoneRow}>
             {buildZones().map((z) => {
               const locked = !(isPremium || z.free);
@@ -627,6 +642,16 @@ const styles = StyleSheet.create({
   },
   zoneRowWrap: {
     marginTop: spacing.xl,
+  },
+  zoneHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  zoneEditLink: {
+    ...typeScale.labelSm,
+    color: colors.primaryMid,
+    textTransform: 'uppercase',
   },
   zoneRow: {
     flexDirection: 'row',
