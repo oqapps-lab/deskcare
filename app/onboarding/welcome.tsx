@@ -24,14 +24,13 @@ import { colors, spacing, typeScale } from '../../constants/tokens';
 import { t } from '../../lib/i18n';
 
 /**
- * Background video for the welcome hero. Cat-cow loop — the most universal
- * stretching motion + visually matches "Two minutes a day. Your neck stops
- * aching." copy. Muted, looping, autoplay; falls through gracefully when
- * the player isn't ready (overlay gradient + brand color keep the screen
- * looking intentional even on a black frame).
+ * Background video for the welcome hero. Neck lateral-tilt loop — a calm
+ * head-tilt L/R motion (NOT the old hunching cat-cow) that matches the
+ * "Your neck stops aching" copy. Bundled LOCALLY via require() so it plays
+ * instantly with zero network buffering — the previous Supabase-streamed
+ * URL lagged badly on first open. Muted, looping, autoplay.
  */
-const HERO_VIDEO_URL =
-  'https://wnmjdxmrpmucfoluxhly.supabase.co/storage/v1/object/public/exercise-videos/seated-cat-cow/video.mp4';
+const HERO_VIDEO_SOURCE = require('../../assets/welcome-hero.mp4');
 
 /**
  * Welcome — the first screen after splash. Quiet sell: a promise + CTA.
@@ -95,17 +94,20 @@ export default function WelcomeScreen() {
           readable regardless of which frame is on-screen. */}
       <HeroVideo />
 
-      {/* Warm-to-canvas gradient scrim — keeps text readable + ties the
-          video into the app's color world. Top of screen darker for the
-          eyebrow/copy, bottom blends into canvas for the CTAs. */}
+      {/* Light top wash (very subtle, just enough to seat the DESKCARE
+          eyebrow) + a strong canvas gradient on the bottom half where the
+          copy + CTAs live. No more heavy brown scrim — the title/sub now
+          render as DARK ink on near-solid canvas, so they read cleanly
+          instead of white-on-video. */}
       <LinearGradient
         colors={[
-          'rgba(94,33,3,0.72)',
-          'rgba(126,44,3,0.45)',
-          'rgba(251,249,245,0.55)',
-          'rgba(251,249,245,0.98)',
+          'rgba(251,249,245,0.28)',
+          'rgba(251,249,245,0)',
+          'rgba(251,249,245,0)',
+          'rgba(251,249,245,0.86)',
+          'rgba(251,249,245,1)',
         ]}
-        locations={[0, 0.42, 0.72, 1]}
+        locations={[0, 0.14, 0.5, 0.78, 1]}
         style={StyleSheet.absoluteFill}
         pointerEvents="none"
       />
@@ -160,7 +162,7 @@ export default function WelcomeScreen() {
 }
 
 const HeroVideo: React.FC = () => {
-  const player = useVideoPlayer(HERO_VIDEO_URL, (p) => {
+  const player = useVideoPlayer(HERO_VIDEO_SOURCE, (p) => {
     p.loop = true;
     p.muted = true;
     p.play();
@@ -186,13 +188,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   eyebrowOnVideo: {
-    color: '#FFE4D2',
+    color: colors.primaryDeep,
   },
   illoSpacer: {
-    height: 260,
+    flex: 1,
   },
   copy: {
     alignItems: 'center',
+    marginBottom: spacing.xl,
   },
   title: {
     ...typeScale.headline,
@@ -200,10 +203,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   titleOnVideo: {
-    color: colors.canvas,
-    textShadowColor: 'rgba(0,0,0,0.35)',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 8,
+    color: colors.ink,
   },
   sub: {
     ...typeScale.body,
@@ -212,10 +212,7 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   subOnVideo: {
-    color: 'rgba(251,249,245,0.92)',
-    textShadowColor: 'rgba(0,0,0,0.32)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    color: colors.inkMuted,
   },
   ctaBlock: {
     alignItems: 'center',
