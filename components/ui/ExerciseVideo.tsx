@@ -130,7 +130,9 @@ const VideoBody: React.FC<{ videoUrl: string; onReady?: () => void }> = ({ video
   return (
     <VideoView
       player={player}
-      style={StyleSheet.absoluteFill}
+      // Bleed 2px past each edge so the parent's overflow:hidden crops the
+      // thin top/bottom line baked into the source clips (tester S4).
+      style={styles.video}
       contentFit="cover"
       nativeControls={false}
       allowsPictureInPicture={false}
@@ -139,6 +141,13 @@ const VideoBody: React.FC<{ videoUrl: string; onReady?: () => void }> = ({ video
 };
 
 const styles = StyleSheet.create({
+  video: {
+    position: 'absolute',
+    top: -2,
+    bottom: -2,
+    left: 0,
+    right: 0,
+  },
   wrap: {
     overflow: 'hidden',
     backgroundColor: 'rgba(0,0,0,0.04)',

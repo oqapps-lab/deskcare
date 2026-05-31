@@ -109,7 +109,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.04)',
   },
   video: {
-    ...StyleSheet.absoluteFillObject,
+    // Bleed 2px past top/bottom so overflow:hidden crops the source edge
+    // line (tester S4).
+    position: 'absolute',
+    top: -2,
+    bottom: -2,
+    left: 0,
+    right: 0,
   },
   minutesBadge: {
     position: 'absolute',

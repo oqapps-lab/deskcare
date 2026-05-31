@@ -88,7 +88,7 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.canvas }}>
+    <View style={{ flex: 1, backgroundColor: colors.canvas, overflow: 'hidden' }}>
       {/* Looping cat-cow video as ambient background — muted, autoplays.
           Sits behind a brand-coral gradient scrim so the copy stays
           readable regardless of which frame is on-screen. */}
@@ -170,7 +170,8 @@ const HeroVideo: React.FC = () => {
   return (
     <VideoView
       player={player}
-      style={StyleSheet.absoluteFill}
+      // Bleed 2px past top/bottom (parent clips) to hide the source edge line (S4).
+      style={{ position: 'absolute', top: -2, bottom: -2, left: 0, right: 0 }}
       contentFit="cover"
       nativeControls={false}
       allowsPictureInPicture={false}
