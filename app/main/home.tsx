@@ -24,6 +24,7 @@ import { useForYouRotation } from '../../hooks/useForYouRotation';
 import { ForYouCarousel } from '../../components/ForYouCarousel';
 import { HomeProgressCard } from '../../components/HomeProgressCard';
 import { StoriesRail } from '../../components/StoriesRail';
+import { useIsPremium } from '../../lib/premium';
 import { useDailyChallenge } from '../../hooks/useDailyChallenge';
 import { useCalendarSlot } from '../../hooks/useCalendarSlot';
 import { usePostureScore } from '../../hooks/usePostureScore';
@@ -122,6 +123,12 @@ export default function HomeScreen() {
       }
     : baseCfg;
   const state = inferredState;
+  // Single source of truth for premium gating (PREMIUM_BYPASS env + Adapty
+  // entitlement). The home display `state` only flips to 'premium' for a
+  // signed-in user with a loaded profile, so gating locks on `state` left
+  // the zone tiles locked even for active subscribers (tester R4). Gate on
+  // useIsPremium() instead.
+  const isPremium = useIsPremium();
 
   const beginRoutine = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
@@ -307,7 +314,7 @@ export default function HomeScreen() {
           <Eyebrow>{t('home_zones_eyebrow')}</Eyebrow>
           <View style={styles.zoneRow}>
             {buildZones().map((z) => {
-              const locked = !(state === 'premium' || z.free);
+              const locked = !(isPremium || z.free);
               const onZonePress = () => {
                 Haptics.selectionAsync();
                 if (locked) {
