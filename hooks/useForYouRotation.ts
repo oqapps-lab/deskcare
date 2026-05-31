@@ -12,23 +12,25 @@ export interface ForYouCard {
   routineSlug: string;
   /** Subtle tone for the card. */
   tone: 'coral' | 'lavender' | 'mint' | 'peach' | 'cream';
-  /** Looping exercise clip shown as the card visual (replaces drawn poses). */
-  videoUrl: string;
+  /**
+   * Looping exercise clip shown as the card visual (replaces drawn poses).
+   * LOCAL require() source — bundled so the carousel paints instantly with
+   * zero network buffering. (Streaming these from Supabase showed empty
+   * tinted cards on cold open — the exact lag the tester flagged.)
+   */
+  videoSource: number;
 }
 
-// Real exercise clips (Supabase storage) used as the card visual — the
-// tester hated the hand-drawn pose illustrations, so cards now show the
-// actual motion. One representative clip per pose; all are calm, non-hunching.
-const STORAGE_BASE =
-  'https://wnmjdxmrpmucfoluxhly.supabase.co/storage/v1/object/public/exercise-videos';
-const POSE_VIDEO: Record<Pose, string> = {
-  'neck-roll': `${STORAGE_BASE}/neck-rotation/video.mp4`,
-  'back-arch': `${STORAGE_BASE}/seated-back-extension/video.mp4`,
-  'eye-rest': `${STORAGE_BASE}/eye-circles/video.mp4`,
-  'wrist-stretch': `${STORAGE_BASE}/prayer-stretch/video.mp4`,
+// Real exercise clips bundled locally — one representative motion per pose,
+// all calm + non-hunching. Pre-bundled = no network, instant first frame.
+const POSE_VIDEO: Record<Pose, number> = {
+  'neck-roll': require('../assets/fy-neck.mp4'),
+  'back-arch': require('../assets/fy-back.mp4'),
+  'eye-rest': require('../assets/fy-eyes.mp4'),
+  'wrist-stretch': require('../assets/fy-wrist.mp4'),
 };
 
-type PoolCard = Omit<ForYouCard, 'videoUrl'>;
+type PoolCard = Omit<ForYouCard, 'videoSource'>;
 const POOL: ReadonlyArray<PoolCard> = [
   { id: 'neck-2',   pose: 'neck-roll',     title: 'Neck reset',         minutes: 2, routineSlug: 'neck-quick-2min',   tone: 'coral' },
   { id: 'neck-3',   pose: 'neck-roll',     title: 'Shoulder release',   minutes: 3, routineSlug: 'neck-full-3min',  tone: 'peach' },
@@ -110,7 +112,7 @@ export const useForYouRotation = (
     return picked.map((c, i) => ({
       ...c,
       tone: tonePalette[(toneOffset + i * 2) % tonePalette.length],
-      videoUrl: POSE_VIDEO[c.pose],
+      videoSource: POSE_VIDEO[c.pose],
     }));
   }, [primaryZoneSlug]);
 };

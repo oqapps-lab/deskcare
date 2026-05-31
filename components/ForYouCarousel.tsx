@@ -36,9 +36,10 @@ export const ForYouCarousel: React.FC<{ cards: ForYouCard[] }> = ({ cards }) => 
 const CARD_WIDTH = 220;
 
 /** Muted, looping exercise clip filling the top of the card. Replaces the
- *  hand-drawn pose illustration the tester disliked. */
-const CardVideo: React.FC<{ uri: string }> = ({ uri }) => {
-  const player = useVideoPlayer(uri, (p) => {
+ *  hand-drawn pose illustration the tester disliked. Source is a local
+ *  require() so it paints instantly — no network buffering. */
+const CardVideo: React.FC<{ source: number }> = ({ source }) => {
+  const player = useVideoPlayer(source, (p) => {
     p.loop = true;
     p.muted = true;
     p.play();
@@ -74,7 +75,7 @@ const BreathingCard: React.FC<{ card: ForYouCard; index: number }> = ({ card, in
     >
       <GlassCard tint={card.tone} radius="xl" padding={spacing.sm}>
         <View style={styles.videoWrap}>
-          <CardVideo uri={card.videoUrl} />
+          <CardVideo source={card.videoSource} />
           <View style={styles.minutesBadge}>
             <Text style={styles.minutesBadgeText}>{card.minutes} MIN</Text>
           </View>
