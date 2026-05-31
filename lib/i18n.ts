@@ -874,7 +874,7 @@ const en: Dict = {
 
   // Custom Routines (F13)
   cr_builder_title: 'Build your own routine',
-  cr_builder_sub: 'Pick exercises, save, run any time',
+  cr_builder_sub: 'Your own mix of exercises — not a guided program',
   cr_saved_eyebrow: 'YOUR ROUTINES',
   cr_count_exercises: '{n} exercises',
   cr_title: 'Custom routine',
@@ -1584,7 +1584,7 @@ const enGB: Dict = {
   prog_office_feat_3: 'Fits between meetings without changing clothes',
   prog_office_feat_4: 'Build a daily habit anchor, not a workout',
   cr_builder_title: 'Build your own routine',
-  cr_builder_sub: 'Pick exercises, save, run any time',
+  cr_builder_sub: 'Your own mix of exercises — not a guided program',
   cr_saved_eyebrow: 'YOUR ROUTINES',
   cr_count_exercises: '{n} exercises',
   cr_title: 'Custom routine',
