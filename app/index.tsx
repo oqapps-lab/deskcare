@@ -9,7 +9,8 @@ import Animated, {
   withDelay,
   withTiming,
 } from 'react-native-reanimated';
-import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Path, Stop } from 'react-native-svg';
+import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
+import { Image } from 'expo-image';
 import { AtmosphericBackground } from '../components/ui/AtmosphericBackground';
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
@@ -92,37 +93,16 @@ export default function Splash() {
           </Svg>
         </Animated.View>
 
-        {/* Animated logo — DeskCare brand glyph: stylized "D" as a leaf-like curve */}
+        {/* Animated logo — the REAL branded app icon in a rounded-corner
+            (iOS squircle-ish) tile, not a hand-drawn SVG glyph. Tester
+            asked for "красивая иконка со скруглениями" — this shows the
+            actual designed icon.png the user loves. */}
         <Animated.View style={[styles.logoWrap, logoStyle]}>
-          <Svg width={96} height={96} viewBox="0 0 96 96">
-            <Defs>
-              <SvgLinearGradient id="logo" x1="0" y1="0" x2="1" y2="1">
-                <Stop offset="0" stopColor={colors.primaryLight} stopOpacity="1" />
-                <Stop offset="0.5" stopColor={colors.primary} stopOpacity="1" />
-                <Stop offset="1" stopColor={colors.primaryDeep} stopOpacity="1" />
-              </SvgLinearGradient>
-              <SvgLinearGradient id="logoGlow" x1="0" y1="0" x2="0" y2="1">
-                <Stop offset="0" stopColor="#FFFFFF" stopOpacity="0.6" />
-                <Stop offset="1" stopColor="#FFFFFF" stopOpacity="0" />
-              </SvgLinearGradient>
-            </Defs>
-            {/* Outer soft circle */}
-            <Circle cx="48" cy="48" r="44" fill="url(#logo)" />
-            {/* Inner highlight — glossy top */}
-            <Path
-              d="M14 36 Q48 6 82 36 Q82 32 48 12 Q14 32 14 36 Z"
-              fill="url(#logoGlow)"
-            />
-            {/* Leaf stroke — the "stretch" gesture */}
-            <Path
-              d="M32 62 Q48 34 64 62"
-              stroke="#FFFFFF"
-              strokeWidth="5"
-              strokeLinecap="round"
-              fill="none"
-            />
-            <Circle cx="48" cy="56" r="3.5" fill="#FFFFFF" />
-          </Svg>
+          <Image
+            source={require('../assets/icon.png')}
+            style={styles.logoImage}
+            contentFit="cover"
+          />
         </Animated.View>
 
         <View style={{ height: spacing.xxl }} />
@@ -152,6 +132,15 @@ const styles = StyleSheet.create({
   logoWrap: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  logoImage: {
+    width: 108,
+    height: 108,
+    borderRadius: 26, // ~24% — iOS app-icon squircle feel
+    shadowColor: colors.primaryDeep,
+    shadowOpacity: 0.28,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 10 },
   },
   wordmark: {
     ...typeScale.display,
