@@ -113,7 +113,7 @@ const en: Dict = {
   home_quickbreak_eyes_meta: '30 seconds · 20 ft away',
   home_quickbreak_neck_title: 'Neck reset',
   home_quickbreak_neck_meta: '60 seconds · slow side-tilt',
-  home_paincheck_title: "How's your neck today?",
+  home_paincheck_title: 'How are you feeling today?',
   home_paincheck_sub: "Rate it — we'll adjust tomorrow's plan",
   home_zones_eyebrow: 'YOUR ZONES',
 
@@ -1334,7 +1334,7 @@ const enGB: Dict = {
   home_eyebrow_today: 'TODAY',
   home_foryou_eyebrow: 'FOR YOU TODAY',
   home_paincheck_sub: "Rate it — we'll adjust tomorrow's plan",
-  home_paincheck_title: "How's your neck today?",
+  home_paincheck_title: 'How are you feeling today?',
   home_quickbreak_eyes_meta: '30 seconds · 20 ft away',
   home_quickbreak_eyes_title: 'Eyes tired?',
   home_quickbreak_neck_meta: '60 seconds · slow side-tilt',

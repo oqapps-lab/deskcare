@@ -16,7 +16,6 @@ import { AtmosphericBackground } from '../../components/ui/AtmosphericBackground
 import { BgPattern } from '../../components/ui/BgPattern';
 import { DecorativeArc } from '../../components/ui/DecorativeArc';
 import { NavHeader } from '../../components/ui/NavHeader';
-import { BodyPainMap, PainZone } from '../../components/ui/BodyPainMap';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { Eyebrow } from '../../components/ui/Eyebrow';
 import { PillChip } from '../../components/ui/PillChip';
@@ -31,31 +30,34 @@ import { useUserId } from '../../lib/store/session';
 import { t } from '../../lib/i18n';
 import { todayLocal } from '../../lib/dates';
 
-// Map UI PainZone (selected on screen) → DB body_zones.slug.
-// We don't have separate "shoulder" / "chest" slugs in DB — fold them into 'back'.
-const painZoneToDbSlug: Record<string, string> = {
+// The check-in tracks the SAME 4 desk-pain zones the user picks in
+// onboarding (neck/back/eyes/wrists), so onboarding ↔ check-in ↔ home are
+// consistent (tester R13). Each maps 1:1 to a DB body_zones.slug. The old
+// torso BodyPainMap (shoulders/chest/lowerBack) is gone — eyes/wrists don't
+// fit an anatomical torso and it diverged from the rest of the app.
+type CheckinZone = 'neck' | 'back' | 'eyes' | 'wrists';
+
+const painZoneToDbSlug: Record<CheckinZone, string> = {
   neck: 'neck',
-  leftShoulder: 'back',
-  rightShoulder: 'back',
-  chest: 'back',
-  abdomen: 'back',
-  lowerBack: 'back',
+  back: 'back',
+  eyes: 'eyes',
+  wrists: 'wrists',
 };
 
 type SeverityLevel = 'mild' | 'moderate' | 'severe';
 
 interface ZoneDef {
-  id: PainZone;
+  id: CheckinZone;
   label: string;
   icon: GlyphName;
   tone: HaloTone;
 }
 
 const ZONES: ReadonlyArray<ZoneDef> = [
-  { id: 'neck', label: t('pc_part_neck'), icon: 'infinity', tone: 'coral' },
-  { id: 'leftShoulder', label: t('pc_part_shoulders'), icon: 'plus', tone: 'peach' },
-  { id: 'chest', label: t('pc_part_upper_back'), icon: 'plus', tone: 'lavender' },
-  { id: 'lowerBack', label: t('pc_part_lower_back'), icon: 'plus', tone: 'mint' },
+  { id: 'neck', label: t('zone_neck'), icon: 'infinity', tone: 'coral' },
+  { id: 'back', label: t('zone_back'), icon: 'refresh', tone: 'peach' },
+  { id: 'eyes', label: t('zone_eyes'), icon: 'eye', tone: 'lavender' },
+  { id: 'wrists', label: t('zone_wrists'), icon: 'plus', tone: 'mint' },
 ];
 
 // Slider value (0..1) → discrete severity level. Thresholds chosen so that
@@ -82,8 +84,8 @@ export default function PainCheckInScreen() {
   const insets = useSafeAreaInsets();
   const reduceMotion = useReducedMotion();
 
-  const [selectedZones, setSelectedZones] = useState<Set<PainZone>>(
-    new Set<PainZone>(['neck']),
+  const [selectedZones, setSelectedZones] = useState<Set<CheckinZone>>(
+    new Set<CheckinZone>(['neck']),
   );
   const [severityPct, setSeverityPctRaw] = useState(0.4);
   const [level, setLevelRaw] = useState<SeverityLevel>('moderate');
@@ -122,7 +124,7 @@ export default function PainCheckInScreen() {
     else router.replace('/main/home');
   };
 
-  const toggleZone = (z: PainZone) => {
+  const toggleZone = (z: CheckinZone) => {
     Haptics.selectionAsync();
     const next = new Set(selectedZones);
     if (next.has(z)) next.delete(z);
@@ -214,23 +216,6 @@ export default function PainCheckInScreen() {
             </ScrollView>
           </View>
 
-          {/* Body map */}
-          <View style={styles.mapWrap}>
-            <GlassCard
-              tint="cream"
-              radius="xl"
-              padding={spacing.lg}
-              innerGradient={false}
-            >
-              <View style={styles.mapInner}>
-                <BodyPainMap
-                  painZones={Array.from(selectedZones)}
-                  width={220}
-                  height={300}
-                />
-              </View>
-            </GlassCard>
-          </View>
 
           {/* Severity slider */}
           <GlassCard
