@@ -104,19 +104,19 @@ const config: ExpoConfig = {
     'expo-image',
     'expo-video',
     [
-      // Branded launch screen — previously the iOS default white-screen +
-      // centered raw icon looked harsh against the warm in-app aesthetic.
-      // Now: coral-tinted canvas (matches in-app surfaces) with the icon
-      // sized as a logo, not stretched full-bleed. Status bar matches.
+      // Branded launch screen — clean near-white canvas (#FBF9F5) in BOTH
+      // light + dark so it never reads as a harsh red/dark fill (tester R1).
+      // Same bg as the animated app/index.tsx splash so the native→JS
+      // handoff is seamless and doesn't look like two different screens (R2).
       'expo-splash-screen',
       {
         image: './assets/icon.png',
-        imageWidth: 200,
-        backgroundColor: '#FFDBCE',
+        imageWidth: 180,
+        backgroundColor: '#FBF9F5',
         resizeMode: 'contain',
         dark: {
           image: './assets/icon.png',
-          backgroundColor: '#5B1C00',
+          backgroundColor: '#FBF9F5',
           resizeMode: 'contain',
         },
       },

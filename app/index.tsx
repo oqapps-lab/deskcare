@@ -11,7 +11,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from 'react-native-svg';
 import { Image } from 'expo-image';
-import { AtmosphericBackground } from '../components/ui/AtmosphericBackground';
 import { colors, spacing, typeScale } from '../constants/tokens';
 import { useSession } from '../lib/store/session';
 import { supabase } from '../lib/supabase';
@@ -77,7 +76,7 @@ export default function Splash() {
   const taglineStyle = useAnimatedStyle(() => ({ opacity: taglineOpacity.value }));
 
   return (
-    <AtmosphericBackground>
+    <View style={styles.bg}>
       <View style={styles.root}>
         {/* Halo behind logo */}
         <Animated.View style={[styles.haloWrap, haloStyle]} pointerEvents="none">
@@ -112,11 +111,15 @@ export default function Splash() {
           {t('splash_tagline')}
         </Animated.Text>
       </View>
-    </AtmosphericBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  bg: {
+    flex: 1,
+    backgroundColor: colors.canvas, // clean near-white; halo gives the soft gradient
+  },
   root: {
     flex: 1,
     alignItems: 'center',
