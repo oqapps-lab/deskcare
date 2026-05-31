@@ -47,12 +47,14 @@ export default function SavedRoutineScreen() {
   const totalSec = useMemo(() => items.reduce((acc, e) => acc + (e.duration_seconds || 0), 0), [items]);
 
   const start = () => {
-    if (items.length === 0) return;
+    if (items.length === 0 || !routine) return;
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    // Start with the first exercise's preview — player handles the sequence param.
+    // Pass the custom routine id; preview + player resolve its full exercise
+    // list via useCustomRoutineItems (previously only the first slug went
+    // through and the screens fell back to the DEFAULT routine — S7).
     router.push({
       pathname: '/exercise/preview',
-      params: { exercise: items[0].slug, source: 'custom', routineId: routine?.id },
+      params: { custom: routine.id },
     } as never);
   };
 

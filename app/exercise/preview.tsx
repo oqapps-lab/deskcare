@@ -17,6 +17,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useRoutineWithItems } from '../../hooks/useContent';
+import { useCustomRoutineItems } from '../../hooks/useCustomRoutines';
 import { t, i18nField } from '../../lib/i18n';
 import { DEFAULT_ROUTINE_SLUG } from '../../constants/routines';
 
@@ -33,11 +34,30 @@ const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-res
 
 export default function RoutinePreviewScreen() {
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ routine?: string }>();
-  const routineSlug = (params.routine as string) || DEFAULT_ROUTINE;
-  const { routine, items, loading, error } = useRoutineWithItems(routineSlug);
+  const params = useLocalSearchParams<{ routine?: string; custom?: string }>();
+  const customId = params.custom as string | undefined;
+  const routineSlug = customId ? undefined : ((params.routine as string) || DEFAULT_ROUTINE);
 
-  const totalSec = routine?.duration_seconds ?? 0;
+  // DB routine path
+  const db = useRoutineWithItems(routineSlug);
+  // Custom routine path (resolves the user's picked exercise slugs in order)
+  const custom = useCustomRoutineItems(customId);
+
+  const isCustom = !!customId;
+  const items = isCustom ? custom.items : db.items;
+  const loading = isCustom ? custom.loading : db.loading;
+  const error = isCustom ? null : db.error;
+  // A truthy "routine" so the success branch renders for both paths.
+  const routine = isCustom ? custom.routine : db.routine;
+
+  const displayTitle = isCustom
+    ? (custom.routine?.name ?? t('cr_title'))
+    : (db.routine ? i18nField(db.routine, 'title') : '');
+  const displayDescription = isCustom ? '' : (db.routine ? i18nField(db.routine, 'description') : '');
+
+  const totalSec = isCustom
+    ? items.reduce((acc, it) => acc + (it.exercise?.duration_seconds ?? 0) * it.reps, 0)
+    : (db.routine?.duration_seconds ?? 0);
   const totalMin = Math.max(1, Math.round(totalSec / 60));
 
   const back = () => {
@@ -47,7 +67,10 @@ export default function RoutinePreviewScreen() {
   };
   const begin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-    router.push({ pathname: '/exercise/player', params: { routine: routineSlug } } as never);
+    router.push({
+      pathname: '/exercise/player',
+      params: isCustom ? { custom: customId } : { routine: routineSlug },
+    } as never);
   };
 
   return (
@@ -77,9 +100,9 @@ export default function RoutinePreviewScreen() {
           </View>
         ) : (
           <>
-            <Eyebrow variant="accent">{t('preview_eyebrow')}</Eyebrow>
-            <Text style={styles.title}>{i18nField(routine, 'title')}</Text>
-            {i18nField(routine, 'description') && <Text style={styles.sub}>{i18nField(routine, 'description')}</Text>}
+            <Eyebrow variant="accent">{isCustom ? t('cr_title') : t('preview_eyebrow')}</Eyebrow>
+            <Text style={styles.title}>{displayTitle}</Text>
+            {!!displayDescription && <Text style={styles.sub}>{displayDescription}</Text>}
 
             <View style={styles.heroWrap}>
               <ExerciseVideo
@@ -97,10 +120,13 @@ export default function RoutinePreviewScreen() {
               <Sep />
               <StatCol
                 value={
-                  routine.routine_type === 'zone_based'
+                  isCustom
+                    ? t('cr_title')
+                    : db.routine?.routine_type === 'zone_based'
                     ? t('preview_routine_type_zone_based')
-                    : routine.routine_type.charAt(0).toUpperCase() +
-                      routine.routine_type.slice(1).replace('_', ' ')
+                    : (db.routine?.routine_type ?? '')
+                        .charAt(0).toUpperCase() +
+                      (db.routine?.routine_type ?? '').slice(1).replace('_', ' ')
                 }
                 unit={t('preview_stat_type')}
               />

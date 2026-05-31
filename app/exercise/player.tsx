@@ -28,6 +28,7 @@ import {
 } from '../../components/ui';
 import { colors, spacing, typeScale } from '../../constants/tokens';
 import { useRoutineWithItems } from '../../hooks/useContent';
+import { useCustomRoutineItems } from '../../hooks/useCustomRoutines';
 import { i18nField, t } from '../../lib/i18n';
 import { DEFAULT_ROUTINE_SLUG } from '../../constants/routines';
 import { supabase } from '../../lib/supabase';
@@ -119,16 +120,19 @@ const poseFor = (code: string | undefined): 'neck-roll' | 'back-arch' | 'eye-res
 
 export default function ExercisePlayerScreen() {
   const insets = useSafeAreaInsets();
-  const params = useLocalSearchParams<{ routine?: string; exercise?: string }>();
+  const params = useLocalSearchParams<{ routine?: string; exercise?: string; custom?: string }>();
+  const customId = (params.custom as string) || undefined;
   const routineSlug = (params.routine as string) || undefined;
   const exerciseSlug = (params.exercise as string) || undefined;
-  // One of the two must be present; fall back to the canonical "neck quick"
-  // routine only when both are absent (deep-link safety).
-  const effectiveRoutine = routineSlug || (exerciseSlug ? undefined : DEFAULT_ROUTINE_SLUG);
+  // One of the three must be present; fall back to the canonical "neck quick"
+  // routine only when all are absent (deep-link safety).
+  const effectiveRoutine =
+    customId || exerciseSlug ? undefined : routineSlug || DEFAULT_ROUTINE_SLUG;
   const { items: routineItems, loading: routineLoading } = useRoutineWithItems(effectiveRoutine);
   const { items: singleItems, loading: singleLoading } = useSingleExerciseAsRoutine(exerciseSlug);
-  const items = exerciseSlug ? singleItems : routineItems;
-  const loading = exerciseSlug ? singleLoading : routineLoading;
+  const { items: customItems, loading: customLoading } = useCustomRoutineItems(customId);
+  const items = customId ? customItems : exerciseSlug ? singleItems : routineItems;
+  const loading = customId ? customLoading : exerciseSlug ? singleLoading : routineLoading;
 
   const [stepIdx, setStepIdx] = useState(0);
   const [elapsed, setElapsed] = useState(0);
@@ -149,7 +153,7 @@ export default function ExercisePlayerScreen() {
     setElapsed(0);
     setPaused(false);
     setReady(false);
-  }, [routineSlug, exerciseSlug]);
+  }, [routineSlug, exerciseSlug, customId]);
 
   // Each step's video buffering blocks its own timer. Reset ready AND
   // elapsed when the step index changes so the countdown waits for the
@@ -261,8 +265,11 @@ export default function ExercisePlayerScreen() {
 
   const close = () => {
     Haptics.selectionAsync();
-    if (router.canGoBack()) router.back();
-    else router.replace('/main/home');
+    // × always exits the whole exercise flow straight to home. router.back()
+    // used to drop the user back into the program/preview START and forced
+    // repeated back-taps to reach home (tester S9). replace() dismisses the
+    // entire preview→player stack in one go.
+    router.replace('/main/home');
   };
   const prev = () => {
     Haptics.selectionAsync();

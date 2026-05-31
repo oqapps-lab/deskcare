@@ -1,5 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useExercises } from './useContent';
+import type { RoutineItem } from '../lib/types/db';
 
 const STORAGE_KEY = '@deskcare/customRoutines/v1';
 
@@ -84,4 +86,44 @@ export const useCustomRoutines = () => {
   }, []);
 
   return { ...state, add, remove, update };
+};
+
+/**
+ * Resolve a custom routine's exercise slugs into ordered RoutineItem[] with
+ * full Exercise objects joined — so the preview + player can run a custom
+ * routine the same way they run a DB routine. Previously the custom flow
+ * passed only the first slug and the screens fell back to the DEFAULT DB
+ * routine, so every custom routine showed the same exercises (tester S7).
+ */
+export const useCustomRoutineItems = (routineId?: string) => {
+  const { routines, loading: routinesLoading } = useCustomRoutines();
+  const { exercises, loading: exLoading } = useExercises('all');
+
+  const routine = useMemo(
+    () => routines.find((r) => r.id === routineId),
+    [routines, routineId],
+  );
+
+  const items: RoutineItem[] = useMemo(() => {
+    if (!routine || !exercises) return [];
+    const bySlug = new Map(exercises.map((e) => [e.slug, e]));
+    return routine.exerciseSlugs
+      .map((slug, i) => {
+        const ex = bySlug.get(slug);
+        if (!ex) return null;
+        return {
+          id: `custom_${routine.id}_${i}`,
+          routine_id: routine.id,
+          exercise_id: ex.id,
+          sort_order: i,
+          reps: 1,
+          overlay_text: null,
+          rest_seconds: 0,
+          exercise: ex,
+        } as RoutineItem;
+      })
+      .filter((x): x is RoutineItem => x !== null);
+  }, [routine, exercises]);
+
+  return { routine, items, loading: routinesLoading || exLoading };
 };
