@@ -32,6 +32,7 @@ import {
   cancelAllScheduledReminders,
   scheduleDailyReminder,
 } from '../../lib/notifications';
+import { requestTrackingOnce } from '../../lib/tracking';
 import { t } from '../../lib/i18n';
 
 const TIMES = ['09:00', '12:00', '15:00', '18:00'];
@@ -217,6 +218,10 @@ export default function NotificationSettingsScreen() {
       if (router.canGoBack()) router.back();
       else router.replace('/main/profile');
     } else {
+      // Mid-onboarding ATT prompt (R3): the user just finished the
+      // notifications step, so a tracking prompt here reads in-context.
+      // Await it so the system sheet resolves before we navigate on.
+      await requestTrackingOnce();
       // Onboarding terminal — tell the paywall its × should drop the user
       // INTO the app (not back into the quiz), so it's an escapable
       // onboarding paywall, not a hard trap.
