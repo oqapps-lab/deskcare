@@ -170,7 +170,7 @@ export default function HomeScreen() {
   const dailyChallenge = useDailyChallenge(2);
   const calendarSlot = useCalendarSlot();
   const posture = usePostureScore();
-  const forYouCards = useForYouRotation(primaryZoneSlug);
+  const forYouCards = useForYouRotation(snap.onboardingData?.pain_zones);
   const quickBreaks: QuickBreak[] = [
     {
       id: 'eyes',

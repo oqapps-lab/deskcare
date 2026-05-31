@@ -52,18 +52,32 @@ const POOL: ReadonlyArray<PoolCard> = [
  *
  * Returns a stable list per (date, primaryZone) — `useMemo`-safe.
  */
+/** Map an onboarding pain-zone slug → the For You pose that serves it. */
+const ZONE_POSE: Record<string, Pose> = {
+  neck: 'neck-roll',
+  back: 'back-arch',
+  eyes: 'eye-rest',
+  wrists: 'wrist-stretch',
+};
+
 export const useForYouRotation = (
-  primaryZoneSlug?: 'neck' | 'back' | 'eyes' | 'wrists' | 'full_body' | 'sciatica',
+  flaggedZones?: string[],
 ): ForYouCard[] => {
+  // Stable key for the memo + seed — order-independent join of flagged zones.
+  const zonesKey = (flaggedZones ?? []).slice().sort().join(',');
   return useMemo(() => {
     const now = new Date();
     const hour = now.getHours();
-    // LOCAL YYYY-MM-DD — UTC slice would rotate mid-afternoon in negative-UTC
-    // regions, making "For You Today" suddenly switch to "tomorrow's" cards.
     const dayKey = toYmdLocal(now);
 
-    // Deterministic seed from day + primary zone — same selection until midnight.
-    const seedSrc = dayKey + (primaryZoneSlug || 'all');
+    // Poses the user explicitly flagged — these are GUARANTEED a card (S8).
+    const flaggedPoses = (flaggedZones ?? [])
+      .map((z) => ZONE_POSE[z])
+      .filter((p): p is Pose => !!p);
+    const flaggedPoseSet = new Set<Pose>(flaggedPoses);
+
+    // Deterministic seed from day + flagged zones — stable until midnight.
+    const seedSrc = dayKey + (zonesKey || 'all');
     let seed = 0;
     for (let i = 0; i < seedSrc.length; i++) seed = (seed * 31 + seedSrc.charCodeAt(i)) % 100000;
     const rand = (n: number) => {
@@ -71,36 +85,41 @@ export const useForYouRotation = (
       return seed % n;
     };
 
-    // Score each candidate by time-of-day + zone match.
+    // Score each candidate by time-of-day + zone match (any flagged zone).
     type Scored = { card: PoolCard; score: number };
     const scored: Scored[] = POOL.map((c) => {
       let s = 0;
-      // Zone match boost
-      if (primaryZoneSlug === 'neck' && c.pose === 'neck-roll') s += 30;
-      if (primaryZoneSlug === 'back' && c.pose === 'back-arch') s += 30;
-      if (primaryZoneSlug === 'eyes' && c.pose === 'eye-rest') s += 30;
-      if (primaryZoneSlug === 'wrists' && c.pose === 'wrist-stretch') s += 30;
-      // Time-of-day affinity
+      if (flaggedPoseSet.has(c.pose)) s += 30;
       if (hour < 11 && (c.pose === 'back-arch' || c.pose === 'neck-roll')) s += 10;
       if (hour >= 11 && hour < 16 && c.pose === 'eye-rest') s += 10;
       if (hour >= 16 && (c.pose === 'wrist-stretch' || c.pose === 'neck-roll')) s += 10;
-      // Daily jitter
       s += rand(15);
       return { card: c, score: s };
     });
     scored.sort((a, b) => b.score - a.score);
 
-    // Pick top 3 with pose+tone diversity — no two cards share the same pose,
-    // and tones are reassigned cyclically so the row looks visually varied.
     const picked: PoolCard[] = [];
     const usedPoses = new Set<Pose>();
+
+    // 1) GUARANTEE one card per flagged zone first (in the user's zone order),
+    //    so a wrist-pain user always sees a wrist routine, etc. (S8).
+    for (const pose of flaggedPoses) {
+      if (picked.length >= 3 || usedPoses.has(pose)) continue;
+      const best = scored.find((s) => s.card.pose === pose && !usedPoses.has(s.card.pose));
+      if (best) {
+        picked.push(best.card);
+        usedPoses.add(pose);
+      }
+    }
+
+    // 2) Fill remaining slots by score, keeping pose diversity.
     for (const s of scored) {
       if (picked.length >= 3) break;
-      if (usedPoses.has(s.card.pose) && picked.length < 3) continue;
+      if (usedPoses.has(s.card.pose)) continue;
       picked.push(s.card);
       usedPoses.add(s.card.pose);
     }
-    // Backfill if not enough pose diversity
+    // 3) Backfill if still short (few poses available).
     for (const s of scored) {
       if (picked.length >= 3) break;
       if (!picked.find((p) => p.id === s.card.id)) picked.push(s.card);
@@ -114,5 +133,5 @@ export const useForYouRotation = (
       tone: tonePalette[(toneOffset + i * 2) % tonePalette.length],
       videoSource: POSE_VIDEO[c.pose],
     }));
-  }, [primaryZoneSlug]);
+  }, [zonesKey]);
 };
