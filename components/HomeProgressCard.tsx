@@ -94,7 +94,9 @@ const Stat: React.FC<{ value: string; label: string }> = ({ value, label }) => (
 
 const styles = StyleSheet.create({
   wrap: {
-    marginBottom: spacing.lg,
+    // Uniform Home section gap (tester T4) — see StoriesRail.wrap note.
+    marginTop: spacing.xxl,
+    marginBottom: 0,
   },
   pressed: {
     opacity: 0.9,

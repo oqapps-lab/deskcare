@@ -67,8 +67,12 @@ const CARD_H = 190;
 
 const styles = StyleSheet.create({
   wrap: {
-    marginTop: spacing.xl, // breathing room from the For You carousel (R9)
-    marginBottom: spacing.lg,
+    // Uniform section gap (tester T4): For You→Learn now equals Learn→Quick
+    // Breaks. All inter-block spacing on Home is driven by the NEXT section's
+    // marginTop=xxl; bottom margin is 0 so RN's additive sibling margins don't
+    // create the lopsided "small gap then big gap" the tester saw.
+    marginTop: spacing.xxl,
+    marginBottom: 0,
   },
   scroll: {
     marginHorizontal: -spacing.xxl,
