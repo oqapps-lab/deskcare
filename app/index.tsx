@@ -50,18 +50,20 @@ export default function Splash() {
 
   const logoStyle = useAnimatedStyle(() => ({ opacity: logoOpacity.value }));
 
-  // ONE clean splash: white canvas + the rounded app icon, no halo, no
-  // coral shadow/ring, no wordmark (tester S1: kill the red outline + the
-  // jarring second logo screen). Matches the native splash so launch feels
-  // like a single continuous screen.
+  // ONE clean splash: cream canvas + the SAME rounded squircle mark used by
+  // the native splash (`splash-logo.png`, rounded corners baked in on a
+  // transparent canvas), at the SAME 200px size + centered. This makes the
+  // native→JS handoff seamless — no square icon, no red frame, no second
+  // logo at a different size (tester T1, after 3 failed rounds the real
+  // cause was the native splash still using the square `icon.png`).
   return (
     <View style={styles.bg}>
       <View style={styles.root}>
         <Animated.View style={logoStyle}>
           <Image
-            source={require('../assets/icon.png')}
+            source={require('../assets/splash-logo.png')}
             style={styles.logoImage}
-            contentFit="cover"
+            contentFit="contain"
           />
         </Animated.View>
       </View>
@@ -80,8 +82,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logoImage: {
-    width: 96,
-    height: 96,
-    borderRadius: 22, // rounded app-icon squircle; no coral shadow/ring (S1)
+    width: 200,
+    height: 200, // matches native splash imageWidth=200; rounding baked into the asset
   },
 });

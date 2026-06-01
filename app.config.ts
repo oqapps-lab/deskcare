@@ -106,16 +106,22 @@ const config: ExpoConfig = {
     [
       // Branded launch screen — clean near-white canvas (#FBF9F5) in BOTH
       // light + dark so it never reads as a harsh red/dark fill (tester R1).
-      // Same bg as the animated app/index.tsx splash so the native→JS
-      // handoff is seamless and doesn't look like two different screens (R2).
+      // CRITICAL (tester T1, 3 rounds): the splash image must NOT be the raw
+      // square app icon (`icon.png` is an opaque 1024² coral tile with HARD
+      // corners — rendered on cream it read as a "red frame with un-rounded
+      // corners"). It now points at `splash-logo.png`: the same brand mark
+      // pre-masked into a rounded squircle on a TRANSPARENT canvas, so the
+      // native splash shows a soft rounded tile on cream — identical to the
+      // app/index.tsx JS splash → truly ONE seamless screen, no square, no
+      // corner jump, no second logo.
       'expo-splash-screen',
       {
-        image: './assets/icon.png',
-        imageWidth: 180,
+        image: './assets/splash-logo.png',
+        imageWidth: 200,
         backgroundColor: '#FBF9F5',
         resizeMode: 'contain',
         dark: {
-          image: './assets/icon.png',
+          image: './assets/splash-logo.png',
           backgroundColor: '#FBF9F5',
           resizeMode: 'contain',
         },
