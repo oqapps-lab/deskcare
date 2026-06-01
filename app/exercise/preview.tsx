@@ -20,6 +20,9 @@ import { useRoutineWithItems } from '../../hooks/useContent';
 import { useCustomRoutineItems } from '../../hooks/useCustomRoutines';
 import { t, i18nField } from '../../lib/i18n';
 import { DEFAULT_ROUTINE_SLUG } from '../../constants/routines';
+import { useIsPremium } from '../../lib/premium';
+import { useDailyMeter } from '../../hooks/useDailyMeter';
+import { isFreeRoutine } from '../../constants/freeTier';
 
 const DEFAULT_ROUTINE = DEFAULT_ROUTINE_SLUG;
 
@@ -42,6 +45,12 @@ export default function RoutinePreviewScreen() {
   const db = useRoutineWithItems(routineSlug);
   // Custom routine path (resolves the user's picked exercise slugs in order)
   const custom = useCustomRoutineItems(customId);
+
+  // Free-tier gate (tester P5). Non-premium users may start the free Neck
+  // routine up to DAILY_FREE_PLAYS times per local day; any other routine
+  // (other zones, programs, custom mixes) is premium. See constants/freeTier.
+  const isPremium = useIsPremium();
+  const meter = useDailyMeter();
 
   const isCustom = !!customId;
   const items = isCustom ? custom.items : db.items;
@@ -67,6 +76,22 @@ export default function RoutinePreviewScreen() {
   };
   const begin = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    // Free-tier gate. Premium (Adapty / bypass) always proceeds.
+    if (!isPremium) {
+      const free = !isCustom && isFreeRoutine(routineSlug);
+      if (!free) {
+        // Other zones / programs / custom routines are premium-only.
+        router.push({ pathname: '/onboarding/paywall', params: { from: 'gate' } } as never);
+        return;
+      }
+      if (!meter.canPlayFree) {
+        // Free pool used up for today → offer the trial.
+        router.push({ pathname: '/onboarding/paywall', params: { from: 'meter' } } as never);
+        return;
+      }
+      // Count this free session against today's meter.
+      void meter.recordPlay();
+    }
     router.push({
       pathname: '/exercise/player',
       params: isCustom ? { custom: customId } : { routine: routineSlug },
