@@ -167,6 +167,26 @@ const HeroVideo: React.FC = () => {
     p.muted = true;
     p.play();
   });
+
+  // The hero froze on a single frame after one pass (tester T2: "turned its
+  // head and got stuck"). The clip is BUNDLED (require — never streamed from
+  // the DB, despite the tester's guess), so it's not a buffering stall: the
+  // loop flag was dropped after the first play on this first, heavy-mount
+  // screen. Re-assert loop and explicitly restart on playToEnd so it can never
+  // hang on a held frame.
+  useEffect(() => {
+    player.loop = true;
+    const sub = player.addListener('playToEnd', () => {
+      try {
+        player.currentTime = 0;
+        player.play();
+      } catch {
+        /* player torn down */
+      }
+    });
+    return () => sub.remove();
+  }, [player]);
+
   return (
     <VideoView
       player={player}
