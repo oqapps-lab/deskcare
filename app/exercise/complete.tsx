@@ -80,7 +80,9 @@ export default function SessionCompleteScreen() {
   const stats = [
     { value: formatDuration(durationSec), label: t('ex_complete_stat_time') },
     { value: String(movesCount),          label: t('ex_complete_stat_moves') },
-    { value: streakCount > 0 ? String(streakCount) : '—', label: t('ex_complete_stat_streak') },
+    // Finishing a session today is a ≥1-day streak — never show a bare "—"
+    // (tester T8: "days, прочерк, причём тут days?"). Label clarified to STREAK.
+    { value: String(Math.max(1, streakCount)), label: t('ex_complete_stat_streak') },
   ];
 
   const [unlocked, setUnlocked] = React.useState<UnlockedAchievement[]>([]);
@@ -237,8 +239,6 @@ export default function SessionCompleteScreen() {
                     <Text
                       style={styles.statValue}
                       numberOfLines={1}
-                      adjustsFontSizeToFit
-                      minimumFontScale={0.5}
                       allowFontScaling={false}
                     >
                       {s.value}
@@ -317,11 +317,14 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   statValue: {
-    fontSize: 32,
-    lineHeight: 36,
+    // Fixed size for ALL three stats (no per-cell adjustsFontSizeToFit, which
+    // shrank "0:12" while "2" stayed huge → mismatched fonts, tester T8). 26pt
+    // fits the widest realistic value ("12:34") inside a 1/3 column.
+    fontSize: 26,
+    lineHeight: 30,
     color: colors.primary,
     fontFamily: typeScale.display.fontFamily,
-    letterSpacing: -0.6,
+    letterSpacing: -0.4,
   },
   statLabel: {
     ...typeScale.labelSm,
