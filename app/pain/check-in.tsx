@@ -134,6 +134,46 @@ export default function PainCheckInScreen() {
 
   const userId = useUserId();
 
+  // Pre-fill from TODAY's already-saved check-in. Without this, returning to
+  // the screen after Save always showed the defaults (4/10, neck) — the tester
+  // read that as "my intensity 10 didn't save" (T5). The write was fine; the
+  // screen just never re-read it. Load once per mount; if there's no entry for
+  // today, keep the defaults.
+  const [prefilled, setPrefilled] = useState(false);
+  useEffect(() => {
+    if (!userId || prefilled) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const today = todayLocal();
+        const { data } = await supabase
+          .from('pain_entries')
+          .select('pain_level, body_zones(slug)')
+          .eq('user_id', userId)
+          .eq('recorded_date', today);
+        if (cancelled || !data || data.length === 0) return;
+        const valid: CheckinZone[] = ['neck', 'back', 'eyes', 'wrists'];
+        const zones = data
+          .map((r: any) => r.body_zones?.slug)
+          .filter((s: string): s is CheckinZone => valid.includes(s as CheckinZone));
+        if (zones.length > 0) setSelectedZones(new Set(zones));
+        const maxLvl = Math.max(0, ...data.map((r: any) => r.pain_level || 0));
+        if (maxLvl > 0) {
+          const pct = maxLvl / 10;
+          setSeverityPctRaw(pct);
+          setLevelRaw(levelFromPct(pct));
+        }
+      } catch {
+        /* offline / RLS — keep defaults */
+      } finally {
+        if (!cancelled) setPrefilled(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId, prefilled]);
+
   const save = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
 
