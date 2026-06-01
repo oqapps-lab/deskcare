@@ -25,11 +25,9 @@ import { ForYouCarousel } from '../../components/ForYouCarousel';
 import { HomeProgressCard } from '../../components/HomeProgressCard';
 import { StoriesRail } from '../../components/StoriesRail';
 import { useIsPremium } from '../../lib/premium';
-import { useDailyChallenge } from '../../hooks/useDailyChallenge';
 import { useCalendarSlot } from '../../hooks/useCalendarSlot';
 import { usePostureScore } from '../../hooks/usePostureScore';
 import { PainTrendCard } from '../../components/PainTrendCard';
-import { DailyChallengeCard } from '../../components/DailyChallengeCard';
 import { CalendarSlotCard } from '../../components/CalendarSlotCard';
 import { PostureCard } from '../../components/PostureCard';
 import { useUserId } from '../../lib/store/session';
@@ -167,7 +165,6 @@ export default function HomeScreen() {
   const primaryZoneSlug = snap.onboardingData?.pain_zones?.[0] as
     | 'neck' | 'back' | 'wrists' | 'eyes' | 'full_body' | 'sciatica' | undefined;
   const painTrend = usePainTrend(primaryZoneSlug);
-  const dailyChallenge = useDailyChallenge(2);
   const calendarSlot = useCalendarSlot();
   const posture = usePostureScore();
   const forYouCards = useForYouRotation(snap.onboardingData?.pain_zones);
@@ -375,11 +372,6 @@ export default function HomeScreen() {
               </View>
             </GlassCard>
           </Pressable>
-        )}
-
-        {/* Daily challenge — 2 routines/day goal */}
-        {userId && !dailyChallenge.loading && (
-          <DailyChallengeCard challenge={dailyChallenge} />
         )}
 
         {/* Calendar-aware suggestion — next free slot in user's day */}

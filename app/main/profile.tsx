@@ -163,30 +163,10 @@ export default function ProfileScreen() {
       sub: formatRowSub('pain', snap, sub, earliestPain),
       route: '/profile/pain-history',
     },
-    {
-      key: 'buddy',
-      icon: 'plus',
-      tone: 'mint',
-      title: t('prof_buddy_title'),
-      sub: t('prof_buddy_sub'),
-      route: '/buddy',
-    },
-    {
-      key: 'analytics',
-      icon: 'check',
-      tone: 'lavender',
-      title: t('prof_analytics_title'),
-      sub: t('prof_analytics_sub'),
-      route: '/analytics',
-    },
-    {
-      key: 'challenges',
-      icon: 'play',
-      tone: 'peach',
-      title: t('prof_challenges_title'),
-      sub: t('prof_challenges_sub'),
-      route: '/challenges',
-    },
+    // Removed (tester P2/P3/P4 declutter): "Advanced Analytics" (/analytics) was
+    // a near-duplicate of "Your progress" → merged down to the single Progress
+    // surface; "Challenges" (/challenges) was filler; "Buddy" (/buddy) was a thin
+    // social-invite feature. Routes still exist but are no longer surfaced.
     {
       key: 'settings',
       icon: 'settings',
