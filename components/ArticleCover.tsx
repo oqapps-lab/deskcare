@@ -60,13 +60,29 @@ const GRADIENT_STOPS: Record<Palette, [string, string]> = {
   cream:    ['#FBF1E2', '#E8D6B8'],
 };
 
-const INK = colors.primaryDeep;
-const INK_SOFT = colors.primaryMid;
+// Per-palette clay-blob shading: [highlight (top-left), base, deep (shadow
+// side)]. Gives the central pebble a soft 3D plasticine read matching the app
+// icon — the look the tester wanted instead of flat line-art on a gradient.
+const CLAY: Record<Palette, [string, string, string]> = {
+  coral:    ['#FFE7D8', '#FFB492', '#F0855A'],
+  lavender: ['#ECE7FA', '#C9C2EC', '#9F98CE'],
+  mint:     ['#E8F4EC', '#BFE0CC', '#8FB7A1'],
+  peach:    ['#FCEAD9', '#F0CBA8', '#D6A57E'],
+  cream:    ['#FDF6EA', '#F0DEC2', '#D8C19A'],
+};
+
+// Motif drawn as a dark "engraved" relief — reads with good contrast both on
+// the lighter centre of the clay pebble AND where a motif spills onto the
+// surrounding gradient. The pebble supplies the 3D depth; the ink supplies the
+// definition.
+const INK = colors.ink;
+const INK_SOFT = colors.inkMuted;
 
 export const ArticleCover: React.FC<Props> = ({ tags, motif: motifOverride, palette: paletteOverride }) => {
   const motif = motifOverride ?? motifFromTags(tags);
   const palette = paletteOverride ?? paletteFromMotif(motif);
   const [from, to] = GRADIENT_STOPS[palette];
+  const [clayHi, clayBase, clayDeep] = CLAY[palette];
 
   return (
     <View style={styles.wrap}>
@@ -79,18 +95,33 @@ export const ArticleCover: React.FC<Props> = ({ tags, motif: motifOverride, pale
       <Svg width="100%" height="100%" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice">
         <Defs>
           <SvgLinearGradient id="ink" x1="0" y1="0" x2="1" y2="1">
-            <Stop offset="0" stopColor={INK} stopOpacity="0.65" />
+            <Stop offset="0" stopColor={INK} stopOpacity="0.95" />
             <Stop offset="1" stopColor={INK_SOFT} stopOpacity="0.85" />
           </SvgLinearGradient>
-          <RadialGradient id="halo" cx="50%" cy="50%" r="50%">
-            <Stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
-            <Stop offset="60%" stopColor="#ffffff" stopOpacity="0.18" />
+          {/* Clay pebble shading — light focal top-left → base → deep edge.
+              Gives the central shape a soft 3D plasticine volume (brand icon
+              vocabulary), not a flat disc. */}
+          <RadialGradient id="clay" cx="38%" cy="30%" r="78%">
+            <Stop offset="0%" stopColor={clayHi} stopOpacity="1" />
+            <Stop offset="55%" stopColor={clayBase} stopOpacity="1" />
+            <Stop offset="100%" stopColor={clayDeep} stopOpacity="1" />
+          </RadialGradient>
+          <RadialGradient id="claySheen" cx="50%" cy="50%" r="50%">
+            <Stop offset="0%" stopColor="#ffffff" stopOpacity="0.85" />
             <Stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </RadialGradient>
+          <RadialGradient id="clayShadow" cx="50%" cy="50%" r="50%">
+            <Stop offset="0%" stopColor={clayDeep} stopOpacity="0.45" />
+            <Stop offset="100%" stopColor={clayDeep} stopOpacity="0" />
           </RadialGradient>
         </Defs>
 
-        {/* Soft halo behind the motif */}
-        <Circle cx="160" cy="90" r="92" fill="url(#halo)" />
+        {/* Soft drop shadow beneath the pebble */}
+        <Circle cx="166" cy="120" r="82" fill="url(#clayShadow)" />
+        {/* The clay pebble — the hero 3D form */}
+        <Circle cx="160" cy="88" r="74" fill="url(#clay)" />
+        {/* Glossy highlight, top-left, for the plasticine sheen */}
+        <Circle cx="132" cy="60" r="26" fill="url(#claySheen)" />
 
         {motif === 'neck' && (
           <>
