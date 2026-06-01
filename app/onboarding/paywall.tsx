@@ -141,15 +141,34 @@ export default function PaywallScreen() {
       if (paywall === timeoutSentinel) throw new Error('adapty getPaywall timeout');
       const products = await withTimeout(adapty.getPaywallProducts(paywall));
       if (products === timeoutSentinel) throw new Error('adapty getPaywallProducts timeout');
-      const product = (products as any[]).find((p) => {
-        const unit =
-          p?.subscription?.subscriptionPeriod?.unit ??
-          p?.subscriptionPeriod?.unit;
-        if (plan === 'yearly') return unit === 'year';
-        if (plan === 'monthly') return unit === 'month';
-        return unit === 'week';
-      });
-      if (!product) throw new Error('No matching product in Adapty paywall');
+      // Match by vendorProductId first (exact ASC product id — bulletproof,
+      // independent of SDK product-shape changes), then fall back to the
+      // subscription-period unit. react-native-adapty v3 exposes the period
+      // at product.subscription.subscriptionPeriod.unit ('year'|'month'|'week').
+      const WANT_ID: Record<Plan, string> = {
+        yearly: 'com.gazetastreet.deskcare.sub.annual',
+        monthly: 'com.gazetastreet.deskcare.sub.monthly',
+        weekly: 'com.gazetastreet.deskcare.sub.weekly',
+      };
+      const list = products as any[];
+      const product =
+        list.find((p) => p?.vendorProductId === WANT_ID[plan]) ??
+        list.find((p) => {
+          const unit =
+            p?.subscription?.subscriptionPeriod?.unit ??
+            p?.subscriptionPeriod?.unit;
+          if (plan === 'yearly') return unit === 'year';
+          if (plan === 'monthly') return unit === 'month';
+          return unit === 'week';
+        });
+      if (!product) {
+        // No products vended (Adapty paywall empty / StoreKit returned nothing
+        // in this environment). Surface it instead of silently bouncing home,
+        // so it's obvious in QA. Still routes home via the catch below.
+        throw new Error(
+          `No matching product for plan=${plan}. Vended: ${list.map((p) => p?.vendorProductId).join(', ') || 'none'}`,
+        );
+      }
       const purchase = await withTimeout(adapty.makePurchase(product));
       if (purchase === timeoutSentinel) throw new Error('adapty makePurchase timeout');
       // AdaptyPurchaseResult is a discriminated union — only type:'success'

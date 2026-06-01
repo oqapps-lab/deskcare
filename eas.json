@@ -40,7 +40,7 @@
       },
       "autoIncrement": true,
       "env": {
-        "EXPO_PUBLIC_PREMIUM_BYPASS": "1"
+        "EXPO_PUBLIC_PREMIUM_BYPASS": "0"
       }
     },
     "production": {
@@ -52,7 +52,7 @@
         "buildConfiguration": "Release"
       },
       "env": {
-        "EXPO_PUBLIC_PREMIUM_BYPASS": "1"
+        "EXPO_PUBLIC_PREMIUM_BYPASS": "0"
       }
     }
   },
