@@ -1,6 +1,5 @@
 import React from 'react';
 import { Platform, StyleSheet, View, ViewStyle } from 'react-native';
-import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 import { colors, gradients, radii, shadows, spacing } from '../../constants/tokens';
@@ -65,6 +64,12 @@ const INNER_HIGHLIGHT = [
   'rgba(255,255,255,0)',
 ] as const;
 
+
+// iOS frosted base (replaces the live BlurView, tester T11). A near-cream
+// translucent base; the tone TINT_FILL layers on top and the atmospheric
+// backdrop still bleeds faintly through, preserving the "frosted glass" read
+// without any per-frame blur cost.
+const IOS_FROST_BASE = 'rgba(251,249,245,0.78)';
 
 // Tone-mid for the decorative corner blob.
 const TINT_DECOR: Record<Tint, string> = {
@@ -138,13 +143,16 @@ const GlassCardImpl: React.FC<Props> = ({
   );
 
   if (Platform.OS === 'ios') {
+    // PERF (tester T11): previously a live `BlurView` per card. With 13+
+    // GlassCards on Home (plus nested ones in For You / Stories), iOS re-blurred
+    // every card's backdrop on every scroll frame → severe scroll jank on
+    // non-Pro devices (iPhone 16e). Replaced with a frosted-solid cream base +
+    // the same tint wash, gradient sheen, hairline and shadow. On the app's
+    // cream atmospheric background this is visually ~indistinguishable from the
+    // intensity-30 blur but costs nothing to scroll.
     return (
       <View style={[{ borderRadius: r }, shadowStyle, style]}>
-        <BlurView
-          intensity={30}
-          tint="light"
-          style={[styles.blur, { borderRadius: r, padding }]}
-        >
+        <View style={[styles.blur, { borderRadius: r, padding, backgroundColor: IOS_FROST_BASE }]}>
           <View
             style={[
               StyleSheet.absoluteFill,
@@ -172,7 +180,7 @@ const GlassCardImpl: React.FC<Props> = ({
             ]}
           />
           <View style={styles.content}>{children}</View>
-        </BlurView>
+        </View>
       </View>
     );
   }
