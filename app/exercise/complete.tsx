@@ -239,6 +239,8 @@ export default function SessionCompleteScreen() {
                     <Text
                       style={styles.statValue}
                       numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.8}
                       allowFontScaling={false}
                     >
                       {s.value}
@@ -317,14 +319,15 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   statValue: {
-    // Fixed size for ALL three stats (no per-cell adjustsFontSizeToFit, which
-    // shrank "0:12" while "2" stayed huge → mismatched fonts, tester T8). 26pt
-    // fits the widest realistic value ("12:34") inside a 1/3 column.
-    fontSize: 26,
-    lineHeight: 30,
+    // 20pt fits even "12:34" (mm:ss) inside a 1/3 column at full size, so all
+    // three stats render at the SAME size (no per-cell shrink mismatch — the
+    // tester T8 complaint). adjustsFontSizeToFit stays only as a safety net for
+    // pathological widths and won't trigger for normal digit/time values.
+    fontSize: 20,
+    lineHeight: 24,
     color: colors.primary,
     fontFamily: typeScale.display.fontFamily,
-    letterSpacing: -0.4,
+    letterSpacing: -0.3,
   },
   statLabel: {
     ...typeScale.labelSm,
