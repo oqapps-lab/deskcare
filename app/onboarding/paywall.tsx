@@ -100,7 +100,13 @@ export default function PaywallScreen() {
     // trapping the user with no way into the app without buying (tester
     // 2026-05-31). For in-app upsells (Programs/Library tile → paywall) we
     // still go back to wherever they were.
-    if (from === 'onboarding') {
+    // Escape to a USABLE screen for every "hard gate" entry: onboarding
+    // terminal, the free-tier content gate, and the daily-meter gate. Going
+    // router.back() here returned the user to the very locked preview that
+    // triggered the paywall — whose only action is Begin → re-gate → paywall,
+    // an INFINITE LOOP (tester 2026-06-02: "tap exercise → plan select →
+    // continue → plan select, forever"). Home is always a usable free state.
+    if (from === 'onboarding' || from === 'gate' || from === 'meter') {
       router.replace('/main/home');
       return;
     }
