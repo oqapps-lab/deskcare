@@ -438,7 +438,7 @@ export default function PaywallScreen() {
               hitSlop={10}
               onPress={() => {
                 Haptics.selectionAsync();
-                Linking.openURL(LEGAL_URLS.terms);
+                router.push('/legal/terms' as never);
               }}
               accessibilityRole="button"
               accessibilityLabel={t('common_terms_of_service')}
@@ -450,7 +450,7 @@ export default function PaywallScreen() {
               hitSlop={10}
               onPress={() => {
                 Haptics.selectionAsync();
-                Linking.openURL(LEGAL_URLS.privacy);
+                router.push('/legal/privacy' as never);
               }}
               accessibilityRole="button"
               accessibilityLabel={t('common_privacy_policy')}

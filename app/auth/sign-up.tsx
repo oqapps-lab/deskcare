@@ -189,7 +189,7 @@ export default function SignUpScreen() {
               style={styles.legalAccent}
               onPress={() => {
                 Haptics.selectionAsync();
-                Linking.openURL(LEGAL_URLS.terms);
+                router.push('/legal/terms' as never);
               }}
             >
               {t('common_terms')}
@@ -199,7 +199,7 @@ export default function SignUpScreen() {
               style={styles.legalAccent}
               onPress={() => {
                 Haptics.selectionAsync();
-                Linking.openURL(LEGAL_URLS.privacy);
+                router.push('/legal/privacy' as never);
               }}
             >
               {t('common_privacy_policy')}

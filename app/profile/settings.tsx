@@ -79,9 +79,9 @@ const ACCOUNT_TPL: ReadonlyArray<NavRowDef> = [
 ];
 
 const PRIVACY: ReadonlyArray<NavRowDef> = [
-  { key: 'data',     icon: 'settings', tone: 'lavender', title: t('ps_data_title'),    sub: t('ps_data_sub'),    url: LEGAL_URLS.privacy },
-  { key: 'terms',    icon: 'plus',     tone: 'peach',    title: t('common_terms_of_use'),     sub: '',                         url: LEGAL_URLS.terms },
-  { key: 'privacy',  icon: 'plus',     tone: 'peach',    title: t('common_privacy_policy'),   sub: '',                         url: LEGAL_URLS.privacy },
+  { key: 'data',     icon: 'settings', tone: 'lavender', title: t('ps_data_title'),    sub: t('ps_data_sub'),    route: '/legal/privacy' },
+  { key: 'terms',    icon: 'plus',     tone: 'peach',    title: t('common_terms_of_use'),     sub: '',                  route: '/legal/terms' },
+  { key: 'privacy',  icon: 'plus',     tone: 'peach',    title: t('common_privacy_policy'),   sub: '',                  route: '/legal/privacy' },
   { key: 'contact',  icon: 'plus',     tone: 'coral',    title: t('ps_contact_title'),  sub: SUPPORT_EMAIL,              url: `mailto:${SUPPORT_EMAIL}` },
   { key: 'delete',   icon: 'close-x',  tone: 'coral',    title: t('ps_delete_title'),   sub: t('ps_delete_sub'), route: '/profile/delete-account' },
   { key: 'signout',  icon: 'close-x',  tone: 'coral',    title: t('ps_signout'),        sub: '',                         route: '/auth/sign-in', accent: true },
